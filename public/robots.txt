@@ -1,0 +1,36 @@
+User-agent: *
+Allow: /
+
+# Block private/user-specific pages from indexing
+Disallow: /cart
+Disallow: /checkout
+Disallow: /payment
+Disallow: /order-success
+Disallow: /orders
+Disallow: /profile
+Disallow: /inbox
+Disallow: /login
+Disallow: /signup
+Disallow: /forgot-password
+
+# Allow all search engines to crawl public content
+User-agent: Googlebot
+Allow: /products
+Allow: /product/
+Allow: /shops
+Allow: /shop/
+Allow: /events
+Allow: /offers
+Allow: /become-seller
+Allow: /search
+
+User-agent: Bingbot
+Allow: /products
+Allow: /product/
+Allow: /shops
+Allow: /shop/
+Allow: /events
+Allow: /offers
+
+# Sitemap location
+Sitemap: https://eshopug.vercel.app/sitemap.xml

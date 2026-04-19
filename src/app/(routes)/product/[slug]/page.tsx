@@ -86,6 +86,8 @@ async function fetchSimilarProducts(category: string, currentProductId: string) 
   }
 }
 
+const BASE_URL = "https://eshopug.vercel.app";
+
 export async function generateMetadata({
   params,
 }: {
@@ -94,22 +96,42 @@ export async function generateMetadata({
   const { slug } = await params;
   const product = await fetchProductDetails(slug);
 
+  const title = product?.title
+    ? `${product.title} — Buy Online in Uganda`
+    : "Product | EshopUG Uganda";
+  const description = product?.description
+    ? `${product.description.slice(0, 150)}... Buy now on EshopUG — Uganda's #1 online marketplace.`
+    : "Discover high quality products at the best prices on EshopUG — Uganda's leading online marketplace.";
+  const image = product?.images?.[0]?.url || `${BASE_URL}/og-image.png`;
+  const url = `${BASE_URL}/product/${slug}`;
+
   return {
-    title: `${product?.title || "Product"} | Easy-Shop Marketplace`,
-    description:
-      product?.description ||
-      "Discover high quality products and services on E-Shop Marketplace.",
+    title,
+    description,
+    keywords: [
+      product?.title,
+      product?.category,
+      "buy online Uganda",
+      "Uganda marketplace",
+      "online shopping Uganda",
+      product?.brand,
+    ].filter(Boolean) as string[],
     openGraph: {
-      title: product?.title,
-      description: product?.description || "",
-      images: [product?.images?.[0]?.url || "/default-image.jpg"],
+      title,
+      description,
+      images: [{ url: image, width: 800, height: 800, alt: product?.title || "Product" }],
+      url,
       type: "website",
+      siteName: "EshopUG",
     },
     twitter: {
       card: "summary_large_image",
-      title: product?.title,
-      description: product?.description || "",
-      images: [product?.images?.[0]?.url || "/default-image.jpg"],
+      title,
+      description,
+      images: [image],
+    },
+    alternates: {
+      canonical: url,
     },
   };
 }
@@ -118,16 +140,50 @@ const Page = async ({ params }: { params: Promise<{ slug: string }> }) => {
   const { slug } = await params;
   const productDetails = await fetchProductDetails(slug);
 
-  // Fetch similar products based on category
   const similarProducts = productDetails
     ? await fetchSimilarProducts(productDetails.category, productDetails.id)
     : [];
 
+  const productSchema = productDetails
+    ? {
+        "@context": "https://schema.org",
+        "@type": "Product",
+        name: productDetails.title,
+        description: productDetails.description,
+        image: productDetails.images?.map((img: any) => img.url) || [],
+        sku: productDetails.id,
+        brand: productDetails.brand
+          ? { "@type": "Brand", name: productDetails.brand }
+          : undefined,
+        offers: {
+          "@type": "Offer",
+          url: `${BASE_URL}/product/${slug}`,
+          priceCurrency: productDetails.currency || "UGX",
+          price: productDetails.price,
+          availability: productDetails.stock > 0
+            ? "https://schema.org/InStock"
+            : "https://schema.org/OutOfStock",
+          seller: {
+            "@type": "Organization",
+            name: "EshopUG",
+          },
+        },
+      }
+    : null;
+
   return (
-    <ProductDetails
-      productDetails={productDetails}
-      similarProducts={similarProducts}
-    />
+    <>
+      {productSchema && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(productSchema) }}
+        />
+      )}
+      <ProductDetails
+        productDetails={productDetails}
+        similarProducts={similarProducts}
+      />
+    </>
   );
 };
 

@@ -400,7 +400,7 @@ const HeaderBottom = () => {
             {[
               { href: '/', icon: Home, label: 'Home', activeColor: 'text-teal-700', activeBg: 'bg-teal-50' },
               { href: '/ai-assistant', icon: Sparkles, label: 'Eshop AI', gradient: true },
-              { href: '/install', icon: Download, label: 'Install', activeColor: 'text-orange-500', activeBg: 'bg-orange-50' },
+           { href: '/install', icon: Download, label: 'Install', activeColor: 'text-orange-500', activeBg: 'bg-orange-50' },
               { href: '/wishlist', icon: Heart, label: 'Wishlist', activeColor: 'text-red-500', activeBg: 'bg-red-50', badge: wishlist?.length, badgeColor: 'bg-red-500 text-white' },
               { href: '/cart', icon: ShoppingCart, label: 'Cart', activeColor: 'text-teal-700', activeBg: 'bg-teal-50', badge: cart?.length, badgeColor: 'bg-amber-400 text-teal-900' },
             ].map(({ href, icon: Icon, label, activeColor, activeBg, gradient, badge, badgeColor }: any) => {              const active = pathname === href;
