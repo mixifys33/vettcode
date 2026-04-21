@@ -736,11 +736,11 @@ const CartPage = () => {
                             
                             <button
                               onClick={() => {
-                                const shareUrl = `${window.location.origin}/product/${item.id}`;
+                                const shareUrl = `${window.location.origin}/product/${item.slug || item.id}`;
                                 if (navigator.share) {
                                   navigator.share({
                                     title: item.title,
-                                    text: `Check out ${item.title} on Easy Shop!`,
+                                    text: `Check out ${item.title} on EshopUG!`,
                                     url: shareUrl
                                   }).catch(() => {});
                                 } else {

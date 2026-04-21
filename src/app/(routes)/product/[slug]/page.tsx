@@ -8,7 +8,7 @@ async function fetchProductDetails(slug: string) {
   
   try {
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+    const timeoutId = setTimeout(() => controller.abort(), 10000);
     
     const response = await fetch(
       `${baseUrl}/api/products?slug=${slug}`,
@@ -26,11 +26,38 @@ async function fetchProductDetails(slug: string) {
     }
 
     const data = await response.json();
-    // API returns array; find by slug
     const products = data.products || [];
-    return products.find((p: any) => p.slug === slug) || null;
+
+    // First try exact slug match
+    let product = products.find((p: any) => p.slug === slug) || null;
+
+    // Fallback: if the "slug" param looks like a MongoDB id, search by id
+    // This handles old shared links that used item.id instead of item.slug
+    if (!product && /^[a-f0-9]{24}$/i.test(slug)) {
+      product = products.find((p: any) => p.id === slug || p._id === slug) || null;
+    }
+
+    // Second fallback: try fetching directly by id from the API
+    if (!product && /^[a-f0-9]{24}$/i.test(slug)) {
+      try {
+        const idController = new AbortController();
+        const idTimeout = setTimeout(() => idController.abort(), 10000);
+        const idRes = await fetch(`${baseUrl}/api/products/${slug}`, {
+          cache: "no-store",
+          signal: idController.signal,
+        });
+        clearTimeout(idTimeout);
+        if (idRes.ok) {
+          const idData = await idRes.json();
+          product = idData.product || idData || null;
+        }
+      } catch {
+        // silent — we'll return null below
+      }
+    }
+
+    return product;
   } catch (error: any) {
-    // Log more details about the error
     if (error.name === 'AbortError') {
       console.error("Request timed out fetching product details");
     } else if (error.cause?.code === 'ECONNREFUSED') {

@@ -244,12 +244,18 @@ const ProductDetails = ({
   };
 
   const handleShare = async () => {
-    const url = window.location.href;
+    const BASE = "https://eshopug.vercel.app";
+    const url = `${BASE}/product/${slug || id}`;
+    const shareData = {
+      title: `${title} — UGX ${sale_price?.toLocaleString('en-UG')}`,
+      text: `Check out ${title} on EshopUG for only UGX ${sale_price?.toLocaleString('en-UG')}!`,
+      url,
+    };
     if (navigator.share) {
       try {
-        await navigator.share({ title, url });
+        await navigator.share(shareData);
       } catch (err) {
-        console.log('Share cancelled');
+        // user cancelled — no-op
       }
     } else {
       await navigator.clipboard.writeText(url);
