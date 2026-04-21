@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import useUser from "@/hooks/useUser";
 import { useStore } from "@/store";
+import { generateOrderRef } from "@/utils/generateOrderRef";
 
 const BACKEND = process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:3000";
 
@@ -65,6 +66,9 @@ export default function PaymentPage() {
   const [error, setError] = useState("");
   const [expandedSeller, setExpandedSeller] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Generate a short unique reference once per payment session
+  const [orderRef] = useState<string>(() => generateOrderRef());
 
   if (!orderData) {
     return (
@@ -176,7 +180,7 @@ export default function PaymentPage() {
           expectedAmount: amountDue,
           expectedRecipientName: expectedName,
           expectedPhone,
-          productNames: allProductNames,
+          productNames: orderRef,
           paymentMethod,
         }),
       });
@@ -221,6 +225,7 @@ export default function PaymentPage() {
           paymentMethod,
           proofImages: proofPayload,
           paymentStatus: "submitted",
+          orderRef,
           buyerInfo: {
             userId: uid,
             name: user?.name || "",
@@ -324,7 +329,7 @@ export default function PaymentPage() {
                         `Select "Send Money"`,
                         `Enter number: ${d.number || "—"}`,
                         `Enter amount: UGX ${orderAmount.toLocaleString()}`,
-                        `Reference: ${allProductNames || "Product payment"}`,
+                        `Reference: ${orderRef}`,
                         `Confirm and send`,
                       ].map((step, i) => (
                         <p key={i} className="text-sm text-gray-700 mb-1">
@@ -347,7 +352,7 @@ export default function PaymentPage() {
                         ["Account No", d.number],
                         ["Branch", getSellerPayment(sid).bankBranch],
                         ["Amount", `UGX ${orderAmount.toLocaleString()}`],
-                        ["Reference", allProductNames || "Product payment"],
+                        ["Reference", orderRef],
                       ].filter(([, v]) => v).map(([label, val]) => (
                         <p key={label} className="text-sm text-gray-700 mb-1">
                           <span className="font-semibold">{label}:</span> {val}
