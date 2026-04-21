@@ -6,6 +6,7 @@ import axiosInstance from "../utils/axiosInstance";
 
 interface Product {
     id: string;
+    slug?: string;
     title: string;
     price: number;
     image: string;   

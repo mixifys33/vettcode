@@ -160,6 +160,7 @@ const ProductDetails = ({
 
   const {
     id,
+    slug,
     title,
     description,
     detailed_description,
@@ -201,6 +202,7 @@ const ProductDetails = ({
   const handleAddToCart = () => {
     addToCart({ 
       id, 
+      slug: slug || id,
       title, 
       price: sale_price, 
       image: images?.[0]?.url || "", 

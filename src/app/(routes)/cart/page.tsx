@@ -608,7 +608,7 @@ const CartPage = () => {
                     <div className="flex gap-4">
                       {/* Product Image - Clickable */}
                       <Link 
-                        href={`/product/${item.id}`}
+                        href={`/product/${item.slug || item.id}`}
                         className="relative w-24 h-24 md:w-32 md:h-32 flex-shrink-0 rounded-lg overflow-hidden bg-gray-100 group cursor-pointer"
                       >
                         <Image
@@ -712,7 +712,7 @@ const CartPage = () => {
                           {/* Action Buttons */}
                           <div className="flex items-center gap-2 flex-wrap">
                             <Link
-                              href={`/product/${item.id}`}
+                              href={`/product/${item.slug || item.id}`}
                               className="flex items-center gap-1 text-xs text-blue-600 hover:text-blue-700 transition px-3 py-1.5 border border-blue-200 rounded-lg hover:bg-blue-50"
                             >
                               <Info className="w-3.5 h-3.5" />
