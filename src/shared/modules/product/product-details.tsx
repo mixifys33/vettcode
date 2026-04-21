@@ -167,7 +167,8 @@ const ProductDetails = ({
     sale_price,
     regular_price,
     images = [],
-    video_url,
+    video_url: video_url_snake,
+    videoUrl: video_url_camel,
     brand,
     category,
     subCategory,
@@ -181,6 +182,9 @@ const ProductDetails = ({
     warranty,
     cash_on_delivery,
   } = productDetails;
+
+  // Support both snake_case (video_url) and camelCase (videoUrl) from backend
+  const video_url = video_url_snake || video_url_camel || null;
 
   const discount = regular_price > sale_price 
     ? Math.round(((regular_price - sale_price) / regular_price) * 100) 
