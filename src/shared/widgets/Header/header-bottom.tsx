@@ -189,7 +189,7 @@ const HeaderBottom = () => {
               onMouseEnter={() => setHoveredCat(cat.name)}
               onMouseLeave={() => setHoveredCat(null)}>
               <Link
-                href={`/products?category=${encodeURIComponent(cat.name.toLowerCase())}`}
+                href={`/products?category=${encodeURIComponent(cat.name)}`}
                 onClick={() => setShowCats(false)}
                 className="flex items-center justify-between gap-2 px-4 py-2.5 hover:bg-teal-50 text-gray-700 hover:text-teal-700 text-sm font-medium transition-colors">
                 <span className="flex items-center gap-2.5">
@@ -205,7 +205,7 @@ const HeaderBottom = () => {
                   {cat.subs.map((sub) => (
                     <Link
                       key={sub}
-                      href={`/products?category=${encodeURIComponent(cat.name.toLowerCase())}&subCategory=${encodeURIComponent(sub.toLowerCase())}`}
+                      href={`/products?category=${encodeURIComponent(cat.name)}&subCategory=${encodeURIComponent(sub)}`}
                       onClick={() => setShowCats(false)}
                       className="block px-4 py-2 text-sm text-gray-600 hover:bg-teal-50 hover:text-teal-700 transition-colors">
                       {sub}
