@@ -190,7 +190,7 @@ export const Hero = () => {
                 {CATEGORY_CARDS.map((cat, i) => (
                   <button
                     key={cat.label}
-                    onClick={() => router.push(`/products?category=${cat.label.toLowerCase()}`)}
+                    onClick={() => router.push(`/products?category=${encodeURIComponent(cat.label)}`)}
                     className={`group relative rounded-2xl p-6 text-left overflow-hidden shadow-xl transition-all duration-300 hover:scale-105 hover:shadow-2xl animate-fade-in-up`}
                     style={{ animationDelay: `${0.3 + i * 0.1}s`, background: `linear-gradient(135deg, var(--tw-gradient-stops))` }}
                   >
