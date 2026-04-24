@@ -23,6 +23,10 @@
      {
         title: "Product comparsion",
         href:  "/compare",
+    },
+    {
+        title: "About Us",
+        href:  "/about",
     }
     /*
     {
