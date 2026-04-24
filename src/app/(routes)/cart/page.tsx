@@ -1250,51 +1250,50 @@ const CartPage = () => {
           </div>
         )}
       </div>
-    </div>
 
-    {/* No Pickup Station Modal */}
-    {showNoPickupModal && (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
-        <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6">
-          {/* Icon */}
-          <div className="flex items-center justify-center w-14 h-14 rounded-full bg-orange-100 mx-auto mb-4">
-            <MapPin className="w-7 h-7 text-orange-500" />
-          </div>
+      {/* No Pickup Station Modal */}
+      {showNoPickupModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6">
+            {/* Icon */}
+            <div className="flex items-center justify-center w-14 h-14 rounded-full bg-orange-100 mx-auto mb-4">
+              <MapPin className="w-7 h-7 text-orange-500" />
+            </div>
 
-          {/* Title */}
-          <h2 className="text-xl font-bold text-gray-900 text-center mb-2">
-            No Delivery Address Set
-          </h2>
+            {/* Title */}
+            <h2 className="text-xl font-bold text-gray-900 text-center mb-2">
+              No Delivery Address Set
+            </h2>
 
-          {/* Message */}
-          <p className="text-gray-500 text-sm text-center mb-2">
-            You need to set a <span className="font-semibold text-[#115061]">default pickup station</span> or add a <span className="font-semibold text-[#115061]">home delivery address</span> before you can proceed to payment.
-          </p>
-          <p className="text-gray-400 text-xs text-center mb-6">
-            Go to your profile → <strong>Addresses</strong> tab to set one up. Once set, your seller will know exactly where to deliver your order.
-          </p>
+            {/* Message */}
+            <p className="text-gray-500 text-sm text-center mb-2">
+              You need to set a <span className="font-semibold text-[#115061]">default pickup station</span> or add a <span className="font-semibold text-[#115061]">home delivery address</span> before you can proceed to payment.
+            </p>
+            <p className="text-gray-400 text-xs text-center mb-6">
+              Go to your profile → <strong>Addresses</strong> tab to set one up. Once set, your seller will know exactly where to deliver your order.
+            </p>
 
-          {/* Actions */}
-          <div className="flex flex-col gap-3">
-            <Link
-              href="/profile?tab=addresses"
-              onClick={() => setShowNoPickupModal(false)}
-              className="w-full flex items-center justify-center gap-2 py-3 bg-[#115061] text-white rounded-xl hover:bg-[#0d3f4d] transition font-semibold text-sm"
-            >
-              <MapPin className="w-4 h-4" />
-              Go to Addresses →
-            </Link>
-            <button
-              onClick={() => setShowNoPickupModal(false)}
-              className="w-full py-3 border border-gray-200 text-gray-600 rounded-xl hover:bg-gray-50 transition font-medium text-sm"
-            >
-              Cancel
-            </button>
+            {/* Actions */}
+            <div className="flex flex-col gap-3">
+              <Link
+                href="/profile?tab=addresses"
+                onClick={() => setShowNoPickupModal(false)}
+                className="w-full flex items-center justify-center gap-2 py-3 bg-[#115061] text-white rounded-xl hover:bg-[#0d3f4d] transition font-semibold text-sm"
+              >
+                <MapPin className="w-4 h-4" />
+                Go to Addresses →
+              </Link>
+              <button
+                onClick={() => setShowNoPickupModal(false)}
+                className="w-full py-3 border border-gray-200 text-gray-600 rounded-xl hover:bg-gray-50 transition font-medium text-sm"
+              >
+                Cancel
+              </button>
+            </div>
           </div>
         </div>
-      </div>
-    )}
+      )}
+    </div>
   );
 };
-
 export default CartPage;
