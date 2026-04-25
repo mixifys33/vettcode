@@ -140,7 +140,7 @@ const StatCard = ({ title, count, icon: Icon, color = "blue" }: { title: string;
 };
 
 // ============ PROFILE TAB ============
-const ProfileTab = ({ user, profileForm, setProfileForm, isEditing, setIsEditing, isSaving, handleSaveProfile, handleAvatarUpload, passwordForm, setPasswordForm, showPasswords, setShowPasswords, handleChangePassword }: any) => (
+const ProfileTab = ({ user, profileForm, setProfileForm, isEditing, setIsEditing, isSaving, handleSaveProfile, handleAvatarUpload, handleAvatarDelete, passwordForm, setPasswordForm, showPasswords, setShowPasswords, handleChangePassword }: any) => (
   <div className="space-y-4 sm:space-y-6">
     <div className="flex flex-col sm:flex-row sm:items-start gap-4">
       {/* Avatar */}
@@ -153,6 +153,11 @@ const ProfileTab = ({ user, profileForm, setProfileForm, isEditing, setIsEditing
             <Camera className="w-3.5 h-3.5 text-white" />
             <input type="file" accept="image/*" onChange={handleAvatarUpload} className="hidden" />
           </label>
+          {user?.avatar && (
+            <button onClick={handleAvatarDelete} className="absolute bottom-0 left-0 p-1.5 bg-red-600 rounded-full cursor-pointer hover:bg-red-700 transition shadow-lg">
+              <Trash2 className="w-3.5 h-3.5 text-white" />
+            </button>
+          )
         </div>
       </div>
       {/* Info */}
@@ -1360,18 +1365,51 @@ const ProfilePageContent = () => {
   const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const f = e.target.files?.[0];
     if (!f) return;
-    if (!f.type.startsWith('image/')) { alert('Please select an image file'); return; }
-    if (f.size > 2 * 1024 * 1024) { alert('Image must be less than 2MB'); return; }
-    const fd = new FormData();
-    fd.append('avatar', f);
+    if (!f.type.startsWith('image/')) { alert('Please select an image file'); e.target.value = ''; return; }
+    if (f.size > 2 * 1024 * 1024) { alert('Image must be less than 2MB'); e.target.value = ''; return; }
+
+    // Read file as base64 and upload to server-side ImageKit endpoint
+    const reader = new FileReader();
+    reader.onload = async () => {
+      const base64 = reader.result as string;
+      const cleanBase64 = base64.replace(/^data:image\/[a-z]+;base64,/, '');
+      try {
+        const uploadRes = await axiosInstance.post('/api/imagekit/upload', {
+          file: cleanBase64,
+          fileName: `avatar_${(user as any)?.id || Date.now()}.jpg`,
+          folder: 'user-profiles'
+        });
+        const data = uploadRes.data;
+        if (data?.success && data.url) {
+          await axiosInstance.put('/api/auth/profile', { ...profileForm, avatar: data.url, avatarFileId: data.fileId });
+          queryClient.invalidateQueries({ queryKey: ['user'] });
+        } else {
+          alert('Upload failed');
+        }
+      } catch (err) {
+        console.error('Avatar upload error', err);
+        alert('Failed to upload avatar');
+      } finally {
+        e.target.value = '';
+      }
+    };
+    reader.readAsDataURL(f);
+  };
+
+  const handleAvatarDelete = async () => {
+    if (!confirm('Delete your profile picture?')) return;
     try {
-      // Use the auth profile update endpoint to save avatar
-      await axiosInstance.put('/api/auth/profile', { ...profileForm, avatar: URL.createObjectURL(f) });
+      // Attempt server-side delete if we have a fileId
+      if ((user as any)?.avatarFileId) {
+        await axiosInstance.delete('/api/imagekit/delete', { data: { fileId: (user as any).avatarFileId } });
+      }
+      // Remove avatar reference from user profile
+      await axiosInstance.put('/api/auth/profile', { ...profileForm, avatar: null, avatarFileId: null });
       queryClient.invalidateQueries({ queryKey: ['user'] });
-    } catch {
-      alert('Failed to upload avatar');
+    } catch (err) {
+      console.error('Avatar delete error', err);
+      alert('Failed to delete avatar');
     }
-    e.target.value = '';
   };
 
   if (isLoading) {
@@ -1513,6 +1551,7 @@ const ProfilePageContent = () => {
                   isSaving={isSaving}
                   handleSaveProfile={handleSaveProfile}
                   handleAvatarUpload={handleAvatarUpload}
+                  handleAvatarDelete={handleAvatarDelete}
                   passwordForm={passwordForm}
                   setPasswordForm={setPasswordForm}
                   showPasswords={showPasswords}
