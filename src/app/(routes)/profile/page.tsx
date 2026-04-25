@@ -157,7 +157,7 @@ const ProfileTab = ({ user, profileForm, setProfileForm, isEditing, setIsEditing
             <button onClick={handleAvatarDelete} className="absolute bottom-0 left-0 p-1.5 bg-red-600 rounded-full cursor-pointer hover:bg-red-700 transition shadow-lg">
               <Trash2 className="w-3.5 h-3.5 text-white" />
             </button>
-          )
+          )}
         </div>
       </div>
       {/* Info */}
