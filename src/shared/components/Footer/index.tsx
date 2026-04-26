@@ -297,6 +297,17 @@ export default function Footer() {
             <p className="text-gray-500 text-sm text-center md:text-left">
               {content.copyrightText}
             </p>
+
+            {/* Legal Links */}
+            <div className="flex items-center justify-center gap-4">
+              <a href="/privacy" className="text-gray-500 hover:text-gray-300 text-xs transition-colors">
+                Privacy Policy
+              </a>
+              <span className="text-gray-700 text-xs">·</span>
+              <a href="/about" className="text-gray-500 hover:text-gray-300 text-xs transition-colors">
+                About Us
+              </a>
+            </div>
             
             {/* Payment Methods */}
             <div className="flex items-center justify-center gap-3 flex-wrap">

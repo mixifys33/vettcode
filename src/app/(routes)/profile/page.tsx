@@ -1374,14 +1374,26 @@ const ProfilePageContent = () => {
       const base64 = reader.result as string;
       const cleanBase64 = base64.replace(/^data:image\/[a-z]+;base64,/, '');
       try {
+        // Delete old avatar from ImageKit first if one exists
+        if ((user as any)?.avatarFileId) {
+          try {
+            await axiosInstance.delete('/api/imagekit/delete', { data: { fileId: (user as any).avatarFileId } });
+          } catch (_) {
+            // Non-fatal — continue even if old file deletion fails
+          }
+        }
+
         const uploadRes = await axiosInstance.post('/api/imagekit/upload', {
           file: cleanBase64,
-          fileName: `avatar_${(user as any)?.id || Date.now()}.jpg`,
+          // Use unique filename every time to avoid ImageKit serving a cached old file
+          fileName: `avatar_${(user as any)?.id || Date.now()}_${Date.now()}.jpg`,
           folder: 'user-profiles'
         });
         const data = uploadRes.data;
         if (data?.success && data.url) {
-          await axiosInstance.put('/api/auth/profile', { ...profileForm, avatar: data.url, avatarFileId: data.fileId });
+          // Append cache-busting param so Next.js Image always fetches the fresh file
+          const freshUrl = `${data.url}?v=${Date.now()}`;
+          await axiosInstance.put('/api/auth/profile', { ...profileForm, avatar: freshUrl, avatarFileId: data.fileId });
           queryClient.invalidateQueries({ queryKey: ['user'] });
         } else {
           alert('Upload failed');
