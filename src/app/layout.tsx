@@ -99,7 +99,7 @@ export const metadata: Metadata = {
     title: "VETTCODE",
   },
   verification: {
-    google: "wy6SWm5sYCGw74GmMhddQF7GHpU6zJeTvv8bASt71fs",
+    google: "wy6SWm5sYCGw74GmMhddQF7GHpU6zJeTvv8bASt71fs", // Updated for VETTCODE
     other: {
       "p:domain_verify": "11c00d055440528e074360f44e5303cb",
     },

@@ -246,21 +246,21 @@ export default function Page() {
         </div>
       </section>
 
-      {/* Trending Products */}
-      {trendingProducts?.length > 0 && (
+      {/* Trending Applications */}
+      {trendingApplications?.length > 0 && (
         <section className="w-full px-4 sm:px-6 lg:px-8 py-10" style={{ background: "linear-gradient(135deg, #fdf4ff, #fce7f3, #fff7ed)" }}>
           <div className="max-w-7xl mx-auto">
             <div className="mb-6">
               <SectionTitle
                 title="Trending Now 🔥"
-                subtitle="Most popular products this week"
+                subtitle="Most popular applications this week"
                 actionLabel="View All"
                 actionHref="/products?sort=trending"
                 icon={<Flame className="w-4 h-4" />}
               />
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4">
-              {trendingProducts.map((product: any) => (
+              {trendingApplications.map((product: any) => (
                 <ProductCard key={product.id} product={product} />
               ))}
             </div>
@@ -269,20 +269,20 @@ export default function Page() {
       )}
 
       {/* Latest Arrivals */}
-      {latestProducts?.length > 0 && (
+      {latestApplications?.length > 0 && (
         <section className="w-full px-4 sm:px-6 lg:px-8 py-10 bg-white">
           <div className="max-w-7xl mx-auto">
             <div className="mb-6">
               <SectionTitle
                 title="Latest Arrivals ✨"
-                subtitle="Fresh products just added"
+                subtitle="Fresh applications just added"
                 actionLabel="View All"
                 actionHref="/products?sort=latest"
                 icon={<Zap className="w-4 h-4" />}
               />
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4">
-              {latestProducts.map((product: any) => (
+              {latestApplications.map((product: any) => (
                 <ProductCard key={product.id} product={product} />
               ))}
             </div>
