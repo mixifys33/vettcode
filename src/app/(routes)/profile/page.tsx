@@ -792,7 +792,7 @@ const WalletTab = ({ wallet, paymentMethods, loading, orders }: { wallet: Wallet
 
       {/* Spending Summary Card */}
       <div className="bg-gradient-to-br from-teal-600 to-blue-700 p-4 sm:p-6 rounded-2xl text-white">
-        <p className="text-xs sm:text-sm opacity-80 mb-1">Total Spent on EasyShop</p>
+        <p className="text-xs sm:text-sm opacity-80 mb-1">Total Spent on vettcode</p>
         <p className="text-2xl sm:text-3xl font-bold">UGX {totalSpent.toLocaleString('en-UG')}</p>
         <p className="text-xs opacity-70 mt-1">{successfulOrders.length} successful order{successfulOrders.length !== 1 ? 's' : ''}</p>
         <div className="grid grid-cols-2 gap-3 mt-4">

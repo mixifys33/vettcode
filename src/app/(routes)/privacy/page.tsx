@@ -1,12 +1,8 @@
+"use client";
+
 import type { Metadata } from "next";
 import Link from "next/link";
-
-export const metadata: Metadata = {
-  title: "Privacy Policy | EshopUG",
-  description:
-    "EshopUG Privacy Policy — learn how we collect, use, and protect your personal information on Uganda's #1 online marketplace.",
-  alternates: { canonical: "https://eshopug.vercel.app/privacy" },
-};
+import { Shield, Lock, Eye, FileText, Mail, CheckCircle } from "lucide-react";
 
 const LAST_UPDATED = "April 26, 2026";
 const CONTACT_EMAIL = "support@eshopug.com";
@@ -14,7 +10,7 @@ const APP_NAME = "EshopUG";
 const COMPANY = "EshopUG (AD Technologies Uganda)";
 const WEBSITE = "https://eshopug.vercel.app";
 
-// ── Section wrapper ──────────────────────────────────────────────────────────
+// ── Section wrapper with animation ──────────────────────────────────────────
 const Section = ({
   id,
   title,
@@ -24,56 +20,90 @@ const Section = ({
   title: string;
   children: React.ReactNode;
 }) => (
-  <section id={id} className="mb-10 scroll-mt-24">
-    <h2 className="text-xl font-bold text-gray-900 mb-4 pb-2 border-b border-gray-200">
-      {title}
-    </h2>
-    <div className="space-y-3 text-gray-700 leading-relaxed text-sm sm:text-base">
+  <section id={id} className="mb-10 scroll-mt-24 group animate-fade-in-up">
+    <div className="flex items-center gap-3 mb-4 pb-3 border-b-2 border-gray-200 group-hover:border-blue-500 transition-colors duration-300">
+      <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white font-bold text-sm shadow-lg group-hover:scale-110 transition-transform duration-300">
+        {id.match(/\d+/)?.[0] || "•"}
+      </div>
+      <h2 className="text-xl font-bold text-gray-900 group-hover:text-blue-600 transition-colors duration-300">
+        {title}
+      </h2>
+    </div>
+    <div className="space-y-3 text-gray-700 leading-relaxed text-sm sm:text-base pl-11">
       {children}
     </div>
   </section>
 );
 
-// ── Table of contents entry ──────────────────────────────────────────────────
+// ── Table of contents entry with hover effect ───────────────────────────────
 const TocItem = ({ href, label }: { href: string; label: string }) => (
-  <li>
+  <li className="group">
     <a
       href={href}
-      className="text-blue-600 hover:text-blue-800 hover:underline text-sm transition-colors"
+      className="flex items-center gap-2 text-gray-600 hover:text-blue-600 text-sm transition-all duration-300 py-1.5 px-2 rounded-lg hover:bg-blue-50 hover:pl-4"
     >
-      {label}
+      <CheckCircle className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
+      <span>{label}</span>
     </a>
   </li>
 );
 
 export default function PrivacyPage() {
   return (
-    <main className="min-h-screen bg-gray-50">
-      {/* Hero */}
-      <div className="bg-gradient-to-br from-[#0a1628] via-[#112240] to-[#1a3a5c] text-white py-14 px-4">
-        <div className="max-w-4xl mx-auto text-center">
-          <div className="inline-flex items-center gap-2 bg-yellow-400/15 border border-yellow-400/30 rounded-full px-4 py-1.5 mb-5">
+    <main className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50/20 to-gray-50">
+      {/* Hero with animated background */}
+      <div className="relative bg-gradient-to-br from-[#0a1628] via-[#112240] to-[#1a3a5c] text-white py-16 px-4 overflow-hidden">
+        {/* Animated background elements */}
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute top-10 left-10 w-72 h-72 bg-blue-400 rounded-full blur-3xl animate-pulse"></div>
+          <div className="absolute bottom-10 right-10 w-96 h-96 bg-purple-400 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
+        </div>
+
+        <div className="max-w-4xl mx-auto text-center relative z-10">
+          <div className="inline-flex items-center gap-2 bg-yellow-400/15 border border-yellow-400/30 rounded-full px-5 py-2 mb-6 animate-fade-in">
+            <Shield className="w-4 h-4 text-yellow-400" />
             <span className="text-yellow-400 text-xs font-bold tracking-widest uppercase">
               Legal
             </span>
           </div>
-          <h1 className="text-3xl sm:text-4xl font-black mb-3">
+          <h1 className="text-4xl sm:text-5xl font-black mb-4 animate-slide-up">
             Privacy Policy
           </h1>
-          <p className="text-white/60 text-sm">
+          <p className="text-white/70 text-sm mb-6 animate-slide-up" style={{ animationDelay: '100ms' }}>
             Last updated: {LAST_UPDATED}
           </p>
+          
+          {/* Trust badges */}
+          <div className="flex flex-wrap justify-center gap-4 mt-8 animate-slide-up" style={{ animationDelay: '200ms' }}>
+            <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full border border-white/20">
+              <Lock className="w-4 h-4 text-green-400" />
+              <span className="text-sm font-medium">Secure & Encrypted</span>
+            </div>
+            <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full border border-white/20">
+              <Eye className="w-4 h-4 text-blue-400" />
+              <span className="text-sm font-medium">Transparent</span>
+            </div>
+            <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full border border-white/20">
+              <FileText className="w-4 h-4 text-purple-400" />
+              <span className="text-sm font-medium">GDPR Compliant</span>
+            </div>
+          </div>
         </div>
       </div>
 
       <div className="max-w-4xl mx-auto px-4 py-10 lg:flex lg:gap-10">
-        {/* Sticky Table of Contents */}
-        <aside className="hidden lg:block w-56 shrink-0">
-          <div className="sticky top-24 bg-white rounded-2xl shadow-sm border border-gray-100 p-5">
-            <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">
-              Contents
-            </p>
-            <ol className="space-y-2 list-decimal list-inside">
+        {/* Sticky Table of Contents with enhanced styling */}
+        <aside className="hidden lg:block w-64 shrink-0">
+          <div className="sticky top-24 bg-white rounded-2xl shadow-lg border border-gray-200 p-6 animate-fade-in hover:shadow-xl transition-shadow duration-300">
+            <div className="flex items-center gap-2 mb-4">
+              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center">
+                <FileText className="w-4 h-4 text-white" />
+              </div>
+              <p className="text-xs font-bold text-gray-700 uppercase tracking-widest">
+                Contents
+              </p>
+            </div>
+            <ol className="space-y-1">
               <TocItem href="#overview" label="Overview" />
               <TocItem href="#information-we-collect" label="Information We Collect" />
               <TocItem href="#how-we-use" label="How We Use Your Data" />
@@ -92,13 +122,15 @@ export default function PrivacyPage() {
           </div>
         </aside>
 
-        {/* Main Content */}
-        <article className="flex-1 bg-white rounded-2xl shadow-sm border border-gray-100 p-6 sm:p-10">
-          {/* Intro banner */}
-          <div className="bg-blue-50 border border-blue-100 rounded-xl p-4 mb-8 text-sm text-blue-800">
-            <strong>Your privacy matters to us.</strong> This policy explains what personal
-            information {APP_NAME} collects, why we collect it, and how we protect it. By
-            using our platform you agree to the practices described here.
+        {/* Main Content with enhanced styling */}
+        <article className="flex-1 bg-white rounded-2xl shadow-lg border border-gray-200 p-6 sm:p-10 animate-fade-in hover:shadow-xl transition-shadow duration-300">
+          {/* Intro banner with icon */}
+          <div className="bg-gradient-to-r from-blue-50 to-blue-100 border-l-4 border-blue-500 rounded-xl p-5 mb-8 text-sm text-blue-900 animate-slide-up flex gap-3">
+            <Shield className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
+            <div>
+              <strong className="block mb-1">Your privacy matters to us.</strong>
+              <span>This policy explains what personal information {APP_NAME} collects, why we collect it, and how we protect it. By using our platform you agree to the practices described here.</span>
+            </div>
           </div>
 
           {/* 1 */}
@@ -480,23 +512,88 @@ export default function PrivacyPage() {
             </div>
           </Section>
 
-          {/* Footer nav */}
-          <div className="mt-10 pt-6 border-t border-gray-100 flex flex-wrap gap-4 text-sm text-gray-500">
-            <Link href="/" className="hover:text-blue-600 transition-colors">
-              ← Back to Home
+          {/* Footer nav with enhanced styling */}
+          <div className="mt-10 pt-6 border-t border-gray-200 flex flex-wrap gap-4 text-sm">
+            <Link href="/" className="flex items-center gap-2 text-gray-600 hover:text-blue-600 transition-all duration-300 hover:gap-3 font-medium">
+              <span>←</span> Back to Home
             </Link>
-            <Link href="/about" className="hover:text-blue-600 transition-colors">
+            <Link href="/faqs" className="text-gray-600 hover:text-blue-600 transition-colors font-medium">
+              FAQs
+            </Link>
+            <Link href="/about" className="text-gray-600 hover:text-blue-600 transition-colors font-medium">
               About Us
             </Link>
             <a
               href={`mailto:${CONTACT_EMAIL}`}
-              className="hover:text-blue-600 transition-colors"
+              className="flex items-center gap-2 text-gray-600 hover:text-blue-600 transition-colors font-medium"
             >
+              <Mail className="w-4 h-4" />
               Contact Support
             </a>
           </div>
         </article>
       </div>
+
+      {/* CSS Animations */}
+      <style jsx>{`
+        @keyframes fade-in {
+          from {
+            opacity: 0;
+          }
+          to {
+            opacity: 1;
+          }
+        }
+
+        @keyframes slide-up {
+          from {
+            opacity: 0;
+            transform: translateY(20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        @keyframes fade-in-up {
+          from {
+            opacity: 0;
+            transform: translateY(10px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        .animate-fade-in {
+          animation: fade-in 0.6s ease-out forwards;
+        }
+
+        .animate-slide-up {
+          animation: slide-up 0.6s ease-out forwards;
+        }
+
+        .animate-fade-in-up {
+          animation: fade-in-up 0.5s ease-out forwards;
+        }
+
+        @keyframes pulse {
+          0%, 100% {
+            opacity: 0.6;
+            transform: scale(1);
+          }
+          50% {
+            opacity: 0.8;
+            transform: scale(1.05);
+          }
+        }
+
+        .animate-pulse {
+          animation: pulse 3s ease-in-out infinite;
+        }
+      `}</style>
     </main>
   );
 }

@@ -697,7 +697,7 @@ const EasyAIPage = () => {
                   Welcome to <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">E-AI</span>
                 </h1>
                 <p className="text-gray-600 mb-6 text-sm sm:text-base">
-                  Your intelligent shopping assistant for Easy Shop Uganda
+                  Your intelligent shopping assistant for vettcode Uganda
                 </p>
 
                 {/* Features Grid */}
@@ -722,7 +722,7 @@ const EasyAIPage = () => {
                       label: "Trending",
                       color: "text-orange-600",
                       hoverBorder: "hover:border-orange-200",
-                      prompt: "What products are trending on EasyShop right now?",
+                      prompt: "What products are trending on vettcode right now?",
                     },
                     {
                       icon: <Headphones className="w-5 h-5" />,

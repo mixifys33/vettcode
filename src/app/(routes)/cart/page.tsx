@@ -884,7 +884,7 @@ const CartPage = () => {
                           <span className="text-sm font-medium text-green-700">{coupon.code}</span>
                           <span className="text-sm text-green-600">-{formatPrice(coupon.discountAmount)}</span>
                           {coupon.createdBy === "admin" && (
-                            <span className="text-[10px] bg-purple-100 text-purple-700 px-1.5 rounded">EasyShop</span>
+                            <span className="text-[10px] bg-purple-100 text-purple-700 px-1.5 rounded">vettcode</span>
                           )}
                         </div>
                         <button onClick={() => removeCoupon(coupon.code)} className="text-green-600 hover:text-green-800">

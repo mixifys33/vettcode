@@ -164,7 +164,7 @@ const OrderDetailPage = () => {
   </div>
 
   <div class="footer">
-    <p>Thank you for shopping with EasyShop Uganda! &nbsp;|&nbsp; support@easyshop.ug &nbsp;|&nbsp; +256 700 000 000</p>
+    <p>Thank you for shopping with vettcode Uganda! &nbsp;|&nbsp; support@vettcode.ug &nbsp;|&nbsp; +256 700 000 000</p>
     <p style="margin-top:4px">This is a computer-generated invoice and does not require a signature.</p>
   </div>
 </body>
@@ -175,7 +175,7 @@ const OrderDetailPage = () => {
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = `EasyShop-Invoice-${shortId}.html`;
+      a.download = `vettcode-Invoice-${shortId}.html`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);

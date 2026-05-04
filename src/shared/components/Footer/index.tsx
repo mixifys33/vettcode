@@ -31,17 +31,17 @@ interface FooterContent {
 }
 
 const defaultContent: FooterContent = {
-  companyName: "EASY SHOP",
+  companyName: "vettcode",
   tagline: "Your Trusted Marketplace",
   description: "Uganda's leading online marketplace connecting buyers and sellers. Shop with confidence, sell with ease.",
   email: "dwightkim12@gmail.com",
   phone: "+256 761 818 885",
   address: "Kampala, Uganda",
   socialLinks: {
-    facebook: "https://facebook.com/easyshopug",
-    twitter: "https://twitter.com/easyshopug",
-    instagram: "https://instagram.com/easyshopug",
-    youtube: "https://youtube.com/easyshopug",
+    facebook: "https://facebook.com/vettcodeug",
+    twitter: "https://twitter.com/vettcodeug",
+    instagram: "https://instagram.com/vettcodeug",
+    youtube: "https://youtube.com/vettcodeug",
   },
   quickLinks: [
     { label: "Home", href: "/" },
@@ -64,7 +64,7 @@ const defaultContent: FooterContent = {
     { label: "Success Stories", href: "/success-stories" },
   ],
   paymentMethods: ["Visa", "Mastercard", "MTN Mobile Money", "Airtel Money", "PesaPal"],
-  copyrightText: "© 2025 EASY SHOP. All rights reserved.",
+  copyrightText: "© 2025 vettcode. All rights reserved.",
   trustBadges: [
     { icon: "shield", title: "Secure Shopping", description: "100% secure payments" },
     { icon: "truck", title: "Fast Delivery", description: "Nationwide shipping" },

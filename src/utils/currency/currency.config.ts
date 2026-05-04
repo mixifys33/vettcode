@@ -1,5 +1,5 @@
 /**
- * Currency Configuration for Easy Shop Frontend
+ * Currency Configuration for vettcode Frontend
  *
  * This file contains all supported currencies, their configurations,
  * and default settings for the currency system on the frontend.

@@ -1,5 +1,5 @@
 /**
- * Currency Utilities for Easy Shop Frontend
+ * Currency Utilities for vettcode Frontend
  *
  * This file provides utility functions for:
  * - Formatting prices for display using Intl.NumberFormat

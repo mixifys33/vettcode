@@ -1,5 +1,5 @@
 /**
- * Currency Module for Easy Shop Frontend
+ * Currency Module for vettcode Frontend
  *
  * This module provides comprehensive currency handling including:
  * - Currency formatting for display

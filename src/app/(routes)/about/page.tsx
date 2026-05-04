@@ -59,7 +59,7 @@ const organizationSchema = {
   "@context": "https://schema.org",
   "@type": "Organization",
   name: "EshopUG",
-  alternateName: "Eshop Uganda",
+  alternateName: "vettcode ",
   url: BASE_URL,
   logo: `${BASE_URL}/icon-512.png`,
   description:

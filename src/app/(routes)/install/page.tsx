@@ -272,7 +272,7 @@ export default function InstallPage() {
           {installed ? (
             <div className="flex items-center gap-3 bg-green-500/20 border border-green-400/40 rounded-2xl px-8 py-4 text-green-300 text-lg font-semibold">
               <CheckCircle size={24} />
-              Eshop Uganda is installed!
+              vettcode  is installed!
             </div>
           ) : (
             <button
@@ -281,7 +281,7 @@ export default function InstallPage() {
             >
               <span className="relative z-10 flex items-center gap-3">
                 <Download size={22} />
-                Install Eshop uganda
+                Install vettcode 
                 <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
               </span>
               <div className="absolute inset-0 bg-white/20 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 skew-x-12" />
@@ -539,7 +539,7 @@ export default function InstallPage() {
                   'Go to Settings → Security → Enable "Unknown Sources" or "Install unknown apps"',
                   "Open the downloaded APK file from your Downloads folder",
                   'Tap "Install" and wait for the installation to complete',
-                  "Open Eshop uganda from your app drawer and enjoy!",
+                  "Open vettcode  from your app drawer and enjoy!",
                 ].map((text, i) => (
                   <div key={i} className="flex gap-3 items-start">
                     <div className="w-7 h-7 rounded-full bg-indigo-100 text-indigo-700 font-bold text-sm flex items-center justify-center shrink-0 mt-0.5">
@@ -557,7 +557,7 @@ export default function InstallPage() {
       {/* ── FEATURES GRID ── */}
       <section className="max-w-6xl mx-auto px-4 py-12">
         <h2 className="text-3xl font-black text-center text-gray-900 mb-2">Why install the app?</h2>
-        <p className="text-center text-gray-500 mb-10">Everything you love about Easyshop uganda, supercharged.</p>
+        <p className="text-center text-gray-500 mb-10">Everything you love about vettcode uganda, supercharged.</p>
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {FEATURES.map(({ icon: Icon, title, desc, color }) => (
             <div key={title} className="group bg-white rounded-2xl p-6 shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-1">

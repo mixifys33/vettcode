@@ -309,7 +309,7 @@ export default function Page() {
               </span>
             </h2>
             <p className="text-white/70 text-base sm:text-lg max-w-xl mx-auto mb-8 font-medium">
-              Join thousands of successful sellers. Reach millions of buyers and grow your business with EasyShop.
+              Join thousands of successful sellers. Reach millions of buyers and grow your business with vettcode.
             </p>
             <Link href="/become-seller"
               className="inline-flex items-center gap-2.5 px-8 py-4 rounded-2xl font-black text-gray-900 text-base shadow-2xl hover:shadow-amber-500/25 hover:scale-105 active:scale-95 transition-all duration-300"

@@ -117,7 +117,7 @@ const Signup = () => {
     let dotIndex = 0;
     let currentText = "";
 
-    const firstMessage = "Creating your Easy Shop account";
+    const firstMessage = "Creating your vettcode account";
     const secondMessage = "Sending your OTP to your email";
 
     if (signupMutation.isPending) {
@@ -213,7 +213,7 @@ const handleOtpKeyDown  = (index:number, e:React.KeyboardEvent<HTMLInputElement>
                       bg-clip-text text-transparent
                       animate-gradient bg-[length:200%_200%]"
           >
-            Sign Up for Easy Shop
+            Sign Up for vettcode
 
           </h3>
 

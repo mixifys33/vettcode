@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL),
   title: {
     default: "EshopUG — Uganda's #1 Online Marketplace | Shop Electronics, Fashion & More",
-    template: "%s | Eshop Uganda",
+    template: "%s | vettcode ",
   },
   description:
     "Eshop is Uganda's leading online shopping marketplace. Buy and sell electronics, fashion, home goods, beauty products, groceries and more. Fast delivery, secure payments, best prices in Uganda.",
@@ -36,8 +36,8 @@ export const metadata: Metadata = {
     "Uganda online market",
     "buy and sell Uganda",
     "Uganda shop",
-    "eshop Uganda",
-    "easyshop Uganda",
+    "vettcode ",
+    "vettcode Uganda",
     "eshopug",
     "kampala online shopping",
     "Uganda delivery",

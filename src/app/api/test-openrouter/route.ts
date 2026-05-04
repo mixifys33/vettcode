@@ -41,7 +41,7 @@ export async function GET() {
           "Authorization": `Bearer ${apiKey}`,
           "Content-Type": "application/json",
           "HTTP-Referer": "http://localhost:3000",
-          "X-Title": "Easy Shop Test"
+          "X-Title": "vettcode Test"
         },
         body: JSON.stringify({
           model,

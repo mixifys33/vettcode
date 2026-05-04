@@ -295,7 +295,7 @@ export default function ShopDetailPage() {
   // Handle share
   const handleShare = async () => {
     const url = window.location.href;
-    const title = `Check out ${shop?.name} on Easy Shop`;
+    const title = `Check out ${shop?.name} on vettcode`;
     
     if (navigator.share) {
       try {

@@ -1,4 +1,4 @@
-const CACHE_NAME = 'easyshop-v1';
+const CACHE_NAME = 'vettcode-v1';
 const STATIC_ASSETS = ['/', '/products', '/cart', '/wishlist', '/offline'];
 
 // Install — cache static shell

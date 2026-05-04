@@ -96,7 +96,7 @@ const Login = () => {
       <div className="w-full flex justify-center">
         <div className="md:w-[480px] p-8 bg-white shadow rounded-lg">
           <h3 className="text-[1.3rem] sm:text-2.5xl md:text-[1.7rem] lg:text-3xl font-Poppins font-semibold text-center mb-2 bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 bg-clip-text text-transparent animate-gradient bg-[length:200%_200%]">
-            Login to Easy Shop
+            Login to vettcode
           </h3>
 
 

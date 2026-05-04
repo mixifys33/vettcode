@@ -185,7 +185,7 @@ const ForgotPassword = () => {
                       bg-clip-text text-transparent
                       animate-gradient bg-[length:200%_200%]"
           >
-            Recover Your Easy Shop Password
+            Recover Your vettcode Password
           </h3>
 
 
