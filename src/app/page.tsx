@@ -20,21 +20,21 @@ import {
 } from "lucide-react";
 
 const CATEGORIES: { label: string; icon: LucideIcon; href: string; color: string }[] = [
-  { label: "Electronics",   icon: Smartphone,     href: "/products?category=electronics", color: "from-blue-500 to-indigo-600" },
-  { label: "Fashion",       icon: Shirt,          href: "/products?category=fashion",     color: "from-pink-500 to-rose-600" },
-  { label: "Home & Living", icon: Home,           href: "/products?category=home",        color: "from-emerald-500 to-teal-600" },
-  { label: "Beauty",        icon: Sparkle,        href: "/products?category=beauty",      color: "from-purple-500 to-violet-600" },
-  { label: "Sports",        icon: Dumbbell,       href: "/products?category=sports",      color: "from-orange-500 to-amber-600" },
-  { label: "Books",         icon: BookOpen,       href: "/products?category=books",       color: "from-cyan-500 to-sky-600" },
-  { label: "Toys",          icon: Puzzle,         href: "/products?category=toys",        color: "from-yellow-500 to-amber-500" },
-  { label: "Groceries",     icon: ShoppingBasket, href: "/products?category=groceries",   color: "from-green-500 to-emerald-600" },
+  { label: "Web Apps",      icon: Smartphone,     href: "/products?category=web-apps", color: "from-blue-500 to-indigo-600" },
+  { label: "Mobile Apps",   icon: Shirt,          href: "/products?category=mobile-apps", color: "from-pink-500 to-rose-600" },
+  { label: "SaaS",          icon: Home,           href: "/products?category=saas", color: "from-emerald-500 to-teal-600" },
+  { label: "APIs",          icon: Sparkle,        href: "/products?category=apis", color: "from-purple-500 to-violet-600" },
+  { label: "Templates",     icon: Dumbbell,       href: "/products?category=templates", color: "from-orange-500 to-amber-600" },
+  { label: "Dashboards",    icon: BookOpen,       href: "/products?category=dashboards", color: "from-cyan-500 to-sky-600" },
+  { label: "E-Commerce",    icon: Puzzle,         href: "/products?category=ecommerce", color: "from-yellow-500 to-amber-500" },
+  { label: "Tools",         icon: ShoppingBasket, href: "/products?category=tools", color: "from-green-500 to-emerald-600" },
 ];
 
 const TRUST_FEATURES = [
-  { icon: Shield, title: "Secure Payments", desc: "100% safe & encrypted", color: "text-teal-600", bg: "bg-teal-50" },
-  { icon: Truck, title: "Fast Delivery", desc: "Nationwide shipping", color: "text-blue-600", bg: "bg-blue-50" },
-  { icon: RotateCcw, title: "Easy Returns", desc: "30-day return policy", color: "text-purple-600", bg: "bg-purple-50" },
-  { icon: Star, title: "Top Rated", desc: "4.9★ by customers", color: "text-amber-600", bg: "bg-amber-50" },
+  { icon: Shield, title: "Verified Code", desc: "100% vetted & secure", color: "text-purple-600", bg: "bg-purple-50" },
+  { icon: Truck, title: "Instant Access", desc: "Download immediately", color: "text-blue-600", bg: "bg-blue-50" },
+  { icon: RotateCcw, title: "Updates Included", desc: "Free updates & support", color: "text-emerald-600", bg: "bg-emerald-50" },
+  { icon: Star, title: "Top Rated", desc: "4.9★ by founders", color: "text-amber-600", bg: "bg-amber-50" },
 ];
 
 const ProductSkeleton = () => (
@@ -81,8 +81,8 @@ export default function Page() {
     return () => clearTimeout(t);
   }, [user, showWelcome]);
 
-  const { data: products, isLoading, isError } = useQuery({
-    queryKey: ["products"],
+  const { data: applications, isLoading, isError } = useQuery({
+    queryKey: ["applications"],
     queryFn: async () => {
       const res = await axiosInstance.get("/api/products?page=1&limit=10");
       return res.data.products;
@@ -90,8 +90,8 @@ export default function Page() {
     staleTime: 1000 * 60 * 3,
   });
 
-  const { data: latestProducts } = useQuery({
-    queryKey: ["latest-products"],
+  const { data: latestApplications } = useQuery({
+    queryKey: ["latest-applications"],
     queryFn: async () => {
       const res = await axiosInstance.get("/api/products?page=1&limit=10&sortBy=createdAt&sortOrder=desc");
       return res.data.products;
@@ -99,8 +99,8 @@ export default function Page() {
     staleTime: 1000 * 60 * 2,
   });
 
-  const { data: trendingProducts } = useQuery({
-    queryKey: ["trending-products"],
+  const { data: trendingApplications } = useQuery({
+    queryKey: ["trending-applications"],
     queryFn: async () => {
       const res = await axiosInstance.get("/api/products?page=1&limit=10&sortBy=stock&sortOrder=desc");
       return res.data.products;
@@ -164,7 +164,7 @@ export default function Page() {
       <section className="w-full px-4 sm:px-6 lg:px-8 py-8">
         <div className="max-w-7xl mx-auto">
           <div className="flex items-center justify-between mb-5">
-            <SectionTitle title="Shop by Category" icon={<Tag className="w-4 h-4" />} />
+            <SectionTitle title="Browse by Category" icon={<Tag className="w-4 h-4" />} />
           </div>
           <div className="grid grid-cols-4 sm:grid-cols-8 gap-3">
             {CATEGORIES.map((cat, i) => (
@@ -183,13 +183,13 @@ export default function Page() {
 
       <hr className="section-divider mx-4 sm:mx-8" />
 
-      {/* Suggested Products */}
+      {/* Suggested Applications */}
       <section className="w-full px-4 sm:px-6 lg:px-8 py-10">
         <div className="max-w-7xl mx-auto">
           <div className="mb-6">
             <SectionTitle
-              title="Suggested For You"
-              subtitle="Handpicked products you'll love"
+              title="Featured Applications"
+              subtitle="Handpicked production-ready codebases"
               actionLabel="View All"
               actionHref="/products"
               icon={<Sparkles className="w-4 h-4" />}
@@ -202,18 +202,18 @@ export default function Page() {
             </div>
           )}
 
-          {!isLoading && !isError && products?.length > 0 && (
+          {!isLoading && !isError && applications?.length > 0 && (
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4">
-              {products.map((product: any) => (
+              {applications.map((product: any) => (
                 <ProductCard key={product.id} product={product} />
               ))}
             </div>
           )}
 
-          {!isLoading && !isError && products?.length === 0 && (
+          {!isLoading && !isError && applications?.length === 0 && (
             <div className="text-center py-16">
               <Package className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-              <p className="text-gray-500 font-medium">No products available yet.</p>
+              <p className="text-gray-500 font-medium">No applications available yet.</p>
             </div>
           )}
 
@@ -222,7 +222,7 @@ export default function Page() {
               <div className="w-12 h-12 rounded-2xl bg-red-50 flex items-center justify-center mx-auto mb-3">
                 <X className="w-6 h-6 text-red-400" />
               </div>
-              <p className="text-gray-500 font-medium">Failed to load products.</p>
+              <p className="text-gray-500 font-medium">Failed to load applications.</p>
               <p className="text-gray-400 text-sm mt-1">Make sure the backend is running.</p>
             </div>
           )}

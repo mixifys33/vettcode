@@ -31,45 +31,46 @@ interface FooterContent {
 }
 
 const defaultContent: FooterContent = {
-  companyName: "vettcode",
-  tagline: "Your Trusted Marketplace",
-  description: "Uganda's leading online marketplace connecting buyers and sellers. Shop with confidence, sell with ease.",
-  email: "dwightkim12@gmail.com",
+  companyName: "VETTCODE",
+  tagline: "Verified Codebases for Founders",
+  description: "The trusted marketplace for production-ready, verified applications. Built by developers, trusted by founders. Launch faster with secure, reliable codebases.",
+  email: "hello@vettcode.com",
   phone: "+256 761 818 885",
   address: "Kampala, Uganda",
   socialLinks: {
-    facebook: "https://facebook.com/vettcodeug",
-    twitter: "https://twitter.com/vettcodeug",
-    instagram: "https://instagram.com/vettcodeug",
-    youtube: "https://youtube.com/vettcodeug",
+    facebook: "https://facebook.com/vettcode",
+    twitter: "https://twitter.com/vettcode",
+    instagram: "https://instagram.com/vettcode",
+    youtube: "https://youtube.com/vettcode",
+    linkedin: "https://linkedin.com/company/vettcode",
   },
   quickLinks: [
     { label: "Home", href: "/" },
-    { label: "Products", href: "/products" },
-    { label: "Events", href: "/events" },
-    { label: "Offers", href: "/offers" },
-    { label: "Shops", href: "/shops" },
+    { label: "Browse Applications", href: "/products" },
+    { label: "Categories", href: "/categories" },
+    { label: "Pricing", href: "/pricing" },
+    { label: "Documentation", href: "/docs" },
   ],
   customerService: [
     { label: "Contact Us", href: "/contact" },
     { label: "FAQs", href: "/faqs" },
-    { label: "Shipping Info", href: "/shipping" },
-    { label: "Returns Policy", href: "/returns" },
-    { label: "Track Order", href: "/orders" },
+    { label: "Support", href: "/support" },
+    { label: "License Info", href: "/licenses" },
+    { label: "My Purchases", href: "/orders" },
   ],
   sellerLinks: [
-    { label: "Become a Seller", href: "/become-seller" },
-    { label: "Seller Dashboard", href: "/seller-dashboard" },
-    { label: "Seller Guidelines", href: "/seller-guidelines" },
+    { label: "List Your App", href: "/become-seller" },
+    { label: "Developer Dashboard", href: "/seller-dashboard" },
+    { label: "Submission Guidelines", href: "/seller-guidelines" },
     { label: "Success Stories", href: "/success-stories" },
   ],
-  paymentMethods: ["Visa", "Mastercard", "MTN Mobile Money", "Airtel Money", "PesaPal"],
-  copyrightText: "© 2025 vettcode. All rights reserved.",
+  paymentMethods: ["Visa", "Mastercard", "PayPal", "Stripe", "Crypto"],
+  copyrightText: "© 2025 VETTCODE. All rights reserved.",
   trustBadges: [
-    { icon: "shield", title: "Secure Shopping", description: "100% secure payments" },
-    { icon: "truck", title: "Fast Delivery", description: "Nationwide shipping" },
+    { icon: "shield", title: "Verified Quality", description: "100% vetted code" },
+    { icon: "truck", title: "Instant Access", description: "Download immediately" },
     { icon: "clock", title: "24/7 Support", description: "Always here to help" },
-    { icon: "creditCard", title: "Easy Payments", description: "Multiple options" },
+    { icon: "creditCard", title: "Secure Payments", description: "Enterprise-grade security" },
   ],
 };
 
@@ -139,8 +140,8 @@ export default function Footer() {
               const Icon = iconMap[badge.icon] || Shield;
               return (
                 <div key={index} className="flex items-center gap-3 p-3 rounded-lg bg-gray-800/50 hover:bg-gray-800 transition">
-                  <div className="p-2 bg-[#115061] rounded-lg">
-                    <Icon className="w-5 h-5 text-white" />
+                  <div className="p-2 bg-gradient-to-br from-purple-500/20 to-blue-500/20 rounded-lg border border-purple-500/30">
+                    <Icon className="w-5 h-5 text-purple-400" />
                   </div>
                   <div>
                     <p className="font-semibold text-sm">{badge.title}</p>
@@ -159,9 +160,12 @@ export default function Footer() {
           {/* Company Info */}
           <div className="lg:col-span-2">
             <Link href="/" className="flex items-center gap-2 mb-4">
-              <Store className="w-8 h-8 text-[#14b8a6]" />
-              <span className="text-2xl font-bold bg-gradient-to-r from-[#14b8a6] to-[#22d3ee] bg-clip-text text-transparent">
-                {content.companyName}
+              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center">
+                <Store className="w-5 h-5 text-white" />
+              </div>
+              <span className="text-2xl font-black">
+                <span className="text-white">VETT</span>
+                <span className="bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">CODE</span>
               </span>
             </Link>
             <p className="text-gray-400 text-sm mb-4 leading-relaxed max-w-sm">
@@ -195,7 +199,7 @@ export default function Footer() {
                     href={url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="p-2 bg-gray-800 hover:bg-[#115061] rounded-lg transition"
+                    className="p-2 bg-gray-800 hover:bg-gradient-to-br hover:from-purple-500/20 hover:to-blue-500/20 hover:border hover:border-purple-500/30 rounded-lg transition"
                   >
                     <Icon className="w-5 h-5" />
                   </a>
@@ -275,12 +279,12 @@ export default function Footer() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Enter your email"
-                className="flex-1 md:w-64 px-4 py-2.5 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-[#14b8a6] transition"
+                className="flex-1 md:w-64 px-4 py-2.5 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 transition"
               />
               <button
                 type="submit"
                 disabled={subscribing}
-                className="px-5 py-2.5 bg-[#115061] hover:bg-[#0d3f4d] rounded-lg font-medium transition flex items-center gap-2 disabled:opacity-50"
+                className="px-5 py-2.5 bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 rounded-lg font-medium transition flex items-center gap-2 disabled:opacity-50"
               >
                 {subscribing ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
                 Subscribe
@@ -325,7 +329,7 @@ export default function Footer() {
       {/* Made with Love */}
       <div className="bg-gray-950 py-3">
         <p className="text-center text-gray-600 text-xs flex items-center justify-center gap-1">
-          Made with <Heart className="w-3 h-3 text-red-500 fill-red-500" /> in Uganda
+          Built with <Heart className="w-3 h-3 text-purple-500 fill-purple-500" /> by developers, for founders
         </p>
       </div>
     </footer>

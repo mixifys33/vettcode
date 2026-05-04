@@ -6,53 +6,52 @@ import ProductComparisonBar from "../shared/components/product-comparison/Produc
 import ServiceWorkerRegistrar from "../shared/components/ServiceWorkerRegistrar";
 import type { Metadata } from "next";
 
-const BASE_URL = "https://eshopug.vercel.app";
+const BASE_URL = "https://vettcode.com";
 
 export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL),
   title: {
-    default: "EshopUG — Uganda's #1 Online Marketplace | Shop Electronics, Fashion & More",
-    template: "%s | vettcode ",
+    default: "VETTCODE — Verified Codebases for Founders | Production-Ready Applications",
+    template: "%s | VETTCODE",
   },
   description:
-    "Eshop is Uganda's leading online shopping marketplace. Buy and sell electronics, fashion, home goods, beauty products, groceries and more. Fast delivery, secure payments, best prices in Uganda.",
+    "VETTCODE is the trusted marketplace for verified, production-ready applications. Built by developers, trusted by founders. Launch faster with secure, reliable codebases.",
   keywords: [
-    "online shopping Uganda",
-    "Uganda marketplace",
-    "buy online Uganda",
-    "sell online Uganda",
-    "Uganda ecommerce",
-    "shopping Uganda",
-    "online store Uganda",
-    "Uganda products",
-    "electronics Uganda",
-    "fashion Uganda",
-    "home goods Uganda",
-    "groceries Uganda",
-    "online trading Uganda",
-    "online selling Uganda",
-    "online marketing Uganda",
-    "best prices Uganda",
-    "Uganda online market",
-    "buy and sell Uganda",
-    "Uganda shop",
-    "vettcode ",
-    "vettcode Uganda",
-    "eshopug",
-    "kampala online shopping",
-    "Uganda delivery",
-    "affordable products Uganda",
-    "Uganda deals",
-    "Uganda offers",
-    "product marketplace Africa",
-    "African ecommerce",
-    "online shopping Africa",
+    "verified codebases",
+    "production ready applications",
+    "buy source code",
+    "sell applications",
+    "developer marketplace",
+    "code marketplace",
+    "ready-made applications",
+    "SaaS templates",
+    "web applications",
+    "mobile apps",
+    "startup tools",
+    "founder resources",
+    "vetted code",
+    "secure applications",
+    "enterprise applications",
+    "VETTCODE",
+    "code for founders",
+    "application marketplace",
+    "software marketplace",
+    "pre-built applications",
+    "verified applications",
+    "trusted codebases",
+    "developer tools",
+    "startup applications",
+    "business applications",
+    "API marketplace",
+    "backend services",
+    "frontend templates",
+    "full-stack applications",
   ],
-  authors: [{ name: "EshopUG", url: BASE_URL }],
-  creator: "EshopUG",
-  publisher: "EshopUG",
-  category: "shopping",
-  classification: "Shopping, Marketplace, Ecommerce",
+  authors: [{ name: "VETTCODE", url: BASE_URL }],
+  creator: "VETTCODE",
+  publisher: "VETTCODE",
+  category: "technology",
+  classification: "Software, Development, Marketplace, Applications",
   manifest: "/manifest.json",
   robots: {
     index: true,
@@ -67,28 +66,28 @@ export const metadata: Metadata = {
   },
   openGraph: {
     type: "website",
-    locale: "en_UG",
+    locale: "en_US",
     url: BASE_URL,
-    siteName: "EshopUG",
-    title: "EshopUG — Uganda's #1 Online Marketplace",
+    siteName: "VETTCODE",
+    title: "VETTCODE — Verified Codebases for Founders",
     description:
-      "Shop electronics, fashion, home goods, beauty, groceries and more on EshopUG — Uganda's leading online marketplace. Best prices, fast delivery, secure payments.",
+      "Launch faster with production-ready, verified applications. Built by developers, trusted by founders. Secure, reliable, and ready to deploy.",
     images: [
       {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "EshopUG — Uganda's #1 Online Marketplace",
+        alt: "VETTCODE — Verified Codebases for Founders",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    site: "@eshopug",
-    creator: "@eshopug",
-    title: "EshopUG — Uganda's #1 Online Marketplace",
+    site: "@vettcode",
+    creator: "@vettcode",
+    title: "VETTCODE — Verified Codebases for Founders",
     description:
-      "Buy and sell online in Uganda. Electronics, fashion, home goods, beauty & more. Fast delivery, secure payments.",
+      "Production-ready applications for founders. Verified, secure, and ready to launch. Browse 1000+ applications.",
     images: ["/og-image.png"],
   },
   alternates: {
@@ -97,7 +96,7 @@ export const metadata: Metadata = {
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
-    title: "EshopUG",
+    title: "VETTCODE",
   },
   verification: {
     google: "uyQ0T2p-Td4LjPOJviJiIx-WMe51mXmhklau6-sBhWM",
@@ -109,7 +108,7 @@ export const metadata: Metadata = {
 
 
 export const viewport = {
-  themeColor: "#0d3f4d",
+  themeColor: "#8b5cf6",
 };
 
 const plusJakarta = Plus_Jakarta_Sans({
@@ -136,10 +135,10 @@ const inter = Inter({
 const organizationSchema = {
   "@context": "https://schema.org",
   "@type": "Organization",
-  name: "EshopUG",
+  name: "VETTCODE",
   url: BASE_URL,
   logo: `${BASE_URL}/icon-512.png`,
-  description: "Uganda's leading online marketplace for electronics, fashion, home goods, beauty, groceries and more.",
+  description: "Trusted marketplace for verified, production-ready applications. Built by developers, trusted by founders.",
   sameAs: [],
   contactPoint: {
     "@type": "ContactPoint",
@@ -151,9 +150,9 @@ const organizationSchema = {
 const websiteSchema = {
   "@context": "https://schema.org",
   "@type": "WebSite",
-  name: "EshopUG",
+  name: "VETTCODE",
   url: BASE_URL,
-  description: "Uganda's #1 online marketplace — buy and sell electronics, fashion, home goods, beauty, groceries and more.",
+  description: "Verified codebases for founders — production-ready applications, secure and reliable. Launch faster with trusted code.",
   potentialAction: {
     "@type": "SearchAction",
     target: {
