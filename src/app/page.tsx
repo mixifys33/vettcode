@@ -20,14 +20,14 @@ import {
 } from "lucide-react";
 
 const CATEGORIES: { label: string; icon: LucideIcon; href: string; color: string }[] = [
-  { label: "Web Apps",      icon: Smartphone,     href: "/products?category=web-apps", color: "from-blue-500 to-indigo-600" },
-  { label: "Mobile Apps",   icon: Shirt,          href: "/products?category=mobile-apps", color: "from-pink-500 to-rose-600" },
-  { label: "SaaS",          icon: Home,           href: "/products?category=saas", color: "from-emerald-500 to-teal-600" },
-  { label: "APIs",          icon: Sparkle,        href: "/products?category=apis", color: "from-purple-500 to-violet-600" },
-  { label: "Templates",     icon: Dumbbell,       href: "/products?category=templates", color: "from-orange-500 to-amber-600" },
-  { label: "Dashboards",    icon: BookOpen,       href: "/products?category=dashboards", color: "from-cyan-500 to-sky-600" },
-  { label: "E-Commerce",    icon: Puzzle,         href: "/products?category=ecommerce", color: "from-yellow-500 to-amber-500" },
-  { label: "Tools",         icon: ShoppingBasket, href: "/products?category=tools", color: "from-green-500 to-emerald-600" },
+  { label: "Web Apps",      icon: Smartphone,     href: "/applications?category=web-apps", color: "from-blue-500 to-indigo-600" },
+  { label: "Mobile Apps",   icon: Shirt,          href: "/applications?category=mobile-apps", color: "from-pink-500 to-rose-600" },
+  { label: "SaaS",          icon: Home,           href: "/applications?category=saas", color: "from-emerald-500 to-teal-600" },
+  { label: "APIs",          icon: Sparkle,        href: "/applications?category=apis", color: "from-purple-500 to-violet-600" },
+  { label: "Templates",     icon: Dumbbell,       href: "/applications?category=templates", color: "from-orange-500 to-amber-600" },
+  { label: "Dashboards",    icon: BookOpen,       href: "/applications?category=dashboards", color: "from-cyan-500 to-sky-600" },
+  { label: "E-Commerce",    icon: Puzzle,         href: "/applications?category=ecommerce", color: "from-yellow-500 to-amber-500" },
+  { label: "Tools",         icon: ShoppingBasket, href: "/applications?category=tools", color: "from-green-500 to-emerald-600" },
 ];
 
 const TRUST_FEATURES = [
@@ -84,8 +84,8 @@ export default function Page() {
   const { data: applications, isLoading, isError } = useQuery({
     queryKey: ["applications"],
     queryFn: async () => {
-      const res = await axiosInstance.get("/api/products?page=1&limit=10");
-      return res.data.products;
+      const res = await axiosInstance.get("/api/applications?page=1&limit=10");
+      return res.data.applications;
     },
     staleTime: 1000 * 60 * 3,
   });
@@ -93,8 +93,8 @@ export default function Page() {
   const { data: latestApplications } = useQuery({
     queryKey: ["latest-applications"],
     queryFn: async () => {
-      const res = await axiosInstance.get("/api/products?page=1&limit=10&sortBy=createdAt&sortOrder=desc");
-      return res.data.products;
+      const res = await axiosInstance.get("/api/applications?page=1&limit=10&sortBy=createdAt&sortOrder=desc");
+      return res.data.applications;
     },
     staleTime: 1000 * 60 * 2,
   });
@@ -102,8 +102,8 @@ export default function Page() {
   const { data: trendingApplications } = useQuery({
     queryKey: ["trending-applications"],
     queryFn: async () => {
-      const res = await axiosInstance.get("/api/products?page=1&limit=10&sortBy=stock&sortOrder=desc");
-      return res.data.products;
+      const res = await axiosInstance.get("/api/applications?page=1&limit=10&sortBy=downloads&sortOrder=desc");
+      return res.data.applications;
     },
     staleTime: 1000 * 60 * 5,
   });
@@ -191,7 +191,7 @@ export default function Page() {
               title="Featured Applications"
               subtitle="Handpicked production-ready codebases"
               actionLabel="View All"
-              actionHref="/products"
+              actionHref="/applications"
               icon={<Sparkles className="w-4 h-4" />}
             />
           </div>
@@ -255,7 +255,7 @@ export default function Page() {
                 title="Trending Now 🔥"
                 subtitle="Most popular applications this week"
                 actionLabel="View All"
-                actionHref="/products?sort=trending"
+                actionHref="/applications?sort=trending"
                 icon={<Flame className="w-4 h-4" />}
               />
             </div>
@@ -277,7 +277,7 @@ export default function Page() {
                 title="Latest Arrivals ✨"
                 subtitle="Fresh applications just added"
                 actionLabel="View All"
-                actionHref="/products?sort=latest"
+                actionHref="/applications?sort=latest"
                 icon={<Zap className="w-4 h-4" />}
               />
             </div>

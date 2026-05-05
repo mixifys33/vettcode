@@ -135,7 +135,7 @@ export const Hero = () => {
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center pt-2 px-4">
             <button
-              onClick={() => router.push("/products?filter=free")}
+              onClick={() => router.push("/applications?filter=free")}
               className="group relative px-6 sm:px-8 md:px-10 py-3 sm:py-4 md:py-5 rounded-xl sm:rounded-2xl font-bold text-white text-sm sm:text-base md:text-lg overflow-hidden shadow-2xl transition-all duration-300 hover:scale-105 active:scale-95 flex items-center justify-center gap-2 sm:gap-3 w-full sm:w-auto"
               style={{ background: "linear-gradient(135deg, #8b5cf6, #6366f1)" }}
             >
@@ -146,7 +146,7 @@ export const Hero = () => {
             </button>
             
             <button
-              onClick={() => router.push("/products")}
+              onClick={() => router.push("/applications")}
               className="group px-6 sm:px-8 md:px-10 py-3 sm:py-4 md:py-5 rounded-xl sm:rounded-2xl font-bold text-white text-sm sm:text-base md:text-lg border-2 border-white/30 hover:border-purple-400/60 hover:bg-white/10 transition-all duration-300 hover:scale-105 active:scale-95 flex items-center justify-center gap-2 sm:gap-3 backdrop-blur-md w-full sm:w-auto"
             >
               <Zap className="w-4 sm:w-5 md:w-6 h-4 sm:h-5 md:h-6" />
