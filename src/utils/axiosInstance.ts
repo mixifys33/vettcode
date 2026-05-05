@@ -8,9 +8,37 @@ const axiosInstance = axios.create({
 let isRefreshing = false;
 let refreshSubscribers: ((token?: string) => void)[] = [];
 
-// Handle logout
+// Public routes that don't require authentication
+const PUBLIC_ROUTES = [
+  "/",
+  "/login",
+  "/signup",
+  "/products",
+  "/product",
+  "/search",
+  "/become-seller",
+  "/about",
+  "/contact",
+  "/terms",
+  "/privacy",
+  "/faq",
+];
+
+// Check if current route is public
+const isPublicRoute = () => {
+  const pathname = window.location.pathname;
+  return PUBLIC_ROUTES.some(route => 
+    pathname === route || pathname.startsWith(`${route}/`)
+  );
+};
+
+// Handle logout - only redirect if on protected route
 const handleLogout = () => {
-  if (window.location.pathname !== "/login") {
+  // Clear any stored tokens
+  localStorage.removeItem("accessToken");
+  
+  // Only redirect to login if user is on a protected route
+  if (!isPublicRoute() && window.location.pathname !== "/login") {
     window.location.href = "/login";
   }
 };
