@@ -279,12 +279,15 @@ const HeaderBottom = () => {
 
           {/* ── Logo (sticky only) ── */}
           {isSticky && (
-            <Link href="/" className="flex-shrink-0 flex items-center gap-1.5 mr-1">
-              <div className="w-7 h-7 bg-amber-400 rounded-lg flex items-center justify-center shadow-sm">
-                <span className="text-teal-800 font-black text-xs leading-none" style={{ fontFamily: 'var(--font-space)' }}>ES</span>
+            <Link href="/" className="flex-shrink-0 flex items-center gap-2 mr-2">
+              <div className="relative w-7 h-7 flex-shrink-0">
+                <div className="absolute inset-0 bg-gradient-to-br from-purple-500 to-violet-600 rounded-lg rotate-3 transition-transform duration-300" />
+                <div className="relative w-full h-full bg-gradient-to-br from-purple-400 to-violet-500 rounded-lg flex items-center justify-center shadow-md">
+                  <span className="text-white font-black text-xs leading-none select-none" style={{ fontFamily: "var(--font-space)" }}>VC</span>
+                </div>
               </div>
               <span className="hidden sm:block text-white font-black text-sm" style={{ fontFamily: 'var(--font-space)' }}>
-                Easy<span className="text-amber-400">Shop</span>
+                VETT<span className="text-purple-300">CODE</span>
               </span>
             </Link>
           )}
@@ -294,7 +297,7 @@ const HeaderBottom = () => {
             <button
               onClick={() => setShowCats(!showCats)}
               className="flex items-center gap-1.5 px-3 md:px-4 h-11 md:h-12 font-black text-xs md:text-sm transition-all active:scale-95"
-              style={{ background: 'linear-gradient(135deg, #fcd34d, #f59e0b)', color: '#0f2744', fontFamily: "'Plus Jakarta Sans', sans-serif" }}
+              style={{ background: 'linear-gradient(135deg, #8b5cf6, #6366f1)', color: '#ffffff', fontFamily: "'Plus Jakarta Sans', sans-serif" }}
             >
               <AlignLeft className="w-4 h-4" />
               <span className="hidden sm:inline">All Categories</span>
@@ -310,12 +313,12 @@ const HeaderBottom = () => {
               return (
                 <Link key={i} href={item.href}
                   className={`px-2.5 md:px-3 h-11 md:h-12 flex items-center text-xs md:text-sm whitespace-nowrap transition-all duration-200 border-b-2 ${
-                    active ? 'border-amber-300' : 'border-transparent hover:border-white/30'
+                    active ? 'border-purple-400' : 'border-transparent hover:border-white/30'
                   }`}
                   style={{
                     fontFamily: "'Plus Jakarta Sans', sans-serif",
                     fontWeight: 700,
-                    color: active ? '#fcd34d' : '#ffffff',
+                    color: active ? '#c4b5fd' : '#ffffff',
                   }}>
                   {item.title}
                 </Link>
@@ -328,14 +331,14 @@ const HeaderBottom = () => {
 
             {/* E-AI pill */}
             <Link href="/ai-assistant"
-              className="hidden md:flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white text-xs font-semibold rounded-full transition-all shadow-md flex-shrink-0">
+              className="hidden md:flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-purple-500 to-blue-600 hover:from-purple-600 hover:to-blue-700 text-white text-xs font-semibold rounded-full transition-all shadow-md flex-shrink-0">
               <Sparkles className="w-3.5 h-3.5" />
-              Eshop AI
+              VettCode AI
             </Link>
 
             {/* Install pill */}
             <Link href="/install"
-              className="hidden md:flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-amber-400 to-orange-500 hover:from-orange-500 hover:to-amber-400 text-teal-900 text-xs font-semibold rounded-full transition-all shadow-md flex-shrink-0">
+              className="hidden md:flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-purple-400 to-violet-500 hover:from-purple-500 hover:to-violet-600 text-white text-xs font-semibold rounded-full transition-all shadow-md flex-shrink-0">
               <Download className="w-3.5 h-3.5" />
               Install App
             </Link>
@@ -350,15 +353,15 @@ const HeaderBottom = () => {
                       onClick={() => setSearchOpen(true)}
                       className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/10 hover:bg-white/20 text-white text-xs font-semibold transition-all border border-white/20">
                       <Search className="w-3.5 h-3.5" />
-                      <span className="hidden lg:inline">Search products</span>
+                      <span className="hidden lg:inline">Search applications</span>
                     </button>
                   ) : (
-                    <div className="flex items-center bg-white rounded-xl overflow-hidden shadow-lg ring-2 ring-amber-400/60 transition-all w-56 lg:w-72">
-                      <Search className="ml-3 w-3.5 h-3.5 text-teal-600 flex-shrink-0" />
+                    <div className="flex items-center bg-white rounded-xl overflow-hidden shadow-lg ring-2 ring-purple-400/60 transition-all w-56 lg:w-72">
+                      <Search className="ml-3 w-3.5 h-3.5 text-purple-600 flex-shrink-0" />
                       <input
                         ref={inputRef}
                         type="text"
-                        placeholder="Search products…"
+                        placeholder="Search applications…"
                         value={searchQuery}
                         onChange={handleInputChange}
                         onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
@@ -375,7 +378,7 @@ const HeaderBottom = () => {
                         </button>
                       )}
                       <button onClick={handleSearch}
-                        className="bg-amber-400 hover:bg-amber-500 text-teal-900 font-bold px-3 py-2 text-xs transition-all flex-shrink-0 active:scale-95">
+                        className="bg-purple-600 hover:bg-purple-700 text-white font-bold px-3 py-2 text-xs transition-all flex-shrink-0 active:scale-95">
                         Go
                       </button>
                     </div>
@@ -398,11 +401,11 @@ const HeaderBottom = () => {
         <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-gray-200 shadow-[0_-4px_20px_rgba(0,0,0,0.08)]">
           <div className="flex items-center justify-around py-1.5 px-2">
             {[
-              { href: '/', icon: Home, label: 'Home', activeColor: 'text-teal-700', activeBg: 'bg-teal-50' },
-              { href: '/ai-assistant', icon: Sparkles, label: 'Eshop AI', gradient: true },
-           { href: '/install', icon: Download, label: 'Install', activeColor: 'text-orange-500', activeBg: 'bg-orange-50' },
+              { href: '/', icon: Home, label: 'Home', activeColor: 'text-purple-700', activeBg: 'bg-purple-50' },
+              { href: '/ai-assistant', icon: Sparkles, label: 'VettCode AI', gradient: true },
+              { href: '/install', icon: Download, label: 'Install', activeColor: 'text-purple-500', activeBg: 'bg-purple-50' },
               { href: '/wishlist', icon: Heart, label: 'Wishlist', activeColor: 'text-red-500', activeBg: 'bg-red-50', badge: wishlist?.length, badgeColor: 'bg-red-500 text-white' },
-              { href: '/cart', icon: ShoppingCart, label: 'Cart', activeColor: 'text-teal-700', activeBg: 'bg-teal-50', badge: cart?.length, badgeColor: 'bg-amber-400 text-teal-900' },
+              { href: '/cart', icon: ShoppingCart, label: 'Cart', activeColor: 'text-purple-700', activeBg: 'bg-purple-50', badge: cart?.length, badgeColor: 'bg-purple-600 text-white' },
             ].map(({ href, icon: Icon, label, activeColor, activeBg, gradient, badge, badgeColor }: any) => {              const active = pathname === href;
               return (
                 <Link key={href} href={href} className="flex flex-col items-center gap-0.5 p-1 min-w-[52px]">
@@ -417,25 +420,25 @@ const HeaderBottom = () => {
                       </span>
                     )}
                   </div>
-                  <span className={`text-[10px] font-medium ${active ? (activeColor || 'text-teal-700') : 'text-gray-500'}`}>{label}</span>
+                  <span className={`text-[10px] font-medium ${active ? (activeColor || 'text-purple-700') : 'text-gray-500'}`}>{label}</span>
                 </Link>
               );
             })}
 
             {/* Profile */}
             <Link href={user ? '/profile' : '/login'} className="flex flex-col items-center gap-0.5 p-1 min-w-[52px]">
-              <div className={`w-9 h-9 rounded-full overflow-hidden transition-all ${pathname === '/profile' ? 'ring-2 ring-teal-600' : ''} ${!user ? 'bg-gray-100 flex items-center justify-center' : ''}`}>
+              <div className={`w-9 h-9 rounded-full overflow-hidden transition-all ${pathname === '/profile' ? 'ring-2 ring-purple-600' : ''} ${!user ? 'bg-gray-100 flex items-center justify-center' : ''}`}>
                 {user?.avatar || user?.images?.[0]?.url ? (
                   <Image src={user.avatar || user.images[0].url} alt={user.name || 'User'} width={36} height={36} className="w-full h-full object-cover" />
                 ) : user ? (
-                  <div className="w-full h-full bg-gradient-to-br from-teal-600 to-blue-500 flex items-center justify-center text-white text-[10px] font-black">
+                  <div className="w-full h-full bg-gradient-to-br from-purple-600 to-blue-500 flex items-center justify-center text-white text-[10px] font-black">
                     {getUserInitials(user.name)}
                   </div>
                 ) : (
                   <User className="w-4 h-4 text-gray-500" />
                 )}
               </div>
-              <span className={`text-[10px] font-medium ${pathname === '/profile' ? 'text-teal-700' : 'text-gray-500'}`}>
+              <span className={`text-[10px] font-medium ${pathname === '/profile' ? 'text-purple-700' : 'text-gray-500'}`}>
                 {isLoading ? '…' : user ? 'Profile' : 'Login'}
               </span>
             </Link>
