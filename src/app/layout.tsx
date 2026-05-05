@@ -4,6 +4,7 @@ import Providers from "./providers";
 import ConditionalHeader from "../shared/widgets/Header/ConditionalHeader";
 import ProductComparisonBar from "../shared/components/product-comparison/ProductComparisonBar";
 import ServiceWorkerRegistrar from "../shared/components/ServiceWorkerRegistrar";
+import { Analytics } from "@vercel/analytics/next";
 import type { Metadata } from "next";
 
 const BASE_URL = "https://vettcode.com";
@@ -184,6 +185,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <ServiceWorkerRegistrar />
           {children}
           <ProductComparisonBar />
+          <Analytics />
         </Providers>
       </body>
     </html>
