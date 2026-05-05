@@ -1,6 +1,6 @@
 "use client";
 
-import { Eye, Heart, ShoppingBag, Star, Zap, GitCompare } from "lucide-react";
+import { Eye, Heart, Download, Star, Code2, GitFork, Shield, CheckCircle, Sparkles } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
@@ -11,7 +11,6 @@ import ProductDetailsCard from "./product-details.card";
 import useDeviceTracking from "@/hooks/useDeviceTracking";
 import useLocationTracking from "@/hooks/useLocationTracking";
 import { useCurrencyFormat } from "@/hooks/useCurrencyFormat";
-import { useProductComparison } from "@/hooks/useProductComparison";
 import { toast } from "sonner";
 
 const ProductCard = ({ product, isEvent }: { product: any; isEvent?: boolean }) => {
@@ -35,40 +34,6 @@ const ProductCard = ({ product, isEvent }: { product: any; isEvent?: boolean }) 
 
   const isWishListed = wishlist.some((i: any) => i.id === product?.id) || wishlistIds.includes(product?.id);
   const isInCart = cart.some((i: any) => i.id === product?.id);
-
-  // Compare
-  const { addToCompare, removeFromCompare, isInCompare, canAddMore } = useProductComparison();
-  const isCompared = product ? isInCompare(product.id) : false;
-
-  const handleCompare = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    if (!product) return;
-    if (isCompared) {
-      removeFromCompare(product.id);
-      toast.info("Removed from comparison");
-    } else if (!canAddMore) {
-      toast.warning("You can compare up to 4 products. Remove one first.");
-    } else {
-      addToCompare({
-        id: product.id,
-        slug: product.slug || product.id,
-        title: product.title,
-        image: product.images?.[0]?.url || "",
-        price: product.regular_price || product.sale_price,
-        salePrice: product.sale_price,
-        category: product.category || "",
-        brand: product.brand || "",
-        ratings: product.ratings || 0,
-        stock: product.stock || 0,
-        shopName: product.Shop?.name || product.shops?.name || "",
-        colors: product.colors || [],
-        sizes: product.sizes || [],
-        warranty: product.warranty || "",
-      });
-      toast.success("Added to comparison!");
-    }
-  };
 
   useEffect(() => {
     if (user?.id) syncWithServer(user);
@@ -99,22 +64,24 @@ const ProductCard = ({ product, isEvent }: { product: any; isEvent?: boolean }) 
   const rating = product?.ratings ?? 0;
   const fullStars = Math.floor(rating);
   const imgSrc = !imgError && product?.images?.[0]?.url ? product.images[0].url : null;
-  // Use unoptimized for non-ImageKit URLs to avoid Next.js proxy timeout errors
   const isImageKit = imgSrc?.includes('ik.imagekit.io');
   const isPlaceholder = imgSrc?.includes('example.com') || imgSrc?.includes('placeholder');
   const safeImgSrc = isPlaceholder ? null : imgSrc;
 
+  // Check if application is free
+  const isFree = product?.isFree || product?.sale_price === 0;
+
   return (
     <>
-      <div className="group relative bg-white rounded-2xl overflow-hidden border border-gray-100 hover:border-teal-200 shadow-sm hover:shadow-2xl transition-all duration-300 flex flex-col card-hover">
+      <div className="group relative rounded-2xl overflow-hidden border border-gray-800/50 hover:border-purple-500/50 shadow-lg hover:shadow-2xl hover:shadow-purple-500/20 transition-all duration-300 flex flex-col backdrop-blur-sm" style={{ background: "linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.95))" }}>
 
         {/* Image */}
-        <div className="relative overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100 aspect-square">
+        <div className="relative overflow-hidden bg-gradient-to-br from-gray-900 to-gray-800 aspect-video">
           <Link href={`/product/${product?.slug || product?.id}`}>
             {safeImgSrc ? (
               <Image
                 src={safeImgSrc}
-                alt={product?.title || "Product"}
+                alt={product?.title || "Application"}
                 fill
                 className="object-cover group-hover:scale-110 transition-transform duration-500"
                 sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
@@ -123,34 +90,36 @@ const ProductCard = ({ product, isEvent }: { product: any; isEvent?: boolean }) 
               />
             ) : (
               <div className="w-full h-full flex items-center justify-center">
-                <ShoppingBag className="w-12 h-12 text-gray-300" />
+                <Code2 className="w-12 h-12 text-gray-600" />
               </div>
             )}
           </Link>
 
-          {/* Gradient overlay on hover */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+          {/* Gradient overlay */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
 
           {/* Badges */}
-          <div className="absolute top-2 left-2 flex flex-col gap-1 z-10">
-            {discount >= 10 && (
-              <span className="flex items-center gap-0.5 bg-gradient-to-r from-rose-500 to-pink-600 text-white text-[10px] font-black px-2 py-0.5 rounded-lg shadow-md">
-                <Zap className="w-2.5 h-2.5" />-{discount}%
+          <div className="absolute top-2 left-2 flex flex-col gap-1.5 z-10">
+            {isFree && (
+              <span className="flex items-center gap-1 bg-gradient-to-r from-emerald-500 to-teal-600 text-white text-[10px] font-black px-2 py-1 rounded-lg shadow-lg">
+                <Sparkles className="w-3 h-3" />
+                FREE
+              </span>
+            )}
+            {!isFree && discount >= 10 && (
+              <span className="flex items-center gap-0.5 bg-gradient-to-r from-purple-500 to-violet-600 text-white text-[10px] font-black px-2 py-1 rounded-lg shadow-lg">
+                -{discount}% OFF
+              </span>
+            )}
+            {product?.verified && (
+              <span className="flex items-center gap-1 bg-gradient-to-r from-blue-500 to-indigo-600 text-white text-[10px] font-black px-2 py-1 rounded-lg shadow-lg">
+                <Shield className="w-3 h-3" />
+                VERIFIED
               </span>
             )}
             {isEvent && (
-              <span className="bg-gradient-to-r from-amber-500 to-orange-500 text-white text-[10px] font-black px-2 py-0.5 rounded-lg shadow-md">
-                OFFER
-              </span>
-            )}
-            {product?.stock === 0 && (
-              <span className="bg-gray-700 text-white text-[10px] font-bold px-2 py-0.5 rounded-lg">
-                SOLD OUT
-              </span>
-            )}
-            {product?.stock > 0 && product?.stock <= 5 && (
-              <span className="bg-gradient-to-r from-amber-400 to-yellow-500 text-gray-900 text-[10px] font-black px-2 py-0.5 rounded-lg shadow-md">
-                ONLY {product.stock} LEFT
+              <span className="bg-gradient-to-r from-amber-500 to-orange-500 text-white text-[10px] font-black px-2 py-1 rounded-lg shadow-lg">
+                LIMITED OFFER
               </span>
             )}
           </div>
@@ -161,125 +130,159 @@ const ProductCard = ({ product, isEvent }: { product: any; isEvent?: boolean }) 
               onClick={() => isWishListed
                 ? removeFromWishlist(product.id, user, location, deviceInfo)
                 : addToWishlist({ ...product, quantity: 1 }, user, location, deviceInfo)}
-              className={`w-8 h-8 rounded-xl shadow-lg flex items-center justify-center transition-all duration-200 hover:scale-110 active:scale-95 ${
+              className={`w-9 h-9 rounded-xl shadow-lg flex items-center justify-center transition-all duration-200 hover:scale-110 active:scale-95 backdrop-blur-md ${
                 isWishListed
                   ? 'bg-gradient-to-br from-rose-500 to-pink-600 text-white'
-                  : 'bg-white/95 text-gray-500 hover:text-rose-500'
+                  : 'bg-white/10 text-gray-300 hover:text-rose-400 border border-white/20'
               }`}
             >
-              <Heart className={`w-3.5 h-3.5 ${isWishListed ? 'fill-current' : ''}`} />
-            </button>
-            <button
-              onClick={handleCompare}
-              title={isCompared ? "Remove from compare" : !canAddMore ? "Compare list full (max 4)" : "Add to compare"}
-              className={`w-8 h-8 rounded-xl shadow-lg flex items-center justify-center transition-all duration-200 hover:scale-110 active:scale-95 ${
-                isCompared
-                  ? 'bg-gradient-to-br from-purple-500 to-violet-600 text-white'
-                  : !canAddMore
-                  ? 'bg-white/95 text-gray-300 cursor-not-allowed'
-                  : 'bg-white/95 text-gray-500 hover:text-purple-600'
-              }`}
-            >
-              <GitCompare className="w-3.5 h-3.5" />
+              <Heart className={`w-4 h-4 ${isWishListed ? 'fill-current' : ''}`} />
             </button>
             <button
               onClick={() => setOpen(true)}
-              className="w-8 h-8 rounded-xl bg-white/95 shadow-lg flex items-center justify-center text-gray-500 hover:text-teal-600 hover:scale-110 active:scale-95 transition-all duration-200"
+              className="w-9 h-9 rounded-xl bg-white/10 backdrop-blur-md shadow-lg flex items-center justify-center text-gray-300 hover:text-purple-400 hover:scale-110 active:scale-95 transition-all duration-200 border border-white/20"
             >
-              <Eye className="w-3.5 h-3.5" />
+              <Eye className="w-4 h-4" />
             </button>
           </div>
 
           {/* Event timer */}
           {isEvent && timeLeft && (
-            <div className="absolute bottom-2 left-2 right-2 glass-dark text-white text-[10px] font-bold text-center py-1.5 rounded-xl">
+            <div className="absolute bottom-2 left-2 right-2 backdrop-blur-md bg-black/40 text-white text-[10px] font-bold text-center py-1.5 rounded-lg border border-white/10">
               ⏱ {timeLeft} left
             </div>
           )}
         </div>
 
         {/* Info */}
-        <div className="flex flex-col flex-1 p-3">
-          {/* Shop name */}
-          {product?.Shop?.name && (
-            <Link href={`/shop/${product?.Shop?.id}`}
-              className="text-[10px] text-teal-600 font-bold hover:text-teal-800 truncate mb-1 uppercase tracking-wide transition-colors">
-              {product.Shop.name}
-            </Link>
+        <div className="flex flex-col flex-1 p-4">
+          {/* Category/Tech Stack */}
+          {product?.category && (
+            <div className="flex items-center gap-1.5 mb-2">
+              <span className="text-[10px] text-purple-400 font-bold uppercase tracking-wider">
+                {product.category}
+              </span>
+              {product?.techStack && (
+                <>
+                  <span className="text-gray-600">•</span>
+                  <span className="text-[10px] text-gray-500 font-medium truncate">
+                    {product.techStack}
+                  </span>
+                </>
+              )}
+            </div>
           )}
 
           {/* Title */}
           <Link href={`/product/${product?.slug || product?.id}`}>
-            <h3 className="text-sm font-semibold text-gray-800 line-clamp-2 leading-snug hover:text-teal-700 transition-colors mb-2" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+            <h3 className="text-sm font-bold text-white line-clamp-2 leading-snug hover:text-purple-400 transition-colors mb-2" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
               {product?.title}
             </h3>
           </Link>
 
-          {/* Stars */}
-          {rating > 0 && (
-            <div className="flex items-center gap-1 mb-2">
-              <div className="flex">
-                {[1,2,3,4,5].map((s) => (
-                  <Star key={s} className={`w-3 h-3 ${s <= fullStars ? 'fill-amber-400 text-amber-400' : 'text-gray-200 fill-gray-200'}`} />
-                ))}
+          {/* Developer/Shop */}
+          {product?.Shop?.name && (
+            <Link href={`/shop/${product?.Shop?.id}`}
+              className="text-[11px] text-gray-400 hover:text-purple-400 truncate mb-3 flex items-center gap-1 transition-colors">
+              <Code2 className="w-3 h-3" />
+              {product.Shop.name}
+            </Link>
+          )}
+
+          {/* Stats Row */}
+          <div className="flex items-center gap-3 mb-3 text-[11px]">
+            {rating > 0 && (
+              <div className="flex items-center gap-1">
+                <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
+                <span className="text-gray-300 font-semibold">{rating.toFixed(1)}</span>
               </div>
-              <span className="text-[10px] text-gray-400 font-medium">({rating.toFixed(1)})</span>
+            )}
+            {product?.totalSales > 0 && (
+              <div className="flex items-center gap-1 text-gray-400">
+                <Download className="w-3.5 h-3.5" />
+                <span>{product.totalSales}</span>
+              </div>
+            )}
+            {product?.forks && (
+              <div className="flex items-center gap-1 text-gray-400">
+                <GitFork className="w-3.5 h-3.5" />
+                <span>{product.forks}</span>
+              </div>
+            )}
+          </div>
+
+          {/* Features/Tags */}
+          {product?.features && product.features.length > 0 && (
+            <div className="flex flex-wrap gap-1 mb-3">
+              {product.features.slice(0, 3).map((feature: string, idx: number) => (
+                <span key={idx} className="text-[9px] px-2 py-0.5 rounded-full bg-purple-500/10 text-purple-300 border border-purple-500/20 font-medium">
+                  {feature}
+                </span>
+              ))}
             </div>
           )}
 
           {/* Price */}
           <div className="flex items-center justify-between mt-auto mb-3">
-            <div className="flex items-baseline gap-1.5">
-              <span className="text-base font-black text-gray-900" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
-                {formatPrice(product?.sale_price)}
-              </span>
-              {discount > 0 && (
-                <span className="text-xs text-gray-400 line-through font-medium">
-                  {formatPrice(product?.regular_price)}
+            {isFree ? (
+              <div className="flex items-center gap-1.5">
+                <span className="text-lg font-black text-emerald-400" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
+                  FREE
                 </span>
-              )}
-            </div>
-            {product?.totalSales > 0 && (
-              <span className="text-[10px] text-emerald-600 font-bold bg-emerald-50 px-1.5 py-0.5 rounded-full">
-                {product.totalSales} sold
-              </span>
+                <CheckCircle className="w-4 h-4 text-emerald-400" />
+              </div>
+            ) : (
+              <div className="flex items-baseline gap-1.5">
+                <span className="text-base font-black text-white" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
+                  {formatPrice(product?.sale_price)}
+                </span>
+                {discount > 0 && (
+                  <span className="text-xs text-gray-500 line-through font-medium">
+                    {formatPrice(product?.regular_price)}
+                  </span>
+                )}
+              </div>
             )}
           </div>
 
-          {/* Add to cart */}
+          {/* Action Button */}
           <button
-            onClick={() => isInCart
-              ? removeFromCart(product.id, user, location, deviceInfo)
-              : addToCart({ ...product, quantity: 1 }, user, location, deviceInfo)}
-            disabled={product?.stock === 0}
-            className={`w-full flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-xs font-bold transition-all duration-200 active:scale-95 ${
-              product?.stock === 0
-                ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+            onClick={() => {
+              if (isFree) {
+                // For free apps, go directly to download/view page
+                router.push(`/product/${product?.slug || product?.id}`);
+              } else {
+                // For paid apps, add to cart
+                isInCart
+                  ? removeFromCart(product.id, user, location, deviceInfo)
+                  : addToCart({ ...product, quantity: 1 }, user, location, deviceInfo);
+              }
+            }}
+            className={`w-full flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold transition-all duration-200 active:scale-95 shadow-lg ${
+              isFree
+                ? 'text-white hover:scale-[1.02]'
                 : isInCart
-                ? 'bg-rose-50 text-rose-600 border border-rose-200 hover:bg-rose-500 hover:text-white hover:border-rose-500'
-                : 'text-white shadow-md hover:shadow-lg hover:scale-[1.02]'
+                ? 'bg-rose-500/20 text-rose-400 border border-rose-500/30 hover:bg-rose-500 hover:text-white'
+                : 'text-white hover:scale-[1.02]'
             }`}
-            style={product?.stock !== 0 && !isInCart ? { background: "linear-gradient(135deg, #0f766e, #14b8a6)" } : {}}
+            style={!isInCart && !isFree ? { background: "linear-gradient(135deg, #8b5cf6, #6366f1)" } : isFree ? { background: "linear-gradient(135deg, #10b981, #059669)" } : {}}
           >
-            <ShoppingBag className="w-3.5 h-3.5" />
-            {product?.stock === 0 ? 'Out of Stock' : isInCart ? 'Remove' : 'Add to Cart'}
-          </button>
-
-          {/* Compare button */}
-          <button
-            onClick={handleCompare}
-            disabled={!isCompared && !canAddMore}
-            title={!isCompared && !canAddMore ? "Compare list full — remove a product first" : ""}
-            className={`w-full flex items-center justify-center gap-1.5 py-2 rounded-xl text-xs font-semibold transition-all duration-200 active:scale-95 mt-1.5 ${
-              isCompared
-                ? 'bg-purple-50 text-purple-700 border border-purple-200 hover:bg-purple-100'
-                : !canAddMore
-                ? 'bg-gray-50 text-gray-300 border border-gray-100 cursor-not-allowed'
-                : 'bg-gray-50 text-gray-500 border border-gray-200 hover:bg-purple-50 hover:text-purple-600 hover:border-purple-200'
-            }`}
-          >
-            <GitCompare className="w-3.5 h-3.5" />
-            {isCompared ? 'Comparing ✓' : !canAddMore ? 'Compare Full (4/4)' : 'Compare'}
+            {isFree ? (
+              <>
+                <Download className="w-4 h-4" />
+                Get Free Access
+              </>
+            ) : isInCart ? (
+              <>
+                <Download className="w-4 h-4" />
+                Remove from Cart
+              </>
+            ) : (
+              <>
+                <Download className="w-4 h-4" />
+                Add to Cart
+              </>
+            )}
           </button>
         </div>
       </div>
