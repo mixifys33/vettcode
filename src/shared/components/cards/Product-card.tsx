@@ -1,6 +1,6 @@
 "use client";
 
-import { Eye, Heart, Download, Star, Code2, GitFork, Shield, CheckCircle, Sparkles } from "lucide-react";
+import { Eye, Heart, Download, Star, Code2, GitFork, Shield, CheckCircle, Sparkles, Award } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
@@ -11,7 +11,6 @@ import ProductDetailsCard from "./product-details.card";
 import useDeviceTracking from "@/hooks/useDeviceTracking";
 import useLocationTracking from "@/hooks/useLocationTracking";
 import { useCurrencyFormat } from "@/hooks/useCurrencyFormat";
-import { toast } from "sonner";
 
 const ProductCard = ({ product, isEvent }: { product: any; isEvent?: boolean }) => {
   const [timeLeft, setTimeLeft] = useState("");
@@ -57,31 +56,42 @@ const ProductCard = ({ product, isEvent }: { product: any; isEvent?: boolean }) 
 
   if (!product) return null;
 
-  const discount = product?.regular_price > product?.sale_price
-    ? Math.round(((product.regular_price - product.sale_price) / product.regular_price) * 100)
+  // Map Application fields to display
+  const appName = product?.appName || product?.title || "Untitled Application";
+  const appCategory = product?.appCategory || product?.category || "";
+  const techStack = product?.technologyStack?.join(", ") || product?.techStack || "";
+  const appIcon = product?.appIcon?.url || product?.screenshots?.[0]?.url || product?.images?.[0]?.url || null;
+  const sellerName = product?.Seller?.name || product?.Shop?.name || product?.seller?.name || "";
+  const sellerId = product?.sellerId || product?.Seller?.id || product?.Shop?.id || "";
+  const appRating = product?.rating ?? product?.ratings ?? 0;
+  const appDownloads = product?.downloads ?? product?.totalSales ?? 0;
+  const appPrice = product?.price ?? product?.sale_price ?? 0;
+  const regularPrice = product?.regular_price ?? appPrice;
+  const isFree = product?.isFree || appPrice === 0;
+  const isVerified = product?.verificationStatus === 'verified' || product?.verified;
+  const appBadges = product?.badges || [];
+  const appSlug = product?.slug || product?.id;
+
+  const discount = regularPrice > appPrice && appPrice > 0
+    ? Math.round(((regularPrice - appPrice) / regularPrice) * 100)
     : 0;
 
-  const rating = product?.ratings ?? 0;
-  const fullStars = Math.floor(rating);
-  const imgSrc = !imgError && product?.images?.[0]?.url ? product.images[0].url : null;
-  const isImageKit = imgSrc?.includes('ik.imagekit.io');
-  const isPlaceholder = imgSrc?.includes('example.com') || imgSrc?.includes('placeholder');
-  const safeImgSrc = isPlaceholder ? null : imgSrc;
-
-  // Check if application is free
-  const isFree = product?.isFree || product?.sale_price === 0;
+  const fullStars = Math.floor(appRating);
+  const isImageKit = appIcon?.includes('ik.imagekit.io');
+  const isPlaceholder = appIcon?.includes('example.com') || appIcon?.includes('placeholder');
+  const safeImgSrc = isPlaceholder ? null : (!imgError && appIcon ? appIcon : null);
 
   return (
     <>
-      <div className="group relative rounded-2xl overflow-hidden border border-gray-800/50 hover:border-purple-500/50 shadow-lg hover:shadow-2xl hover:shadow-purple-500/20 transition-all duration-300 flex flex-col backdrop-blur-sm" style={{ background: "linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.95))" }}>
+      <div className="group relative rounded-2xl overflow-hidden border border-gray-700/50 hover:border-purple-500/50 shadow-lg hover:shadow-2xl hover:shadow-purple-500/20 transition-all duration-300 flex flex-col backdrop-blur-sm" style={{ background: "linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.95))" }}>
 
         {/* Image */}
         <div className="relative overflow-hidden bg-gradient-to-br from-gray-900 to-gray-800 aspect-video">
-          <Link href={`/product/${product?.slug || product?.id}`}>
+          <Link href={`/product/${appSlug}`}>
             {safeImgSrc ? (
               <Image
                 src={safeImgSrc}
-                alt={product?.title || "Application"}
+                alt={appName}
                 fill
                 className="object-cover group-hover:scale-110 transition-transform duration-500"
                 sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
@@ -111,10 +121,16 @@ const ProductCard = ({ product, isEvent }: { product: any; isEvent?: boolean }) 
                 -{discount}% OFF
               </span>
             )}
-            {product?.verified && (
+            {isVerified && (
               <span className="flex items-center gap-1 bg-gradient-to-r from-blue-500 to-indigo-600 text-white text-[10px] font-black px-2 py-1 rounded-lg shadow-lg">
                 <Shield className="w-3 h-3" />
                 VERIFIED
+              </span>
+            )}
+            {appBadges.includes('Featured') && (
+              <span className="flex items-center gap-1 bg-gradient-to-r from-amber-500 to-orange-500 text-white text-[10px] font-black px-2 py-1 rounded-lg shadow-lg">
+                <Award className="w-3 h-3" />
+                FEATURED
               </span>
             )}
             {isEvent && (
@@ -157,16 +173,16 @@ const ProductCard = ({ product, isEvent }: { product: any; isEvent?: boolean }) 
         {/* Info */}
         <div className="flex flex-col flex-1 p-4">
           {/* Category/Tech Stack */}
-          {product?.category && (
+          {appCategory && (
             <div className="flex items-center gap-1.5 mb-2">
               <span className="text-[10px] text-purple-400 font-bold uppercase tracking-wider">
-                {product.category}
+                {appCategory}
               </span>
-              {product?.techStack && (
+              {techStack && (
                 <>
                   <span className="text-gray-600">•</span>
-                  <span className="text-[10px] text-gray-500 font-medium truncate">
-                    {product.techStack}
+                  <span className="text-[10px] text-gray-400 font-medium truncate">
+                    {techStack.split(',')[0]}
                   </span>
                 </>
               )}
@@ -174,53 +190,42 @@ const ProductCard = ({ product, isEvent }: { product: any; isEvent?: boolean }) 
           )}
 
           {/* Title */}
-          <Link href={`/product/${product?.slug || product?.id}`}>
+          <Link href={`/product/${appSlug}`}>
             <h3 className="text-sm font-bold text-white line-clamp-2 leading-snug hover:text-purple-400 transition-colors mb-2" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
-              {product?.title}
+              {appName}
             </h3>
           </Link>
 
-          {/* Developer/Shop */}
-          {product?.Shop?.name && (
-            <Link href={`/shop/${product?.Shop?.id}`}
+          {/* Developer/Seller */}
+          {sellerName && (
+            <Link href={`/shop/${sellerId}`}
               className="text-[11px] text-gray-400 hover:text-purple-400 truncate mb-3 flex items-center gap-1 transition-colors">
               <Code2 className="w-3 h-3" />
-              {product.Shop.name}
+              {sellerName}
             </Link>
           )}
 
           {/* Stats Row */}
           <div className="flex items-center gap-3 mb-3 text-[11px]">
-            {rating > 0 && (
+            {appRating > 0 && (
               <div className="flex items-center gap-1">
                 <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
-                <span className="text-gray-300 font-semibold">{rating.toFixed(1)}</span>
+                <span className="text-gray-300 font-semibold">{appRating.toFixed(1)}</span>
               </div>
             )}
-            {product?.totalSales > 0 && (
+            {appDownloads > 0 && (
               <div className="flex items-center gap-1 text-gray-400">
                 <Download className="w-3.5 h-3.5" />
-                <span>{product.totalSales}</span>
+                <span className="text-gray-300">{appDownloads}</span>
               </div>
             )}
-            {product?.forks && (
+            {product?.views > 0 && (
               <div className="flex items-center gap-1 text-gray-400">
-                <GitFork className="w-3.5 h-3.5" />
-                <span>{product.forks}</span>
+                <Eye className="w-3.5 h-3.5" />
+                <span className="text-gray-300">{product.views}</span>
               </div>
             )}
           </div>
-
-          {/* Features/Tags */}
-          {product?.features && product.features.length > 0 && (
-            <div className="flex flex-wrap gap-1 mb-3">
-              {product.features.slice(0, 3).map((feature: string, idx: number) => (
-                <span key={idx} className="text-[9px] px-2 py-0.5 rounded-full bg-purple-500/10 text-purple-300 border border-purple-500/20 font-medium">
-                  {feature}
-                </span>
-              ))}
-            </div>
-          )}
 
           {/* Price */}
           <div className="flex items-center justify-between mt-auto mb-3">
@@ -234,11 +239,11 @@ const ProductCard = ({ product, isEvent }: { product: any; isEvent?: boolean }) 
             ) : (
               <div className="flex items-baseline gap-1.5">
                 <span className="text-base font-black text-white" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
-                  {formatPrice(product?.sale_price)}
+                  {formatPrice(appPrice)}
                 </span>
                 {discount > 0 && (
                   <span className="text-xs text-gray-500 line-through font-medium">
-                    {formatPrice(product?.regular_price)}
+                    {formatPrice(regularPrice)}
                   </span>
                 )}
               </div>
@@ -250,7 +255,7 @@ const ProductCard = ({ product, isEvent }: { product: any; isEvent?: boolean }) 
             onClick={() => {
               if (isFree) {
                 // For free apps, go directly to download/view page
-                router.push(`/product/${product?.slug || product?.id}`);
+                router.push(`/product/${appSlug}`);
               } else {
                 // For paid apps, add to cart
                 isInCart
