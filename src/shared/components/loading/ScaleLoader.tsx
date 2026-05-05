@@ -16,10 +16,57 @@ export const ScaleLoader: React.FC<ScaleLoaderProps> = ({
     ? "fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900"
     : "flex items-center justify-center py-20";
 
+  // Generate multiple scale patterns across the entire background
+  const generateBackgroundScales = () => {
+    const scales = [];
+    const rows = 8;
+    const cols = 12;
+    
+    for (let row = 0; row < rows; row++) {
+      for (let col = 0; col < cols; col++) {
+        const delay = (row * cols + col) * 0.05;
+        scales.push(
+          <div
+            key={`bg-scale-${row}-${col}`}
+            className="absolute"
+            style={{
+              left: `${(col / cols) * 100}%`,
+              top: `${(row / rows) * 100}%`,
+              animationDelay: `${delay}s`,
+            }}
+          >
+            <div className="relative w-20 h-20">
+              <div className="absolute inset-0 animate-scale-rotate-1 opacity-20">
+                {[0, 120, 240].map((rotation, i) => (
+                  <div
+                    key={`inner-${i}`}
+                    className="absolute top-1/2 left-1/2 w-3 h-3 -ml-1.5 -mt-1.5"
+                    style={{
+                      transform: `rotate(${rotation}deg) translateY(-12px)`,
+                    }}
+                  >
+                    <div className="w-full h-full rounded-full bg-gradient-to-br from-purple-500/30 to-blue-500/30 backdrop-blur-sm border border-purple-400/20 animate-scale-pulse" />
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        );
+      }
+    }
+    return scales;
+  };
+
   return (
     <div className={containerClass}>
-      <div className="flex flex-col items-center gap-6">
-        {/* Animated Scales Pattern */}
+      {/* Full Page Background Scales Pattern */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        {generateBackgroundScales()}
+      </div>
+
+      {/* Center Content */}
+      <div className="relative z-10 flex flex-col items-center gap-6">
+        {/* Main Animated Scales Pattern */}
         <div className="relative w-32 h-32">
           {/* Center Icon */}
           <div className="absolute inset-0 flex items-center justify-center z-10">

@@ -96,12 +96,15 @@ const ProductCard = ({ product, isEvent }: { product: any; isEvent?: boolean }) 
   const isPlaceholder = appIcon?.includes('example.com') || appIcon?.includes('placeholder');
   const safeImgSrc = isPlaceholder ? null : (!imgError && appIcon ? appIcon : null);
 
+  // Calculate admin completion score if available
+  const adminCompletionScore = product?.adminCompletionScore || product?.completionScore || null;
+
   return (
     <>
       <div className="group relative rounded-2xl overflow-hidden border border-gray-700/50 hover:border-purple-500/50 shadow-lg hover:shadow-2xl hover:shadow-purple-500/20 transition-all duration-300 flex flex-col backdrop-blur-sm" style={{ background: "linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.95))" }}>
 
-        {/* Image */}
-        <div className="relative overflow-hidden bg-gradient-to-br from-gray-900 to-gray-800 aspect-video">
+        {/* Image - Larger Area */}
+        <div className="relative overflow-hidden bg-gradient-to-br from-gray-900 to-gray-800 aspect-[4/3]">
           <Link href={`/product/${appSlug}`}>
             {safeImgSrc ? (
               <Image
@@ -115,16 +118,58 @@ const ProductCard = ({ product, isEvent }: { product: any; isEvent?: boolean }) 
               />
             ) : (
               <div className="w-full h-full flex items-center justify-center">
-                <Code2 className="w-12 h-12 text-gray-600" />
+                <Code2 className="w-16 h-16 text-gray-600" />
               </div>
             )}
           </Link>
 
           {/* Gradient overlay */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
 
-          {/* Badges */}
-          <div className="absolute top-2 left-2 flex flex-col gap-1.5 z-10">
+          {/* Quick actions - Top Right */}
+          <div className="absolute top-2 right-2 flex flex-col gap-1.5 z-10 opacity-0 group-hover:opacity-100 translate-x-3 group-hover:translate-x-0 transition-all duration-300">
+            <button
+              onClick={() => isWishListed
+                ? removeFromWishlist(product.id, user, location, deviceInfo)
+                : addToWishlist({ ...product, quantity: 1 }, user, location, deviceInfo)}
+              className={`w-9 h-9 rounded-xl shadow-lg flex items-center justify-center transition-all duration-200 hover:scale-110 active:scale-95 backdrop-blur-md ${
+                isWishListed
+                  ? 'bg-gradient-to-br from-rose-500 to-pink-600 text-white'
+                  : 'bg-white/10 text-gray-300 hover:text-rose-400 border border-white/20'
+              }`}
+            >
+              <Heart className={`w-4 h-4 ${isWishListed ? 'fill-current' : ''}`} />
+            </button>
+            <button
+              onClick={() => setOpen(true)}
+              className="w-9 h-9 rounded-xl bg-white/10 backdrop-blur-md shadow-lg flex items-center justify-center text-gray-300 hover:text-purple-400 hover:scale-110 active:scale-95 transition-all duration-200 border border-white/20"
+            >
+              <Eye className="w-4 h-4" />
+            </button>
+          </div>
+
+          {/* Rating Badge - Bottom Left on Image (Only Stars) */}
+          {appRating > 0 && (
+            <div className="absolute bottom-3 left-3 z-10">
+              <div className="flex items-center gap-1.5 bg-black/60 backdrop-blur-md px-3 py-2 rounded-xl border border-white/20 shadow-lg">
+                <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
+                <span className="text-white font-bold text-sm">{appRating.toFixed(1)}</span>
+              </div>
+            </div>
+          )}
+
+          {/* Event timer */}
+          {isEvent && timeLeft && (
+            <div className="absolute bottom-3 right-3 backdrop-blur-md bg-black/60 text-white text-xs font-bold px-3 py-2 rounded-xl border border-white/20 shadow-lg z-10">
+              ⏱ {timeLeft} left
+            </div>
+          )}
+        </div>
+
+        {/* Info Section - All Other Labels Here */}
+        <div className="flex flex-col flex-1 p-4">
+          {/* Badges Row */}
+          <div className="flex items-center gap-1.5 mb-3 flex-wrap">
             {isFree && (
               <span className="flex items-center gap-1 bg-gradient-to-r from-emerald-500 to-teal-600 text-white text-[10px] font-black px-2 py-1 rounded-lg shadow-lg">
                 <Sparkles className="w-3 h-3" />
@@ -150,43 +195,11 @@ const ProductCard = ({ product, isEvent }: { product: any; isEvent?: boolean }) 
             )}
             {isEvent && (
               <span className="bg-gradient-to-r from-amber-500 to-orange-500 text-white text-[10px] font-black px-2 py-1 rounded-lg shadow-lg">
-                LIMITED OFFER
+                LIMITED
               </span>
             )}
           </div>
 
-          {/* Quick actions */}
-          <div className="absolute top-2 right-2 flex flex-col gap-1.5 z-10 opacity-0 group-hover:opacity-100 translate-x-3 group-hover:translate-x-0 transition-all duration-300">
-            <button
-              onClick={() => isWishListed
-                ? removeFromWishlist(product.id, user, location, deviceInfo)
-                : addToWishlist({ ...product, quantity: 1 }, user, location, deviceInfo)}
-              className={`w-9 h-9 rounded-xl shadow-lg flex items-center justify-center transition-all duration-200 hover:scale-110 active:scale-95 backdrop-blur-md ${
-                isWishListed
-                  ? 'bg-gradient-to-br from-rose-500 to-pink-600 text-white'
-                  : 'bg-white/10 text-gray-300 hover:text-rose-400 border border-white/20'
-              }`}
-            >
-              <Heart className={`w-4 h-4 ${isWishListed ? 'fill-current' : ''}`} />
-            </button>
-            <button
-              onClick={() => setOpen(true)}
-              className="w-9 h-9 rounded-xl bg-white/10 backdrop-blur-md shadow-lg flex items-center justify-center text-gray-300 hover:text-purple-400 hover:scale-110 active:scale-95 transition-all duration-200 border border-white/20"
-            >
-              <Eye className="w-4 h-4" />
-            </button>
-          </div>
-
-          {/* Event timer */}
-          {isEvent && timeLeft && (
-            <div className="absolute bottom-2 left-2 right-2 backdrop-blur-md bg-black/40 text-white text-[10px] font-bold text-center py-1.5 rounded-lg border border-white/10">
-              ⏱ {timeLeft} left
-            </div>
-          )}
-        </div>
-
-        {/* Info */}
-        <div className="flex flex-col flex-1 p-4">
           {/* Category/Tech Stack */}
           {appCategory && (
             <div className="flex items-center gap-1.5 mb-2">
@@ -220,24 +233,24 @@ const ProductCard = ({ product, isEvent }: { product: any; isEvent?: boolean }) 
             </Link>
           )}
 
-          {/* Stats Row */}
-          <div className="flex items-center gap-3 mb-3 text-[11px]">
-            {appRating > 0 && (
-              <div className="flex items-center gap-1">
-                <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
-                <span className="text-gray-300 font-semibold">{appRating.toFixed(1)}</span>
-              </div>
-            )}
+          {/* Stats Row - Downloads, Views, Admin Score */}
+          <div className="flex items-center gap-3 mb-3 text-[11px] flex-wrap">
             {appDownloads > 0 && (
               <div className="flex items-center gap-1 text-gray-400">
                 <Download className="w-3.5 h-3.5" />
-                <span className="text-gray-300">{appDownloads}</span>
+                <span className="text-gray-300 font-medium">{appDownloads.toLocaleString()}</span>
               </div>
             )}
             {product?.views > 0 && (
               <div className="flex items-center gap-1 text-gray-400">
                 <Eye className="w-3.5 h-3.5" />
-                <span className="text-gray-300">{product.views}</span>
+                <span className="text-gray-300 font-medium">{product.views.toLocaleString()}</span>
+              </div>
+            )}
+            {adminCompletionScore !== null && (
+              <div className="flex items-center gap-1">
+                <CheckCircle className="w-3.5 h-3.5 text-blue-400" />
+                <span className="text-blue-400 font-bold">{adminCompletionScore}%</span>
               </div>
             )}
           </div>

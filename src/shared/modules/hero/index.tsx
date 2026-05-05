@@ -70,7 +70,7 @@ export const Hero = () => {
             <div className="inline-flex items-center gap-2 px-4 sm:px-6 py-2 sm:py-3 rounded-full bg-gradient-to-r from-purple-600/30 via-violet-600/30 to-purple-600/30 backdrop-blur-xl border border-purple-400/30 shadow-2xl">
               <span className="text-base sm:text-lg">🔥</span>
               <span className="text-xs sm:text-sm md:text-base font-black text-white tracking-wider" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
-                VettCode Hero (Rebuilt Proper Version)
+                Ship Faster with VettCode
               </span>
             </div>
           </div>
