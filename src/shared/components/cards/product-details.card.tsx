@@ -1,4 +1,4 @@
-import { MessageCircle, Heart, MapPin, X, Code2, Star, Download, Eye, Shield, CheckCircle, GitFork, Sparkles, Award } from "lucide-react";
+import { MessageCircle, Heart, MapPin, X, Code2, Star, Download, Eye, Shield, CheckCircle, GitFork, Sparkles, Award, Minus, Plus } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import React, { useState } from "react";
