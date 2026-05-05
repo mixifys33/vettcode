@@ -5,36 +5,96 @@ import Image from "next/image"
 import Link from "next/link"
 import { 
   Heart, 
-  ShoppingCart, 
-  FileText, 
+  Download, 
   MessageCircle, 
   Share2, 
   ChevronLeft, 
   ChevronRight,
   Play,
   X,
-  Minus,
-  Plus,
-  Truck,
   Shield,
-  RotateCcw,
   MapPin,
-  Check,
   Eye,
+  Code2,
+  ExternalLink,
+  FileText,
+  CheckCircle,
+  Award,
+  Star,
+  Sparkles,
+  Zap,
+  Users,
+  TrendingUp,
   Clock,
-  GitCompare
+  Package,
+  Lock,
+  Unlock
 } from "lucide-react"
 import { useStore } from "@/store"
 import useUser from "@/hooks/useUser"
 import useDeviceTracking from "@/hooks/useDeviceTracking"
 import useLocationTracking from "@/hooks/useLocationTracking"
-import ProductDescriptionModal from "@/shared/components/product/ProductDescriptionModal"
-import ProductAIChat from "@/shared/components/product/ProductAIChat"
-import ProductReviews from "@/shared/components/product/ProductReviews"
-import Ratings from "@/shared/components/ratings"
 import ProductCard from "@/shared/components/cards/Product-card"
-import { useProductComparison } from "@/hooks/useProductComparison"
 import { toast } from "sonner"
+
+// Type Definitions
+interface Screenshot {
+  url: string;
+  alt?: string;
+}
+
+interface Seller {
+  id: string;
+  name: string;
+  address?: string;
+  avatar?: string;
+  verified?: boolean;
+}
+
+interface ApplicationData {
+  id: string;
+  appName?: string;
+  title?: string;
+  appCategory?: string;
+  category?: string;
+  detailedDescription?: string;
+  shortDescription?: string;
+  description?: string;
+  price?: number;
+  sale_price?: number;
+  currency?: string;
+  isFree?: boolean;
+  screenshots?: Screenshot[];
+  images?: Screenshot[];
+  videoDemo?: string;
+  video_url?: string;
+  videoUrl?: string;
+  liveDemo?: string;
+  githubRepo?: string;
+  documentationUrl?: string;
+  technologyStack?: string[];
+  supportedPlatforms?: string[];
+  licenseType?: string;
+  rating?: number;
+  ratings?: number;
+  downloads?: number;
+  totalSales?: number;
+  views?: number;
+  completionScore?: number;
+  adminCompletionScore?: number;
+  badges?: string[];
+  Seller?: Seller;
+  Shop?: Seller;
+  shops?: Seller;
+  supportLevel?: string;
+  updateFrequency?: string;
+  slug?: string;
+  _id?: string;
+  features?: string[];
+  requirements?: string[];
+  lastUpdated?: string;
+  version?: string;
+}
 
 interface SimilarProduct {
   id: string;
@@ -49,11 +109,55 @@ interface SimilarProduct {
   shops?: { id: string; name: string };
 }
 
+// Helper Functions
+const formatPrice = (amount: number, curr: string = 'USD'): string => {
+  const symbols: { [key: string]: string } = {
+    USD: '$',
+    EUR: '€',
+    GBP: '£',
+    UGX: 'USh ',
+    KES: 'KSh ',
+    TZS: 'TSh ',
+    RWF: 'RWF '
+  };
+  const symbol = symbols[curr] || curr + ' ';
+  return symbol + amount.toLocaleString();
+};
+
+const getYouTubeEmbedUrl = (url: string): string | null => {
+  if (!url) return null;
+  const patterns = [
+    /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&\n?#]+)/,
+    /youtube\.com\/shorts\/([^&\n?#]+)/
+  ];
+  for (const pattern of patterns) {
+    const match = url.match(pattern);
+    if (match && match[1]) {
+      return `https://www.youtube.com/embed/${match[1]}?autoplay=1&rel=0`;
+    }
+  }
+  if (url.includes('embed') || url.includes('vimeo') || url.includes('loom')) {
+    return url;
+  }
+  return null;
+};
+
+const formatDate = (dateString?: string): string => {
+  if (!dateString) return 'Recently';
+  try {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+  } catch {
+    return 'Recently';
+  }
+};
+
+// Main Component
 const ProductDetails = ({
   productDetails,
   similarProducts = []
 }: {
-  productDetails: any;
+  productDetails: ApplicationData | null;
   similarProducts?: SimilarProduct[];
 }) => {
   const { user } = useUser();
@@ -63,93 +167,37 @@ const ProductDetails = ({
   // UI States
   const [activeImage, setActiveImage] = useState(0);
   const [showVideoModal, setShowVideoModal] = useState(false);
-  const [showDescription, setShowDescription] = useState(false);
-  const [showChat, setShowChat] = useState(false);
-  const [selectedColor, setSelectedColor] = useState<string>("");
-  const [selectedSize, setSelectedSize] = useState<string>("");
-  const [isZoomed, setIsZoomed] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [activeTab, setActiveTab] = useState<'overview' | 'features' | 'requirements'>('overview');
 
   // Store
-  const cart = useStore((state) => state.cart);
   const wishlist = useStore((state) => state.wishlist);
   const wishlistIds = useStore((state) => state.wishlistIds);
-  const addToCart = useStore((state) => state.addToCart);
   const addToWishlist = useStore((state) => state.addToWishlist);
   const removeFromWishlist = useStore((state) => state.removeFromWishlist);
-  const removeFromCart = useStore((state) => state.removeFromCart);
-  const updateCartQuantity = useStore((state) => state.updateCartQuantity);
   const syncWithServer = useStore((state) => state.syncWithServer);
-
-  // Compare
-  const { addToCompare, removeFromCompare, isInCompare, canAddMore } = useProductComparison();
-  const isCompared = productDetails ? isInCompare(productDetails.id) : false;
-
-  const handleCompare = () => {
-    if (!productDetails) return;
-    if (isCompared) {
-      removeFromCompare(productDetails.id);
-      toast.info("Removed from comparison");
-    } else {
-      const added = addToCompare({
-        id: productDetails.id,
-        slug: productDetails.slug || productDetails.id,
-        title: productDetails.title,
-        image: productDetails.images?.[0]?.url || "",
-        price: productDetails.regular_price || productDetails.sale_price,
-        salePrice: productDetails.sale_price,
-        category: productDetails.category || "",
-        brand: productDetails.brand || "",
-        ratings: productDetails.ratings || 0,
-        stock: productDetails.stock || 0,
-        shopName: productDetails.shops?.name || "",
-        colors: productDetails.colors || [],
-        sizes: productDetails.sizes || [],
-        warranty: productDetails.warranty || "",
-      });
-      if (added) {
-        toast.success("Added to comparison! Go to /compare to view.");
-      } else {
-        toast.warning("You can compare up to 4 products at a time.");
-      }
-    }
-  };
 
   const isWishListed = productDetails ? (
     wishlist.some((item) => item.id === productDetails.id) || wishlistIds.includes(productDetails.id)
   ) : false;
-  
-  const cartItem = productDetails ? cart.find((item) => item.id === productDetails.id) : null;
-  const isInCart = !!cartItem;
-  const cartQuantity = cartItem?.quantity || 0;
 
   useEffect(() => {
     if (user?.id) {
       syncWithServer(user);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user?.id]);
+  }, [user?.id, syncWithServer]);
 
-  // Set default selections
-  useEffect(() => {
-    if (productDetails?.colors?.length > 0 && !selectedColor) {
-      setSelectedColor(productDetails.colors[0]);
-    }
-    if (productDetails?.sizes?.length > 0 && !selectedSize) {
-      setSelectedSize(productDetails.sizes[0]);
-    }
-  }, [productDetails, selectedColor, selectedSize]);
-
+  // Early return for missing product
   if (!productDetails) {
     return (
-      <div className="w-full min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="w-full min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center">
         <div className="text-center p-8">
-          <div className="w-24 h-24 mx-auto mb-4 bg-gray-200 rounded-full flex items-center justify-center">
-            <Eye className="w-12 h-12 text-gray-400" />
+          <div className="w-24 h-24 mx-auto mb-4 bg-gray-800 rounded-full flex items-center justify-center border border-purple-500/30">
+            <Package className="w-12 h-12 text-purple-400" />
           </div>
-          <h2 className="text-2xl font-semibold text-gray-700">Product Not Found</h2>
-          <p className="text-gray-500 mt-2 mb-6">The product you are looking for does not exist or has been removed.</p>
-          <Link href="/" className="inline-flex items-center gap-2 bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition">
+          <h2 className="text-2xl font-semibold text-white">Application Not Found</h2>
+          <p className="text-gray-400 mt-2 mb-6">The application you are looking for does not exist or has been removed.</p>
+          <Link href="/" className="inline-flex items-center gap-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white px-6 py-3 rounded-lg hover:from-purple-700 hover:to-blue-700 transition">
             <ChevronLeft className="w-4 h-4" />
             Back to Home
           </Link>
@@ -158,715 +206,675 @@ const ProductDetails = ({
     )
   }
 
-  const {
-    id,
-    slug,
-    title,
-    description,
-    detailed_description,
-    sale_price,
-    regular_price,
-    images = [],
-    video_url: video_url_snake,
-    videoUrl: video_url_camel,
-    brand,
-    category,
-    subCategory,
-    stock,
-    colors = [],
-    sizes = [],
-    shops,
-    tags: rawTags = [],
-    ratings,
-    totalSales,
-    warranty,
-    cash_on_delivery,
-  } = productDetails;
+  // Extract and normalize application data
+  const appName = productDetails.appName || productDetails.title || "Untitled Application";
+  const appCategory = productDetails.appCategory || productDetails.category || "";
+  const description = productDetails.detailedDescription || productDetails.shortDescription || productDetails.description || "";
+  const price = productDetails.price || productDetails.sale_price || 0;
+  const currency = productDetails.currency || "USD";
+  const isFree = productDetails.isFree || price === 0;
+  const screenshots = productDetails.screenshots || productDetails.images || [];
+  const videoDemo = productDetails.videoDemo || productDetails.video_url || productDetails.videoUrl || null;
+  const liveDemo = productDetails.liveDemo || null;
+  const githubRepo = productDetails.githubRepo || null;
+  const documentationUrl = productDetails.documentationUrl || null;
+  const techStack = productDetails.technologyStack || [];
+  const platforms = productDetails.supportedPlatforms || [];
+  const licenseType = productDetails.licenseType || "Commercial License";
+  const rating = productDetails.rating || productDetails.ratings || 5.0;
+  const downloads = productDetails.downloads || productDetails.totalSales || 0;
+  const views = productDetails.views || 0;
+  const completionScore = productDetails.completionScore || productDetails.adminCompletionScore || null;
+  const badges = productDetails.badges || [];
+  const seller = productDetails.Seller || productDetails.Shop || productDetails.shops || null;
+  const supportLevel = productDetails.supportLevel || "Email";
+  const updateFrequency = productDetails.updateFrequency || "Active";
+  const id = productDetails.id || productDetails._id || '';
+  const slug = productDetails.slug || id;
+  const features = productDetails.features || [];
+  const requirements = productDetails.requirements || [];
+  const lastUpdated = productDetails.lastUpdated;
+  const version = productDetails.version || "1.0.0";
 
-  // Support both snake_case (video_url) and camelCase (videoUrl) from backend
-  const video_url = video_url_snake || video_url_camel || null;
+  const videoEmbedUrl = videoDemo ? getYouTubeEmbedUrl(videoDemo) : null;
 
-  const discount = regular_price > sale_price 
-    ? Math.round(((regular_price - sale_price) / regular_price) * 100) 
-    : 0;
-
-  // Normalize tags — backend may return a string, array, or nothing
-  const tags: string[] = Array.isArray(rawTags)
-    ? rawTags
-    : typeof rawTags === 'string' && rawTags.trim()
-      ? rawTags.split(',').map((t: string) => t.trim()).filter(Boolean)
-      : [];
-
-  const subtotal = sale_price * cartQuantity;
-
-  // Estimated delivery date (5 days from now)
-  const estimatedDelivery = new Date();
-  estimatedDelivery.setDate(estimatedDelivery.getDate() + 5);
-
-  const handleAddToCart = () => {
-    addToCart({ 
-      id, 
-      slug: slug || id,
-      title, 
-      price: sale_price, 
-      image: images?.[0]?.url || "", 
-      shopId: shops?.id || "",
-      quantity: 1 
-    }, user, location, deviceInfo);
-  };
-
-  const handleRemoveFromCart = () => {
-    removeFromCart(id, user, location, deviceInfo);
-  };
-
-  const handleIncreaseQuantity = () => {
-    if (isInCart) {
-      updateCartQuantity(id, cartQuantity + 1, user, location, deviceInfo);
-    }
-  };
-
-  const handleDecreaseQuantity = () => {
-    if (cartQuantity <= 1) {
-      removeFromCart(id, user, location, deviceInfo);
-    } else {
-      updateCartQuantity(id, cartQuantity - 1, user, location, deviceInfo);
-    }
-  };
-
+  // Event Handlers
   const handleWishlist = () => {
     if (isWishListed) {
       removeFromWishlist(id, user, location, deviceInfo);
+      toast.info("Removed from wishlist");
     } else {
       addToWishlist({ 
         id, 
-        title, 
-        price: sale_price, 
-        image: images?.[0]?.url || "", 
-        shopId: shops?.id || "" 
+        title: appName, 
+        price, 
+        image: screenshots?.[0]?.url || "", 
+        shopId: seller?.id || "" 
       }, user, location, deviceInfo);
+      toast.success("Added to wishlist");
     }
   };
 
   const handleShare = async () => {
-    const BASE = "https://eshopug.vercel.app";
-    const url = `${BASE}/product/${slug || id}`;
+    const url = `${window.location.origin}/product/${slug}`;
     const shareData = {
-      title: `${title} — UGX ${sale_price?.toLocaleString('en-UG')}`,
-      text: `Check out ${title} on EshopUG for only UGX ${sale_price?.toLocaleString('en-UG')}!`,
+      title: `${appName} — ${isFree ? 'FREE' : formatPrice(price, currency)}`,
+      text: `Check out ${appName} on VETTCODE!`,
       url,
     };
     if (navigator.share) {
       try {
         await navigator.share(shareData);
       } catch (err) {
-        // user cancelled — no-op
+        // User cancelled share
       }
     } else {
       await navigator.clipboard.writeText(url);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
+      toast.success("Link copied to clipboard");
+    }
+  };
+
+  const handleDownloadAccess = () => {
+    if (isFree) {
+      toast.success("Redirecting to download...");
+      if (liveDemo) {
+        window.open(liveDemo, '_blank');
+      } else if (githubRepo) {
+        window.open(githubRepo, '_blank');
+      }
+    } else {
+      toast.info("Redirecting to checkout...");
+      // Navigate to checkout
     }
   };
 
   const nextImage = () => {
-    setActiveImage((prev) => (prev + 1) % images.length);
+    setActiveImage((prev) => (prev + 1) % screenshots.length);
   };
 
   const prevImage = () => {
-    setActiveImage((prev) => (prev - 1 + images.length) % images.length);
+    setActiveImage((prev) => (prev - 1 + screenshots.length) % screenshots.length);
   };
-
-  // Extract YouTube video ID — supports all common YouTube URL formats
-  const getYouTubeId = (url: string) => {
-    if (!url) return null;
-    const match = url.match(
-      /(?:youtube\.com\/(?:watch\?(?:.*&)?v=|embed\/|shorts\/|v\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/
-    );
-    return match ? match[1] : null;
-  };
-
-  // For non-YouTube video URLs (mp4, etc.)
-  const isDirectVideo = (url: string) => {
-    if (!url) return false;
-    const lower = url.toLowerCase();
-    return lower.endsWith('.mp4') || lower.endsWith('.webm') || lower.endsWith('.mov');
-  };
-
-  const youtubeId = video_url ? getYouTubeId(video_url) : null;
-  const isDirectVideoUrl = video_url ? isDirectVideo(video_url) : false;
-  const hasVideo = !!(youtubeId || isDirectVideoUrl);
 
   return (
-    <div className="w-full bg-gray-50 min-h-screen pb-20 md:pb-0">
+    <div className="w-full bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 min-h-screen pb-20 md:pb-0">
       {/* Breadcrumb */}
-      <div className="bg-white border-b">
+      <div className="bg-gray-900/50 border-b border-purple-500/20">
         <div className="max-w-7xl mx-auto px-4 py-3">
-          <nav className="flex items-center gap-2 text-sm text-gray-500 overflow-x-auto whitespace-nowrap">
-            <Link href="/" className="hover:text-blue-600">Home</Link>
+          <nav className="flex items-center gap-2 text-sm text-gray-400 overflow-x-auto whitespace-nowrap">
+            <Link href="/" className="hover:text-purple-400 transition">Home</Link>
             <ChevronRight className="w-4 h-4 flex-shrink-0" />
-            {category && (
+            <Link href="/applications" className="hover:text-purple-400 transition">Applications</Link>
+            <ChevronRight className="w-4 h-4 flex-shrink-0" />
+            {appCategory && (
               <>
-                <Link href={`/category/${category}`} className="hover:text-blue-600">{category}</Link>
+                <span className="hover:text-purple-400 transition">{appCategory}</span>
                 <ChevronRight className="w-4 h-4 flex-shrink-0" />
               </>
             )}
-            {subCategory && (
-              <>
-                <span className="hover:text-blue-600">{subCategory}</span>
-                <ChevronRight className="w-4 h-4 flex-shrink-0" />
-              </>
-            )}
-            <span className="text-gray-800 font-medium truncate max-w-[200px]">{title}</span>
+            <span className="text-white font-medium truncate max-w-[200px]">{appName}</span>
           </nav>
         </div>
       </div>
 
-      {/* Main Product Section */}
+      {/* Main Application Section */}
       <div className="max-w-7xl mx-auto px-4 py-6">
-        <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
+        <div className="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 rounded-2xl shadow-2xl overflow-hidden border border-purple-500/30">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-0">
             
-            {/* Left: Images & Video */}
-            <div className="p-4 md:p-6 lg:p-8 border-b lg:border-b-0 lg:border-r border-gray-100">
-              {/* Main Image */}
-              <div className="relative aspect-square bg-gray-100 rounded-xl overflow-hidden group">
-                {images.length > 0 ? (
+            {/* Left: Screenshots & Video */}
+            <div className="p-4 md:p-6 lg:p-8 border-b lg:border-b-0 lg:border-r border-purple-500/20">
+              {/* Main Screenshot */}
+              <div className="relative aspect-video bg-gray-800/50 rounded-xl overflow-hidden group border border-purple-500/20">
+                {!showVideoModal && screenshots.length > 0 ? (
                   <Image
-                    src={images[activeImage]?.url}
-                    alt={title}
+                    src={screenshots[activeImage]?.url}
+                    alt={appName}
                     fill
-                    className={`object-contain transition-transform duration-300 ${isZoomed ? 'scale-150' : ''}`}
-                    onClick={() => setIsZoomed(!isZoomed)}
+                    className="object-cover"
                   />
+                ) : showVideoModal && videoEmbedUrl ? (
+                  <div className="relative w-full h-full">
+                    <iframe
+                      src={videoEmbedUrl}
+                      className="absolute inset-0 w-full h-full"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                      title="Application Demo Video"
+                    />
+                    <button
+                      onClick={() => setShowVideoModal(false)}
+                      className="absolute top-2 right-2 p-2 bg-black/60 hover:bg-black/80 rounded-lg transition z-10"
+                    >
+                      <X className="w-4 h-4 text-white" />
+                    </button>
+                  </div>
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center text-gray-400">
-                    No image available
+                  <div className="w-full h-full flex items-center justify-center text-gray-600">
+                    <Code2 className="w-20 h-20" />
                   </div>
                 )}
 
                 {/* Navigation Arrows */}
-                {images.length > 1 && (
+                {!showVideoModal && screenshots.length > 1 && (
                   <>
                     <button
                       onClick={prevImage}
-                      className="absolute left-2 top-1/2 -translate-y-1/2 p-2 bg-white/90 rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition hover:bg-white"
+                      className="absolute left-2 top-1/2 -translate-y-1/2 p-2 bg-black/60 hover:bg-black/80 rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition"
                     >
-                      <ChevronLeft className="w-5 h-5" />
+                      <ChevronLeft className="w-5 h-5 text-white" />
                     </button>
                     <button
                       onClick={nextImage}
-                      className="absolute right-2 top-1/2 -translate-y-1/2 p-2 bg-white/90 rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition hover:bg-white"
+                      className="absolute right-2 top-1/2 -translate-y-1/2 p-2 bg-black/60 hover:bg-black/80 rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition"
                     >
-                      <ChevronRight className="w-5 h-5" />
+                      <ChevronRight className="w-5 h-5 text-white" />
                     </button>
                   </>
                 )}
 
-                {/* Discount Badge */}
-                {discount > 0 && (
-                  <div className="absolute top-4 left-4 bg-red-500 text-white px-3 py-1 rounded-full text-sm font-semibold">
-                    -{discount}%
+                {/* Free Badge */}
+                {isFree && (
+                  <div className="absolute top-4 left-4 bg-gradient-to-r from-emerald-500 to-teal-600 text-white px-3 py-1 rounded-full text-sm font-bold flex items-center gap-1">
+                    <Sparkles className="w-4 h-4" />
+                    FREE
                   </div>
                 )}
 
-                {/* Watch Video button overlay */}
-                {hasVideo && (
-                  <button
-                    onClick={() => setShowVideoModal(true)}
-                    className="absolute bottom-4 right-4 flex items-center gap-2 bg-black/70 text-white px-4 py-2 rounded-full hover:bg-black/90 transition"
-                  >
-                    <Play className="w-4 h-4 fill-white" />
-                    <span className="text-sm font-medium">Watch Video</span>
-                  </button>
-                )}
+                {/* Rating Badge */}
+                <div className="absolute bottom-4 left-4 flex items-center gap-2 bg-black/60 backdrop-blur-md px-3 py-2 rounded-xl border border-white/20">
+                  <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
+                  <span className="text-white font-bold text-sm">{rating.toFixed(1)}</span>
+                  <span className="text-gray-300 text-xs">by VettCode Admin</span>
+                </div>
               </div>
 
               {/* Thumbnails */}
               <div className="flex gap-2 mt-4 overflow-x-auto pb-2">
-                {images.map((img: any, index: number) => (
+                {screenshots.map((img: any, index: number) => (
                   <button
                     key={index}
                     onClick={() => { setActiveImage(index); setShowVideoModal(false); }}
-                    className={`relative flex-shrink-0 w-16 h-16 md:w-20 md:h-20 rounded-lg overflow-hidden border-2 transition ${
+                    className={`relative flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden border-2 transition ${
                       activeImage === index && !showVideoModal
-                        ? 'border-blue-500 ring-2 ring-blue-200'
-                        : 'border-gray-200 hover:border-gray-300'
+                        ? 'border-purple-500 ring-2 ring-purple-400/50'
+                        : 'border-gray-700 hover:border-purple-500/50'
                     }`}
                   >
                     <Image
                       src={img.url}
-                      alt={`${title} ${index + 1}`}
+                      alt={`Screenshot ${index + 1}`}
                       fill
                       className="object-cover"
                     />
                   </button>
                 ))}
                 {/* Video Thumbnail */}
-                {hasVideo && (
+                {videoDemo && videoEmbedUrl && (
                   <button
                     onClick={() => setShowVideoModal(true)}
-                    className={`relative flex-shrink-0 w-16 h-16 md:w-20 md:h-20 rounded-lg overflow-hidden border-2 transition bg-gray-900 ${
-                      showVideoModal ? 'border-blue-500 ring-2 ring-blue-200' : 'border-gray-200 hover:border-gray-300'
+                    className={`relative flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden border-2 transition bg-gray-900 ${
+                      showVideoModal ? 'border-purple-500 ring-2 ring-purple-400/50' : 'border-gray-700 hover:border-purple-500/50'
                     }`}
                   >
-                    {youtubeId ? (
-                      // Show actual YouTube thumbnail
-                      <img
-                        src={`https://img.youtube.com/vi/${youtubeId}/mqdefault.jpg`}
-                        alt="Video thumbnail"
-                        className="w-full h-full object-cover"
-                      />
-                    ) : (
-                      <div className="absolute inset-0 bg-gray-800 flex items-center justify-center">
-                        <Play className="w-6 h-6 text-white fill-white" />
-                      </div>
-                    )}
-                    {/* Play overlay */}
-                    <div className="absolute inset-0 flex items-center justify-center bg-black/30">
-                      <div className="w-8 h-8 rounded-full bg-white/90 flex items-center justify-center">
-                        <Play className="w-4 h-4 text-gray-900 fill-gray-900 ml-0.5" />
-                      </div>
+                    <div className="absolute inset-0 bg-gradient-to-br from-purple-900/50 to-blue-900/50 flex items-center justify-center">
+                      <Play className="w-8 h-8 text-white fill-white" />
                     </div>
                   </button>
                 )}
               </div>
+
+              {/* Stats Cards */}
+              <div className="mt-4 grid grid-cols-2 gap-3">
+                <div className="p-3 bg-gray-800/40 rounded-lg border border-gray-700/50">
+                  <div className="flex items-center gap-2 text-gray-400 text-xs mb-1">
+                    <Download className="w-3.5 h-3.5" />
+                    <span>Downloads</span>
+                  </div>
+                  <p className="text-lg font-bold text-white">{downloads.toLocaleString()}</p>
+                </div>
+                <div className="p-3 bg-gray-800/40 rounded-lg border border-gray-700/50">
+                  <div className="flex items-center gap-2 text-gray-400 text-xs mb-1">
+                    <Eye className="w-3.5 h-3.5" />
+                    <span>Views</span>
+                  </div>
+                  <p className="text-lg font-bold text-white">{views.toLocaleString()}</p>
+                </div>
+              </div>
             </div>
 
-            {/* Right: Product Info */}
+            {/* Right: Application Info */}
             <div className="p-4 md:p-6 lg:p-8">
-              {/* Shop Info */}
-              {shops && (
-                <div className="flex items-center gap-3 pb-4 border-b border-gray-100 mb-4">
-                  <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white font-semibold">
-                    {shops.name?.charAt(0) || 'S'}
+              {/* Developer Info */}
+              {seller && (
+                <div className="flex items-center gap-3 pb-4 border-b border-purple-500/20 mb-4">
+                  <div className="w-10 h-10 bg-gradient-to-br from-purple-600 to-blue-600 rounded-full flex items-center justify-center text-white font-bold">
+                    {seller.name?.charAt(0) || 'D'}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <Link href={`/shop/${shops.id}`} className="font-medium text-gray-900 hover:text-blue-600 truncate block">
-                      {shops.name}
+                    <Link href={`/shop/${seller.id}`} className="font-semibold text-white hover:text-purple-400 truncate block transition">
+                      {seller.name}
                     </Link>
-                    {shops.address && (
-                      <p className="text-xs text-gray-500 flex items-center gap-1">
+                    {seller.address && (
+                      <p className="text-xs text-gray-400 flex items-center gap-1">
                         <MapPin className="w-3 h-3" />
-                        <span className="truncate">{shops.address}</span>
+                        <span className="truncate">{seller.address}</span>
                       </p>
                     )}
                   </div>
                   <Link
-                    href={`/inbox?shopId=${shops.id}&shopName=${encodeURIComponent(shops.name || '')}&productId=${id}&productTitle=${encodeURIComponent(title)}&productImage=${encodeURIComponent(images?.[0]?.url || '')}`}
-                    className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-50 text-blue-600 rounded-lg text-sm font-medium hover:bg-blue-100 transition"
+                    href={`/inbox?shopId=${seller.id}&shopName=${encodeURIComponent(seller.name || '')}&productId=${id}&productTitle=${encodeURIComponent(appName)}&productImage=${encodeURIComponent(screenshots?.[0]?.url || '')}`}
+                    className="flex items-center gap-1.5 px-3 py-1.5 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-sm font-medium transition"
                   >
                     <MessageCircle className="w-4 h-4" />
-                    <span className="hidden sm:inline">Chat with Seller</span>
-                    <span className="sm:hidden">Chat</span>
+                    <span className="hidden sm:inline">Contact</span>
                   </Link>
                 </div>
               )}
 
               {/* Title */}
-              <h1 className="text-xl md:text-2xl lg:text-3xl font-bold text-gray-900 leading-tight">
-                {title}
+              <h1 className="text-2xl md:text-3xl font-bold text-white leading-tight">
+                {appName}
               </h1>
 
-              {/* Ratings & Sales */}
-              <div className="flex flex-wrap items-center gap-3 mt-3">
-                <div className="flex items-center gap-1">
-                  <Ratings rating={ratings || 5} size="sm" />
-                  <span className="text-sm text-gray-500 ml-1">({ratings || 5})</span>
-                </div>
-                {totalSales > 0 && (
-                  <span className="text-sm text-gray-500">|  {totalSales} sold</span>
-                )}
-                {brand && (
-                  <span className="text-sm text-gray-500">|  Brand: <span className="font-medium text-gray-700">{brand}</span></span>
-                )}
-              </div>
-
-              {/* Price & Delivery Row */}
-              <div className="mt-4 p-4 bg-gradient-to-r from-orange-50 to-yellow-50 rounded-xl">
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                  {/* Price */}
-                  <div className="flex items-baseline gap-3 flex-wrap">
-                    <span className="text-2xl md:text-3xl font-bold text-orange-600">
-                      UGX {sale_price?.toLocaleString('en-UG')}
-                    </span>
-                    {discount > 0 && (
-                      <>
-                        <span className="text-base text-gray-400 line-through">
-                          UGX {regular_price?.toLocaleString('en-UG')}
-                        </span>
-                        <span className="bg-red-500 text-white text-xs px-2 py-0.5 rounded font-medium">
-                          -{discount}%
-                        </span>
-                      </>
-                    )}
-                  </div>
-                  
-                  {/* Estimated Delivery - Next to Price */}
-                  <div className="flex items-center gap-2 text-sm bg-white/60 px-3 py-2 rounded-lg">
-                    <Clock className="w-4 h-4 text-blue-600" />
-                    <div>
-                      <span className="text-gray-500">Delivery by </span>
-                      <span className="font-semibold text-gray-800">
-                        {estimatedDelivery.toLocaleDateString('en-US', { 
-                          month: 'short', 
-                          day: 'numeric' 
-                        })}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Stock Status */}
-              <div className="mt-4 flex items-center gap-2">
-                {stock > 0 ? (
-                  <>
-                    <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse" />
-                    <span className="text-green-600 font-medium">In Stock</span>
-                    <span className="text-gray-500">({stock} items available)</span>
-                  </>
-                ) : (
-                  <>
-                    <div className="w-3 h-3 bg-red-500 rounded-full" />
-                    <span className="text-red-600 font-medium">Out of Stock</span>
-                  </>
-                )}
-              </div>
-
-              {/* Color Selection */}
-              {colors.length > 0 && (
-                <div className="mt-5">
-                  <p className="text-sm font-medium text-gray-700 mb-2">
-                    Color: <span className="text-gray-900">{selectedColor}</span>
-                  </p>
-                  <div className="flex flex-wrap gap-2">
-                    {colors.map((color: string, index: number) => (
-                      <button
-                        key={index}
-                        onClick={() => setSelectedColor(color)}
-                        className={`px-4 py-2 rounded-lg border-2 text-sm font-medium transition ${
-                          selectedColor === color
-                            ? 'border-blue-500 bg-blue-50 text-blue-700'
-                            : 'border-gray-200 hover:border-gray-300 text-gray-700'
-                        }`}
-                      >
-                        {color}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Size Selection */}
-              {sizes.length > 0 && (
-                <div className="mt-4">
-                  <p className="text-sm font-medium text-gray-700 mb-2">
-                    Size: <span className="text-gray-900">{selectedSize}</span>
-                  </p>
-                  <div className="flex flex-wrap gap-2">
-                    {sizes.map((size: string, index: number) => (
-                      <button
-                        key={index}
-                        onClick={() => setSelectedSize(size)}
-                        className={`min-w-[3rem] px-4 py-2 rounded-lg border-2 text-sm font-medium transition ${
-                          selectedSize === size
-                            ? 'border-blue-500 bg-blue-50 text-blue-700'
-                            : 'border-gray-200 hover:border-gray-300 text-gray-700'
-                        }`}
-                      >
-                        {size}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Quantity & Cart Actions */}
-              <div className="mt-6">
-                {isInCart ? (
-                  <div className="space-y-3">
-                    <div className="flex items-center gap-4">
-                      <span className="text-sm font-medium text-gray-700">Quantity:</span>
-                      <div className="flex items-center border border-gray-200 rounded-lg">
-                        <button
-                          onClick={handleDecreaseQuantity}
-                          className="p-2.5 hover:bg-gray-100 transition rounded-l-lg"
-                        >
-                          <Minus className="w-4 h-4" />
-                        </button>
-                        <span className="px-5 py-2 font-semibold min-w-[3rem] text-center">
-                          {cartQuantity}
-                        </span>
-                        <button
-                          onClick={handleIncreaseQuantity}
-                          className="p-2.5 hover:bg-gray-100 transition rounded-r-lg"
-                        >
-                          <Plus className="w-4 h-4" />
-                        </button>
-                      </div>
-                    </div>
-                    <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg border border-green-200">
-                      <span className="text-green-700 font-medium">Subtotal:</span>
-                      <span className="text-xl font-bold text-green-800">
-                        UGX {subtotal.toLocaleString('en-UG')}
-                      </span>
-                    </div>
-                  </div>
-                ) : null}
-              </div>
-
-              {/* ACTION BUTTONS */}
-              {/* PRIMARY: Add to Cart / Remove from Cart */}
-              <div className="mt-6">
-                {isInCart ? (
-                  <button
-                    onClick={handleRemoveFromCart}
-                    className="w-full flex items-center justify-center gap-2 py-4 px-6 bg-red-500 hover:bg-red-600 text-white rounded-xl font-bold transition text-base shadow-lg"
-                  >
-                    <ShoppingCart className="w-5 h-5" />
-                    Remove from Cart
-                  </button>
-                ) : (
-                  <button
-                    onClick={handleAddToCart}
-                    disabled={stock === 0}
-                    className={`w-full flex items-center justify-center gap-2 py-4 px-6 rounded-xl font-bold transition text-base shadow-lg ${
-                      stock === 0
-                        ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                        : 'bg-orange-500 hover:bg-orange-600 text-white'
-                    }`}
-                  >
-                    <ShoppingCart className="w-5 h-5" />
-                    Add to Cart
-                  </button>
-                )}
-              </div>
-
-              {/* SECONDARY: Message Seller Button - PROMINENT */}
-              {shops && (
+              {/* Category Badge */}
+              {appCategory && (
                 <div className="mt-3">
-                  <Link
-                    href={`/inbox?shopId=${shops.id}&shopName=${encodeURIComponent(shops.name || '')}&productId=${id}&productTitle=${encodeURIComponent(title)}&productImage=${encodeURIComponent(images?.[0]?.url || '')}`}
-                    className="w-full flex items-center justify-center gap-2 py-4 px-6 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white rounded-xl font-bold transition text-base shadow-lg"
-                  >
-                    <MessageCircle className="w-5 h-5" />
-                    Message Seller
-                  </Link>
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-purple-500/20 text-purple-300 border border-purple-500/40">
+                    <Code2 className="w-3.5 h-3.5" />
+                    {appCategory}
+                  </span>
                 </div>
               )}
 
-              {/* TERTIARY: Wishlist, Compare and Share - Same Row */}
-              <div className="mt-3 flex flex-row gap-3">
-                <button
-                  onClick={handleWishlist}
-                  className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-xl font-semibold transition border-2 ${
-                    isWishListed
-                      ? 'bg-red-50 border-red-300 text-red-600 hover:bg-red-100'
-                      : 'border-gray-200 text-gray-700 hover:bg-gray-50'
-                  }`}
-                >
-                  <Heart className={`w-5 h-5 ${isWishListed ? 'fill-red-500' : ''}`} />
-                  {isWishListed ? 'Saved' : 'Save'}
-                </button>
+              {/* Completion Score */}
+              {completionScore && (
+                <div className="mt-3 flex items-center gap-2 px-3 py-2 bg-green-500/10 border border-green-500/40 rounded-lg">
+                  <CheckCircle className="w-5 h-5 text-green-400" />
+                  <span className="text-sm font-semibold text-green-300">
+                    {completionScore}% Complete Profile
+                  </span>
+                </div>
+              )}
 
-                <Link
-                  href="/compare"
-                  onClick={handleCompare}
-                  className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-xl font-semibold transition border-2 ${
-                    isCompared
-                      ? 'bg-purple-50 border-purple-300 text-purple-700 hover:bg-purple-100'
-                      : 'border-gray-200 text-gray-700 hover:bg-gray-50'
-                  }`}
-                >
-                  <GitCompare className="w-5 h-5" />
-                  {isCompared ? 'Comparing' : 'Compare'}
-                </Link>
-
-                <button
-                  onClick={handleShare}
-                  className="flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-xl font-semibold transition border-2 border-gray-200 text-gray-700 hover:bg-gray-50 relative"
-                >
-                  <Share2 className="w-5 h-5" />
-                  Share
-                  {copied && (
-                    <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap">
-                      Copied!
-                    </span>
-                  )}
-                </button>
-              </div>
-
-              {/* Description & AI Buttons */}
-              <div className="mt-6 grid grid-cols-2 gap-3">
-                <button
-                  onClick={() => setShowDescription(true)}
-                  className="flex items-center gap-2 sm:gap-3 p-3 sm:p-4 bg-gray-50 hover:bg-gray-100 rounded-xl transition"
-                >
-                  <div className="w-8 h-8 sm:w-10 sm:h-10 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
-                    <FileText className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600" />
-                  </div>
-                  <div className="text-left min-w-0">
-                    <p className="font-medium text-gray-800 text-sm sm:text-base truncate">Description</p>
-                    <p className="text-xs text-gray-500 hidden sm:block">Specs & details</p>
-                  </div>
-                </button>
-
-                <button
-                  onClick={() => setShowChat(true)}
-                  className="flex items-center gap-2 sm:gap-3 p-3 sm:p-4 bg-gradient-to-r from-blue-50 to-purple-50 hover:from-blue-100 hover:to-purple-100 rounded-xl transition border border-blue-100"
-                >
-                  <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center flex-shrink-0">
-                    <MessageCircle className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
-                  </div>
-                  <div className="text-left min-w-0">
-                    <p className="font-medium text-gray-800 text-sm sm:text-base truncate">Ask AI</p>
-                    <p className="text-xs text-gray-500 hidden sm:block">Get instant help</p>
-                  </div>
-                </button>
-              </div>
-
-              {/* Tags */}
-              {tags.length > 0 && (
-                <div className="mt-4 flex flex-wrap gap-2">
-                  {tags.map((tag: string, index: number) => (
-                    <Link
+              {/* Badges */}
+              {badges.length > 0 && (
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {badges.map((badge: string, index: number) => (
+                    <span
                       key={index}
-                      href={`/search?q=${tag}`}
-                      className="text-xs bg-gray-100 hover:bg-gray-200 text-gray-600 px-3 py-1.5 rounded-full transition"
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-yellow-500/20 text-yellow-300 border border-yellow-500/40"
                     >
-                      #{tag}
-                    </Link>
+                      <Award className="w-3.5 h-3.5" />
+                      {badge}
+                    </span>
                   ))}
                 </div>
               )}
+
+              {/* Description */}
+              <div className="mt-4">
+                <p className="text-sm leading-relaxed text-gray-300 line-clamp-3">
+                  {description || "No description available"}
+                </p>
+              </div>
+
+              {/* Version & Last Updated */}
+              <div className="mt-4 flex items-center gap-4 text-xs text-gray-400">
+                <div className="flex items-center gap-1.5">
+                  <Package className="w-3.5 h-3.5" />
+                  <span>v{version}</span>
+                </div>
+                {lastUpdated && (
+                  <div className="flex items-center gap-1.5">
+                    <Clock className="w-3.5 h-3.5" />
+                    <span>Updated {formatDate(lastUpdated)}</span>
+                  </div>
+                )}
+              </div>
+
+              {/* Tech Stack */}
+              {techStack.length > 0 && (
+                <div className="mt-4 p-4 bg-gradient-to-br from-blue-900/30 to-indigo-900/30 rounded-xl border border-blue-500/30">
+                  <div className="flex items-center gap-2 mb-3">
+                    <Code2 className="w-4 h-4 text-blue-400" />
+                    <span className="text-sm font-bold text-white">Tech Stack</span>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {techStack.map((tech: string, index: number) => (
+                      <span
+                        key={index}
+                        className="px-3 py-1.5 text-xs font-semibold rounded-lg bg-blue-500/30 text-blue-200 border border-blue-400/50"
+                      >
+                        {tech}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Platforms */}
+              {platforms.length > 0 && (
+                <div className="mt-4 p-4 bg-gradient-to-br from-purple-900/30 to-violet-900/30 rounded-xl border border-purple-500/30">
+                  <div className="flex items-center gap-2 mb-3">
+                    <Shield className="w-4 h-4 text-purple-400" />
+                    <span className="text-sm font-bold text-white">Platforms</span>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {platforms.map((platform: string, index: number) => (
+                      <span
+                        key={index}
+                        className="px-3 py-1.5 text-xs font-semibold rounded-lg bg-purple-500/30 text-purple-200 border border-purple-400/50"
+                      >
+                        {platform}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* License */}
+              <div className="mt-4 flex items-center justify-between p-3 bg-gray-800/40 rounded-lg border border-gray-700/50">
+                <div className="flex items-center gap-2">
+                  {isFree ? (
+                    <Unlock className="w-4 h-4 text-green-400" />
+                  ) : (
+                    <Lock className="w-4 h-4 text-purple-400" />
+                  )}
+                  <span className="text-sm text-gray-400">License:</span>
+                </div>
+                <span className="text-sm font-semibold text-white">{licenseType}</span>
+              </div>
+
+              {/* Price */}
+              <div className="mt-6 p-4 bg-gradient-to-r from-purple-900/30 to-blue-900/30 rounded-xl border border-purple-500/30">
+                <div className="flex items-baseline gap-3">
+                  {isFree ? (
+                    <span className="text-3xl font-bold text-green-400">FREE</span>
+                  ) : (
+                    <span className="text-3xl font-bold text-white">{formatPrice(price, currency)}</span>
+                  )}
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="mt-6 space-y-3">
+                <button
+                  onClick={handleDownloadAccess}
+                  className="w-full flex items-center justify-center gap-2 py-4 px-6 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white rounded-xl font-bold transition shadow-lg"
+                >
+                  {isFree ? (
+                    <>
+                      <Download className="w-5 h-5" />
+                      Free Access
+                    </>
+                  ) : (
+                    <>
+                      <Shield className="w-5 h-5" />
+                      Get Application
+                    </>
+                  )}
+                </button>
+
+                <div className="flex gap-3">
+                  <button
+                    onClick={handleWishlist}
+                    className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-xl font-semibold transition border-2 ${
+                      isWishListed
+                        ? 'bg-red-500/20 border-red-500/40 text-red-400'
+                        : 'border-purple-500/40 text-gray-300 hover:bg-purple-500/10'
+                    }`}
+                  >
+                    <Heart className={`w-5 h-5 ${isWishListed ? 'fill-red-500' : ''}`} />
+                    {isWishListed ? 'Saved' : 'Save'}
+                  </button>
+
+                  <button
+                    onClick={handleShare}
+                    className="flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-xl font-semibold transition border-2 border-purple-500/40 text-gray-300 hover:bg-purple-500/10 relative"
+                  >
+                    <Share2 className="w-5 h-5" />
+                    Share
+                    {copied && (
+                      <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap">
+                        Copied!
+                      </span>
+                    )}
+                  </button>
+                </div>
+              </div>
+
+              {/* Quick Links */}
+              {(liveDemo || githubRepo || documentationUrl) && (
+                <div className="mt-4 p-4 bg-gradient-to-br from-gray-800/60 to-gray-900/60 rounded-xl border border-gray-700/50">
+                  <div className="flex items-center gap-2 mb-3">
+                    <ExternalLink className="w-4 h-4 text-gray-300" />
+                    <span className="text-sm font-bold text-white">Quick Links</span>
+                  </div>
+                  <div className="grid grid-cols-2 gap-2">
+                    {liveDemo && (
+                      <a
+                        href={liveDemo}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center justify-center gap-2 px-3 py-3 text-sm font-semibold bg-gradient-to-br from-emerald-600/20 to-teal-600/20 text-emerald-300 hover:from-emerald-600/30 hover:to-teal-600/30 rounded-lg transition border border-emerald-500/40"
+                      >
+                        <ExternalLink className="w-4 h-4" />
+                        Live Demo
+                      </a>
+                    )}
+                    {githubRepo && (
+                      <a
+                        href={githubRepo}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center justify-center gap-2 px-3 py-3 text-sm font-semibold bg-gradient-to-br from-gray-700/40 to-gray-800/40 text-gray-200 hover:from-gray-700/60 hover:to-gray-800/60 rounded-lg transition border border-gray-600"
+                      >
+                        <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                          <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                        </svg>
+                        GitHub
+                      </a>
+                    )}
+                    {documentationUrl && (
+                      <a
+                        href={documentationUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center justify-center gap-2 px-3 py-3 text-sm font-semibold bg-gradient-to-br from-blue-600/20 to-indigo-600/20 text-blue-300 hover:from-blue-600/30 hover:to-indigo-600/30 rounded-lg transition border border-blue-500/40"
+                      >
+                        <FileText className="w-4 h-4" />
+                        Docs
+                      </a>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* Support Info */}
+              <div className="mt-4 p-4 bg-gradient-to-br from-amber-900/20 to-orange-900/20 rounded-xl border border-amber-500/30">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="flex flex-col">
+                    <span className="text-xs text-amber-400/70 mb-1">Support Level</span>
+                    <span className="text-sm font-bold text-amber-200">{supportLevel}</span>
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-xs text-amber-400/70 mb-1">Update Status</span>
+                    <span className="text-sm font-bold text-amber-200">{updateFrequency}</span>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Reviews Section */}
-        <div className="mt-8">
-          <ProductReviews productId={id} productTitle={title} />
+        {/* Detailed Information Tabs */}
+        <div className="mt-8 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 rounded-2xl shadow-2xl overflow-hidden border border-purple-500/30">
+          {/* Tab Navigation */}
+          <div className="flex border-b border-purple-500/20 bg-gray-900/50">
+            <button
+              onClick={() => setActiveTab('overview')}
+              className={`flex-1 px-6 py-4 text-sm font-semibold transition ${
+                activeTab === 'overview'
+                  ? 'text-white bg-purple-600/20 border-b-2 border-purple-500'
+                  : 'text-gray-400 hover:text-white hover:bg-gray-800/50'
+              }`}
+            >
+              <div className="flex items-center justify-center gap-2">
+                <FileText className="w-4 h-4" />
+                Overview
+              </div>
+            </button>
+            {features.length > 0 && (
+              <button
+                onClick={() => setActiveTab('features')}
+                className={`flex-1 px-6 py-4 text-sm font-semibold transition ${
+                  activeTab === 'features'
+                    ? 'text-white bg-purple-600/20 border-b-2 border-purple-500'
+                    : 'text-gray-400 hover:text-white hover:bg-gray-800/50'
+                }`}
+              >
+                <div className="flex items-center justify-center gap-2">
+                  <Zap className="w-4 h-4" />
+                  Features
+                </div>
+              </button>
+            )}
+            {requirements.length > 0 && (
+              <button
+                onClick={() => setActiveTab('requirements')}
+                className={`flex-1 px-6 py-4 text-sm font-semibold transition ${
+                  activeTab === 'requirements'
+                    ? 'text-white bg-purple-600/20 border-b-2 border-purple-500'
+                    : 'text-gray-400 hover:text-white hover:bg-gray-800/50'
+                }`}
+              >
+                <div className="flex items-center justify-center gap-2">
+                  <Shield className="w-4 h-4" />
+                  Requirements
+                </div>
+              </button>
+            )}
+          </div>
+
+          {/* Tab Content */}
+          <div className="p-6 md:p-8">
+            {activeTab === 'overview' && (
+              <div className="space-y-6">
+                <div>
+                  <h3 className="text-xl font-bold text-white mb-3 flex items-center gap-2">
+                    <FileText className="w-5 h-5 text-purple-400" />
+                    About This Application
+                  </h3>
+                  <p className="text-gray-300 leading-relaxed whitespace-pre-line">
+                    {description || "No detailed description available for this application."}
+                  </p>
+                </div>
+
+                {/* Key Metrics */}
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  <div className="p-4 bg-gradient-to-br from-purple-900/30 to-blue-900/30 rounded-xl border border-purple-500/30">
+                    <div className="flex items-center gap-2 text-purple-300 mb-2">
+                      <TrendingUp className="w-4 h-4" />
+                      <span className="text-xs font-semibold">Rating</span>
+                    </div>
+                    <p className="text-2xl font-bold text-white">{rating.toFixed(1)}</p>
+                    <p className="text-xs text-gray-400 mt-1">out of 5.0</p>
+                  </div>
+
+                  <div className="p-4 bg-gradient-to-br from-emerald-900/30 to-teal-900/30 rounded-xl border border-emerald-500/30">
+                    <div className="flex items-center gap-2 text-emerald-300 mb-2">
+                      <Download className="w-4 h-4" />
+                      <span className="text-xs font-semibold">Downloads</span>
+                    </div>
+                    <p className="text-2xl font-bold text-white">{downloads.toLocaleString()}</p>
+                    <p className="text-xs text-gray-400 mt-1">total installs</p>
+                  </div>
+
+                  <div className="p-4 bg-gradient-to-br from-blue-900/30 to-indigo-900/30 rounded-xl border border-blue-500/30">
+                    <div className="flex items-center gap-2 text-blue-300 mb-2">
+                      <Eye className="w-4 h-4" />
+                      <span className="text-xs font-semibold">Views</span>
+                    </div>
+                    <p className="text-2xl font-bold text-white">{views.toLocaleString()}</p>
+                    <p className="text-xs text-gray-400 mt-1">page views</p>
+                  </div>
+
+                  <div className="p-4 bg-gradient-to-br from-amber-900/30 to-orange-900/30 rounded-xl border border-amber-500/30">
+                    <div className="flex items-center gap-2 text-amber-300 mb-2">
+                      <Users className="w-4 h-4" />
+                      <span className="text-xs font-semibold">Support</span>
+                    </div>
+                    <p className="text-lg font-bold text-white">{supportLevel}</p>
+                    <p className="text-xs text-gray-400 mt-1">{updateFrequency}</p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {activeTab === 'features' && features.length > 0 && (
+              <div>
+                <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                  <Zap className="w-5 h-5 text-purple-400" />
+                  Key Features
+                </h3>
+                <div className="grid gap-3">
+                  {features.map((feature, index) => (
+                    <div
+                      key={index}
+                      className="flex items-start gap-3 p-4 bg-gradient-to-r from-purple-900/20 to-blue-900/20 rounded-lg border border-purple-500/20 hover:border-purple-500/40 transition"
+                    >
+                      <CheckCircle className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
+                      <p className="text-gray-200 leading-relaxed">{feature}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {activeTab === 'requirements' && requirements.length > 0 && (
+              <div>
+                <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                  <Shield className="w-5 h-5 text-purple-400" />
+                  System Requirements
+                </h3>
+                <div className="grid gap-3">
+                  {requirements.map((requirement, index) => (
+                    <div
+                      key={index}
+                      className="flex items-start gap-3 p-4 bg-gradient-to-r from-blue-900/20 to-indigo-900/20 rounded-lg border border-blue-500/20"
+                    >
+                      <div className="w-6 h-6 rounded-full bg-blue-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <span className="text-xs font-bold text-blue-300">{index + 1}</span>
+                      </div>
+                      <p className="text-gray-200 leading-relaxed">{requirement}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
         </div>
 
-        {/* Similar Products Section */}
+        {/* Similar Applications */}
         {similarProducts.length > 0 && (
-          <div className="mt-8">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl md:text-2xl font-bold text-gray-900">Similar Products</h2>
-              <Link 
-                href={`/category/${category}`}
-                className="text-blue-600 hover:text-blue-700 text-sm font-medium flex items-center gap-1"
-              >
-                View All
-                <ChevronRight className="w-4 h-4" />
-              </Link>
-            </div>
+          <div className="mt-12">
+            <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-2">
+              <Sparkles className="w-6 h-6 text-purple-400" />
+              Similar Applications
+            </h2>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-              {similarProducts.slice(0, 10).map((product) => (
+              {similarProducts.slice(0, 10).map((product: any) => (
                 <ProductCard key={product.id} product={product} />
               ))}
             </div>
           </div>
         )}
-
-        {/* Service Features - Moved to End */}
-        <div className="mt-8 bg-white rounded-2xl shadow-sm p-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Why Shop With Us</h3>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="flex flex-col items-center text-center p-4 bg-gray-50 rounded-xl">
-              <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mb-3">
-                <Truck className="w-6 h-6 text-blue-600" />
-              </div>
-              <span className="font-medium text-gray-800">Free Delivery</span>
-              <span className="text-xs text-gray-500 mt-1">On orders over UGX 1,500,000</span>
-            </div>
-            <div className="flex flex-col items-center text-center p-4 bg-gray-50 rounded-xl">
-              <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mb-3">
-                <Shield className="w-6 h-6 text-green-600" />
-              </div>
-              <span className="font-medium text-gray-800">Secure Payment</span>
-              <span className="text-xs text-gray-500 mt-1">100% secure checkout</span>
-            </div>
-            <div className="flex flex-col items-center text-center p-4 bg-gray-50 rounded-xl">
-              <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center mb-3">
-                <RotateCcw className="w-6 h-6 text-orange-600" />
-              </div>
-              <span className="font-medium text-gray-800">Easy Returns</span>
-              <span className="text-xs text-gray-500 mt-1">7-day return policy</span>
-            </div>
-            {cash_on_delivery === 'yes' ? (
-              <div className="flex flex-col items-center text-center p-4 bg-gray-50 rounded-xl">
-                <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mb-3">
-                  <Check className="w-6 h-6 text-purple-600" />
-                </div>
-                <span className="font-medium text-gray-800">COD Available</span>
-                <span className="text-xs text-gray-500 mt-1">Pay on delivery eligebility</span>
-              </div>
-            ) : (
-              <div className="flex flex-col items-center text-center p-4 bg-gray-50 rounded-xl">
-                <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mb-3">
-                  <Check className="w-6 h-6 text-purple-600" />
-                </div>
-                <span className="font-medium text-gray-800">Quality Guaranteed</span>
-                <span className="text-xs text-gray-500 mt-1">Verified products</span>
-              </div>
-            )}
-          </div>
-        </div>
       </div>
-
-      {/* Modals */}
-      <ProductDescriptionModal
-        productInfo={productDetails}
-        isOpen={showDescription}
-        onClose={() => setShowDescription(false)}
-      />
-
-      <ProductAIChat
-        productInfo={productDetails}
-        isOpen={showChat}
-        onClose={() => setShowChat(false)}
-      />
-
-      {/* ── Fullscreen Video Modal ── */}
-      {showVideoModal && hasVideo && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/90"
-          onClick={() => setShowVideoModal(false)}
-        >
-          <div
-            className="relative w-full max-w-4xl mx-4 aspect-video"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {youtubeId ? (
-              <iframe
-                src={`https://www.youtube.com/embed/${youtubeId}?autoplay=1&rel=0`}
-                className="w-full h-full rounded-xl"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-              />
-            ) : isDirectVideoUrl ? (
-              <video
-                src={video_url!}
-                className="w-full h-full rounded-xl object-contain bg-black"
-                controls
-                autoPlay
-              />
-            ) : null}
-
-            {/* Close button */}
-            <button
-              onClick={() => setShowVideoModal(false)}
-              className="absolute -top-12 right-0 flex items-center gap-2 text-white/80 hover:text-white transition text-sm"
-            >
-              <X className="w-5 h-5" />
-              Close
-            </button>
-          </div>
-        </div>
-      )}
     </div>
-  )
-}
+  );
+};
 
-export default ProductDetails
+export default ProductDetails;
