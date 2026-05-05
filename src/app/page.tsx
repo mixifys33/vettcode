@@ -11,6 +11,7 @@ import EventsSection from "@/shared/components/sections/EventsSection";
 import OffersSection from "@/shared/components/sections/OffersSection";
 import Footer from "@/shared/components/Footer";
 import Link from "next/link";
+import ScaleLoader from "@/shared/components/loading/ScaleLoader";
 import {
   Store, ArrowRight, TrendingUp, Sparkles, ShoppingCart,
   Heart, X, Zap, Tag, Shield, Truck, RotateCcw, Star,
@@ -109,16 +110,7 @@ export default function Page() {
   });
 
   if (userLoading) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="flex flex-col items-center gap-4">
-          <div className="w-14 h-14 rounded-2xl flex items-center justify-center shadow-xl animate-pulse" style={{ background: "linear-gradient(135deg, #0f766e, #14b8a6)" }}>
-            <ShoppingBag className="w-7 h-7 text-white" />
-          </div>
-          <div className="w-8 h-8 border-3 border-teal-600 border-t-transparent rounded-full animate-spin" />
-        </div>
-      </div>
-    );
+    return <ScaleLoader fullScreen message="Preparing your workspace..." />;
   }
 
   return (

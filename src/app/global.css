@@ -196,3 +196,46 @@ button { cursor: pointer; font-family: inherit; }
   animation: shimmer 1.5s infinite;
   border-radius: 8px;
 }
+
+/* Scale Loader Animations */
+@keyframes scale-rotate-1 {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes scale-rotate-2 {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(-360deg); }
+}
+
+@keyframes scale-rotate-3 {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes scale-pulse {
+  0%, 100% { 
+    opacity: 0.3;
+    transform: scale(0.8);
+  }
+  50% { 
+    opacity: 1;
+    transform: scale(1.2);
+  }
+}
+
+.animate-scale-rotate-1 {
+  animation: scale-rotate-1 8s linear infinite;
+}
+
+.animate-scale-rotate-2 {
+  animation: scale-rotate-2 10s linear infinite;
+}
+
+.animate-scale-rotate-3 {
+  animation: scale-rotate-3 12s linear infinite;
+}
+
+.animate-scale-pulse {
+  animation: scale-pulse 2s ease-in-out infinite;
+}

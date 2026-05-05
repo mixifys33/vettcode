@@ -5,6 +5,7 @@ import { Search, X, Code2, Sparkles } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import axiosInstance from "@/utils/axiosInstance";
 import ProductCard from "@/shared/components/cards/Product-card";
+import ScaleLoader from "@/shared/components/loading/ScaleLoader";
 
 const ITEMS_PER_PAGE = 12;
 
@@ -149,18 +150,7 @@ const ApplicationsPageContent = () => {
       <div className="max-w-7xl mx-auto px-4 py-8">
         {/* Loading State */}
         {isLoading && (
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 gap-4">
-            {Array.from({ length: 12 }).map((_, i) => (
-              <div key={i} className="bg-white/5 backdrop-blur-sm rounded-2xl overflow-hidden border border-white/10 animate-pulse">
-                <div className="aspect-video bg-white/10" />
-                <div className="p-4 space-y-3">
-                  <div className="h-4 bg-white/10 rounded w-3/4" />
-                  <div className="h-3 bg-white/10 rounded w-1/2" />
-                  <div className="h-8 bg-white/10 rounded" />
-                </div>
-              </div>
-            ))}
-          </div>
+          <ScaleLoader message="Discovering amazing codebases..." />
         )}
 
         {/* Applications Grid */}
@@ -240,11 +230,7 @@ const ApplicationsPageContent = () => {
 
 export default function ApplicationsPage() {
   return (
-    <Suspense fallback={
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center">
-        <div className="w-12 h-12 border-4 border-purple-500/20 border-t-purple-500 rounded-full animate-spin" />
-      </div>
-    }>
+    <Suspense fallback={<ScaleLoader fullScreen message="Loading applications marketplace..." />}>
       <ApplicationsPageContent />
     </Suspense>
   );
