@@ -67,60 +67,62 @@ const ProductDetailsCard = ({
 
   return (
     <div
-      className="fixed inset-0 z-[60] flex items-center justify-center bg-black/60 backdrop-blur-sm p-2 sm:p-4"
+      className="fixed inset-0 z-[60] flex items-center justify-center bg-black/70 backdrop-blur-sm p-2 sm:p-4"
       onClick={() => setOpen(false)}
     >
       <div
-        className="relative w-full max-w-5xl max-h-[95vh] overflow-y-auto bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 rounded-xl shadow-2xl border border-purple-500/20"
+        className="relative w-full max-w-6xl max-h-[95vh] overflow-y-auto bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 rounded-2xl shadow-2xl border border-purple-500/30"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Close Button */}
         <button
-          className="absolute right-2 top-2 sm:right-4 sm:top-4 z-10 p-1.5 sm:p-2 bg-gray-800/90 rounded-full shadow-md hover:bg-gray-700 transition border border-purple-500/30"
+          className="absolute right-3 top-3 sm:right-4 sm:top-4 z-10 p-2 bg-gray-800/90 rounded-full shadow-lg hover:bg-gray-700 transition border border-purple-500/40"
           onClick={() => setOpen(false)}
           aria-label="Close"
         >
-          <X className="w-5 h-5 sm:w-6 sm:h-6 text-gray-300" />
+          <X className="w-5 h-5 sm:w-6 sm:h-6 text-gray-200" />
         </button>
 
         <div className="flex flex-col lg:flex-row">
-          {/* Image Section */}
-          <div className="w-full lg:w-1/2 p-3 sm:p-4 lg:p-6">
-            <div className="relative aspect-square w-full overflow-hidden rounded-lg bg-gray-800/50 border border-purple-500/20">
+          {/* Image Section - Optimized Space Usage */}
+          <div className="w-full lg:w-[45%] p-4 sm:p-5 lg:p-6 flex flex-col">
+            {/* Main Image */}
+            <div className="relative w-full rounded-xl overflow-hidden bg-gray-800/50 border border-purple-500/20 flex-shrink-0" style={{ aspectRatio: '16/10' }}>
               {imageArray?.[activeImage]?.url ? (
                 <Image
                   src={imageArray[activeImage].url}
                   alt={data?.appName || data?.title || "Application screenshot"}
                   fill
-                  className="object-contain"
-                  sizes="(max-width: 1024px) 100vw, 50vw"
+                  className="object-cover"
+                  sizes="(max-width: 1024px) 100vw, 45vw"
                 />
               ) : (
-                <div className="w-full h-full flex items-center justify-center text-gray-500">
-                  <Code2 className="w-16 h-16" />
+                <div className="w-full h-full flex items-center justify-center text-gray-600">
+                  <Code2 className="w-20 h-20" />
                 </div>
               )}
             </div>
-            {/* Thumbnails */}
+            
+            {/* Thumbnails - Compact Grid */}
             {imageArray?.length > 1 && (
-              <div className="flex gap-2 mt-3 overflow-x-auto pb-2">
-                {imageArray.map(
+              <div className="grid grid-cols-5 gap-2 mt-3">
+                {imageArray.slice(0, 5).map(
                   (img: any, index: number) =>
                     img?.url && (
                       <button
                         key={index}
-                        className={`flex-shrink-0 w-14 h-14 sm:w-16 sm:h-16 rounded-lg overflow-hidden border-2 transition ${
+                        className={`aspect-square rounded-lg overflow-hidden border-2 transition ${
                           activeImage === index
                             ? "border-purple-500 ring-2 ring-purple-400/50"
-                            : "border-gray-700 hover:border-gray-600"
+                            : "border-gray-700 hover:border-purple-500/50"
                         }`}
                         onClick={() => setActiveImage(index)}
                       >
                         <Image
                           src={img.url}
                           alt={`Thumbnail ${index + 1}`}
-                          width={64}
-                          height={64}
+                          width={80}
+                          height={80}
                           className="w-full h-full object-cover"
                         />
                       </button>
@@ -128,10 +130,47 @@ const ProductDetailsCard = ({
                 )}
               </div>
             )}
+
+            {/* Video Demo Section - Use the space efficiently */}
+            {data?.videoDemo && (
+              <div className="mt-4 p-4 bg-gradient-to-br from-purple-900/30 to-blue-900/30 rounded-xl border border-purple-500/30">
+                <div className="flex items-center gap-2 mb-2">
+                  <Play className="w-5 h-5 text-purple-400" />
+                  <span className="text-sm font-semibold text-gray-200">Video Demo Available</span>
+                </div>
+                <a
+                  href={data.videoDemo}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center gap-2 w-full px-4 py-2.5 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white text-sm font-medium rounded-lg transition"
+                >
+                  <Play className="w-4 h-4" />
+                  Watch Demo
+                </a>
+              </div>
+            )}
+
+            {/* Quick Stats - Use remaining space */}
+            <div className="mt-4 grid grid-cols-2 gap-3">
+              <div className="p-3 bg-gray-800/40 rounded-lg border border-gray-700/50">
+                <div className="flex items-center gap-2 text-gray-400 text-xs mb-1">
+                  <Download className="w-3.5 h-3.5" />
+                  <span>Downloads</span>
+                </div>
+                <p className="text-lg font-bold text-white">{(data?.downloads || 0).toLocaleString()}</p>
+              </div>
+              <div className="p-3 bg-gray-800/40 rounded-lg border border-gray-700/50">
+                <div className="flex items-center gap-2 text-gray-400 text-xs mb-1">
+                  <Eye className="w-3.5 h-3.5" />
+                  <span>Views</span>
+                </div>
+                <p className="text-lg font-bold text-white">{(data?.views || 0).toLocaleString()}</p>
+              </div>
+            </div>
           </div>
 
-          {/* Details Section */}
-          <div className="w-full lg:w-1/2 p-3 sm:p-4 lg:p-6 lg:border-l border-purple-500/20">
+          {/* Details Section - Better Typography & Spacing */}
+          <div className="w-full lg:w-[55%] p-4 sm:p-5 lg:p-6 lg:border-l border-purple-500/20 overflow-y-auto">
             {/* Seller/Developer Info */}
             <div className="flex flex-col sm:flex-row sm:items-start gap-3 pb-4 border-b border-purple-500/20">
               <div className="flex items-center gap-3 flex-1 min-w-0">
@@ -141,33 +180,33 @@ const ProductDetailsCard = ({
                     alt="Developer"
                     width={48}
                     height={48}
-                    className="rounded-full w-10 h-10 sm:w-12 sm:h-12 object-cover flex-shrink-0 border-2 border-purple-500/30"
+                    className="rounded-full w-11 h-11 sm:w-12 sm:h-12 object-cover flex-shrink-0 border-2 border-purple-500/40"
                   />
                 ) : (
-                  <div className="rounded-full w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-purple-600 to-blue-600 flex items-center justify-center text-white text-lg font-semibold flex-shrink-0">
+                  <div className="rounded-full w-11 h-11 sm:w-12 sm:h-12 bg-gradient-to-br from-purple-600 to-blue-600 flex items-center justify-center text-white text-lg font-bold flex-shrink-0 shadow-lg">
                     {data?.Shop?.name?.charAt(0) || "D"}
                   </div>
                 )}
                 <div className="min-w-0">
                   <Link
                     href={`/shop/${data?.Shop?.id}`}
-                    className="text-sm sm:text-base font-medium text-gray-100 hover:text-purple-400 truncate block"
+                    className="text-sm sm:text-base font-semibold text-white hover:text-purple-400 truncate block transition"
                   >
                     {data?.Shop?.name || "Developer"}
                   </Link>
-                  <div className="mt-0.5">
+                  <div className="mt-1">
                     <Ratings rating={data?.Shop?.ratings || data?.rating || 5.0} size="sm" />
                   </div>
-                  <p className="text-xs sm:text-sm text-gray-400 mt-0.5 flex items-center gap-1 truncate">
+                  <p className="text-xs text-gray-400 mt-1 flex items-center gap-1 truncate">
                     <MapPin className="w-3 h-3 flex-shrink-0" />
                     <span className="truncate">
-                      {data?.Shop?.address || "Location Not Available"}
+                      {data?.Shop?.address || "Global"}
                     </span>
                   </p>
                 </div>
               </div>
               <button
-                className="flex items-center justify-center gap-2 px-3 py-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white text-sm rounded-lg hover:from-purple-700 hover:to-blue-700 transition w-full sm:w-auto"
+                className="flex items-center justify-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white text-sm font-medium rounded-lg hover:from-purple-700 hover:to-blue-700 transition shadow-lg w-full sm:w-auto"
                 onClick={() => {
                   const shopId = data?.Shop?.id || data?.shopId;
                   const shopName = data?.Shop?.name || data?.shopName || 'Developer';
@@ -179,52 +218,36 @@ const ProductDetailsCard = ({
                 }}
               >
                 <MessageCircle className="w-4 h-4" />
-                <span className="sm:inline">Contact Developer</span>
+                <span>Contact</span>
               </button>
             </div>
 
             {/* Application Title */}
-            <h2 className="text-lg sm:text-xl lg:text-2xl font-semibold text-gray-100 mt-4 leading-tight">
+            <h2 className="text-xl sm:text-2xl font-bold text-white mt-4 leading-tight">
               {data?.appName || data?.title || "Application"}
             </h2>
 
-            {/* Category Badge */}
-            {data?.appCategory && (
-              <div className="mt-2">
-                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-purple-500/20 text-purple-300 border border-purple-500/30">
-                  <Code2 className="w-3 h-3" />
+            {/* Category & Rating Row */}
+            <div className="mt-3 flex items-center gap-3 flex-wrap">
+              {data?.appCategory && (
+                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-purple-500/20 text-purple-300 border border-purple-500/40">
+                  <Code2 className="w-3.5 h-3.5" />
                   {data.appCategory}
                 </span>
-              </div>
-            )}
-
-            {/* Application Ratings & Stats */}
-            <div className="mt-3 flex items-center gap-4 flex-wrap">
+              )}
               <div className="flex items-center gap-2">
                 <Ratings rating={data?.rating || 5.0} size="md" />
-                <span className="text-sm text-gray-400">
-                  ({data?.reviewCount || 0} reviews)
+                <span className="text-sm font-medium text-gray-300">
+                  ({data?.reviewCount || 0})
                 </span>
               </div>
-              {(data?.downloads || 0) > 0 && (
-                <span className="flex items-center gap-1 text-sm text-gray-400">
-                  <Download className="w-4 h-4" />
-                  {data.downloads.toLocaleString()} downloads
-                </span>
-              )}
-              {(data?.views || 0) > 0 && (
-                <span className="flex items-center gap-1 text-sm text-gray-400">
-                  <Eye className="w-4 h-4" />
-                  {data.views.toLocaleString()} views
-                </span>
-              )}
             </div>
 
             {/* Admin Completion Score */}
             {data?.completionScore && (
-              <div className="mt-3 flex items-center gap-2 px-3 py-2 bg-green-500/10 border border-green-500/30 rounded-lg">
+              <div className="mt-3 flex items-center gap-2 px-3 py-2 bg-green-500/10 border border-green-500/40 rounded-lg">
                 <CheckCircle className="w-5 h-5 text-green-400" />
-                <span className="text-sm font-medium text-green-300">
+                <span className="text-sm font-semibold text-green-300">
                   {data.completionScore}% Complete Profile
                 </span>
               </div>
@@ -233,7 +256,7 @@ const ProductDetailsCard = ({
             {/* Description */}
             <div className="mt-4">
               <p
-                className={`text-sm sm:text-base text-gray-300 ${
+                className={`text-sm leading-relaxed text-gray-300 ${
                   showFullDescription ? "" : "line-clamp-3"
                 }`}
               >
@@ -243,9 +266,9 @@ const ProductDetailsCard = ({
                ((data?.detailedDescription?.length || 0) > 150 || (data?.description?.length || 0) > 150 || (data?.shortDescription?.length || 0) > 150) && (
                 <button
                   onClick={() => setShowFullDescription(!showFullDescription)}
-                  className="mt-1 text-sm font-medium text-purple-400 hover:text-purple-300 hover:underline transition"
+                  className="mt-2 text-sm font-semibold text-purple-400 hover:text-purple-300 hover:underline transition"
                 >
-                  {showFullDescription ? "Show less" : "Show more"}
+                  {showFullDescription ? "Show less" : "Read more"}
                 </button>
               )}
             </div>
@@ -253,14 +276,14 @@ const ProductDetailsCard = ({
             {/* Technology Stack */}
             {data?.technologyStack?.length > 0 && (
               <div className="mt-4">
-                <span className="text-sm font-medium text-gray-300 block mb-2">
-                  Tech Stack:
+                <span className="text-sm font-bold text-white block mb-2">
+                  Tech Stack
                 </span>
                 <div className="flex flex-wrap gap-2">
                   {data.technologyStack.map((tech: string, index: number) => (
                     <span
                       key={index}
-                      className="px-2.5 py-1 text-xs rounded-md bg-blue-500/20 text-blue-300 border border-blue-500/30"
+                      className="px-3 py-1.5 text-xs font-medium rounded-lg bg-blue-500/20 text-blue-300 border border-blue-500/40"
                     >
                       {tech}
                     </span>
@@ -272,14 +295,14 @@ const ProductDetailsCard = ({
             {/* Supported Platforms */}
             {data?.supportedPlatforms?.length > 0 && (
               <div className="mt-4">
-                <span className="text-sm font-medium text-gray-300 block mb-2">
-                  Platforms:
+                <span className="text-sm font-bold text-white block mb-2">
+                  Platforms
                 </span>
                 <div className="flex flex-wrap gap-2">
                   {data.supportedPlatforms.map((platform: string, index: number) => (
                     <span
                       key={index}
-                      className="px-2.5 py-1 text-xs rounded-md bg-gray-700/50 text-gray-300 border border-gray-600"
+                      className="px-3 py-1.5 text-xs font-medium rounded-lg bg-gray-700/60 text-gray-200 border border-gray-600"
                     >
                       {platform}
                     </span>
@@ -288,12 +311,14 @@ const ProductDetailsCard = ({
               </div>
             )}
 
-            {/* License Type */}
-            {data?.licenseType && (
-              <p className="mt-3 text-sm text-gray-400">
-                <span className="font-medium text-gray-300">License:</span> {data.licenseType}
-              </p>
-            )}
+            {/* License & Badges Row */}
+            <div className="mt-4 flex items-center gap-3 flex-wrap">
+              {data?.licenseType && (
+                <span className="text-sm text-gray-300">
+                  <span className="font-semibold text-white">License:</span> {data.licenseType}
+                </span>
+              )}
+            </div>
 
             {/* Badges */}
             {data?.badges?.length > 0 && (
@@ -301,137 +326,131 @@ const ProductDetailsCard = ({
                 {data.badges.map((badge: string, index: number) => (
                   <span
                     key={index}
-                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-yellow-500/20 text-yellow-300 border border-yellow-500/30"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-yellow-500/20 text-yellow-300 border border-yellow-500/40"
                   >
-                    <Award className="w-3 h-3" />
+                    <Award className="w-3.5 h-3.5" />
                     {badge}
                   </span>
                 ))}
               </div>
             )}
 
-            {/* Price */}
-            <div className="mt-5 flex items-baseline gap-3">
-              {data?.isFree ? (
-                <span className="text-2xl sm:text-3xl font-bold text-green-400">
-                  FREE
-                </span>
-              ) : (
-                <span className="text-2xl sm:text-3xl font-bold text-gray-100">
-                  {formatApplicationPrice(data?.price || 0, data?.currency || 'USD')}
-                </span>
-              )}
-            </div>
-
-            {/* Action Buttons */}
-            <div className="mt-5 flex flex-col sm:flex-row gap-3">
-              <button
-                onClick={handleDownloadAccess}
-                className="flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-lg font-medium transition bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white"
-              >
+            {/* Price & Action Section */}
+            <div className="mt-6 pt-4 border-t border-purple-500/20">
+              {/* Price */}
+              <div className="flex items-baseline gap-3 mb-4">
                 {data?.isFree ? (
-                  <>
-                    <Download className="w-5 h-5" />
-                    Free Access
-                  </>
+                  <span className="text-3xl font-bold text-green-400">
+                    FREE
+                  </span>
                 ) : (
-                  <>
-                    <Shield className="w-5 h-5" />
-                    Get Application
-                  </>
+                  <span className="text-3xl font-bold text-white">
+                    {formatApplicationPrice(data?.price || 0, data?.currency || 'USD')}
+                  </span>
                 )}
-              </button>
+              </div>
 
-              {/* Wishlist */}
-              <button
-                className="p-2.5 border border-purple-500/30 rounded-lg hover:bg-purple-500/10 transition flex-shrink-0"
-                onClick={() =>
-                  isWishListed
-                    ? removeFromWishlist(data.id || data._id, user, location, deviceInfo)
-                    : addToWishlist(
-                        {
-                          ...data,
-                          id: data.id || data._id
-                        },
-                        user,
-                        location,
-                        deviceInfo
-                      )
-                }
-                aria-label={isWishListed ? "Remove from wishlist" : "Add to wishlist"}
-              >
-                <Heart
-                  className={`w-5 h-5 ${
+              {/* Action Buttons */}
+              <div className="flex gap-3">
+                <button
+                  onClick={handleDownloadAccess}
+                  className="flex-1 flex items-center justify-center gap-2 px-5 py-3 rounded-lg font-semibold transition bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white shadow-lg"
+                >
+                  {data?.isFree ? (
+                    <>
+                      <Download className="w-5 h-5" />
+                      Free Access
+                    </>
+                  ) : (
+                    <>
+                      <Shield className="w-5 h-5" />
+                      Get Application
+                    </>
+                  )}
+                </button>
+
+                {/* Wishlist */}
+                <button
+                  className="p-3 border border-purple-500/40 rounded-lg hover:bg-purple-500/10 transition flex-shrink-0"
+                  onClick={() =>
                     isWishListed
-                      ? "fill-red-500 text-red-500"
-                      : "text-gray-400"
-                  }`}
-                />
-              </button>
+                      ? removeFromWishlist(data.id || data._id, user, location, deviceInfo)
+                      : addToWishlist(
+                          {
+                            ...data,
+                            id: data.id || data._id
+                          },
+                          user,
+                          location,
+                          deviceInfo
+                        )
+                  }
+                  aria-label={isWishListed ? "Remove from wishlist" : "Add to wishlist"}
+                >
+                  <Heart
+                    className={`w-5 h-5 ${
+                      isWishListed
+                        ? "fill-red-500 text-red-500"
+                        : "text-gray-400"
+                    }`}
+                  />
+                </button>
+              </div>
             </div>
 
-            {/* Quick Links */}
-            <div className="mt-4 flex flex-wrap gap-2">
-              {data?.liveDemo && (
-                <a
-                  href={data.liveDemo}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-1.5 px-3 py-2 text-sm bg-gray-800/50 text-gray-300 rounded-lg hover:bg-gray-700/50 transition border border-gray-700"
-                >
-                  <ExternalLink className="w-4 h-4" />
-                  Live Demo
-                </a>
-              )}
-              {data?.githubRepo && (
-                <a
-                  href={data.githubRepo}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-1.5 px-3 py-2 text-sm bg-gray-800/50 text-gray-300 rounded-lg hover:bg-gray-700/50 transition border border-gray-700"
-                >
-                  <Github className="w-4 h-4" />
-                  GitHub
-                </a>
-              )}
-              {data?.videoDemo && (
-                <a
-                  href={data.videoDemo}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-1.5 px-3 py-2 text-sm bg-gray-800/50 text-gray-300 rounded-lg hover:bg-gray-700/50 transition border border-gray-700"
-                >
-                  <Play className="w-4 h-4" />
-                  Video Demo
-                </a>
-              )}
-              {data?.documentationUrl && (
-                <a
-                  href={data.documentationUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-1.5 px-3 py-2 text-sm bg-gray-800/50 text-gray-300 rounded-lg hover:bg-gray-700/50 transition border border-gray-700"
-                >
-                  <FileText className="w-4 h-4" />
-                  Documentation
-                </a>
-              )}
-            </div>
+            {/* Quick Links - Improved Design */}
+            {(data?.liveDemo || data?.githubRepo || data?.documentationUrl) && (
+              <div className="mt-4 grid grid-cols-2 gap-2">
+                {data?.liveDemo && (
+                  <a
+                    href={data.liveDemo}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-center gap-2 px-3 py-2.5 text-sm font-medium bg-gray-800/60 text-gray-200 rounded-lg hover:bg-gray-700/60 transition border border-gray-700"
+                  >
+                    <ExternalLink className="w-4 h-4" />
+                    Live Demo
+                  </a>
+                )}
+                {data?.githubRepo && (
+                  <a
+                    href={data.githubRepo}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-center gap-2 px-3 py-2.5 text-sm font-medium bg-gray-800/60 text-gray-200 rounded-lg hover:bg-gray-700/60 transition border border-gray-700"
+                  >
+                    <Github className="w-4 h-4" />
+                    GitHub
+                  </a>
+                )}
+                {data?.documentationUrl && (
+                  <a
+                    href={data.documentationUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-center gap-2 px-3 py-2.5 text-sm font-medium bg-gray-800/60 text-gray-200 rounded-lg hover:bg-gray-700/60 transition border border-gray-700"
+                  >
+                    <FileText className="w-4 h-4" />
+                    Docs
+                  </a>
+                )}
+              </div>
+            )}
 
             {/* Support & Update Info */}
             {(data?.supportLevel || data?.updateFrequency) && (
-              <div className="mt-4 p-3 bg-gray-800/30 rounded-lg border border-gray-700">
+              <div className="mt-4 p-3 bg-gray-800/40 rounded-lg border border-gray-700/50">
                 <div className="grid grid-cols-2 gap-3 text-sm">
                   {data?.supportLevel && (
                     <div>
-                      <span className="text-gray-400">Support:</span>
-                      <span className="ml-2 font-medium text-gray-200">{data.supportLevel}</span>
+                      <span className="text-gray-400 text-xs">Support:</span>
+                      <span className="ml-2 font-semibold text-white">{data.supportLevel}</span>
                     </div>
                   )}
                   {data?.updateFrequency && (
                     <div>
-                      <span className="text-gray-400">Updates:</span>
-                      <span className="ml-2 font-medium text-gray-200">{data.updateFrequency}</span>
+                      <span className="text-gray-400 text-xs">Updates:</span>
+                      <span className="ml-2 font-semibold text-white">{data.updateFrequency}</span>
                     </div>
                   )}
                 </div>
