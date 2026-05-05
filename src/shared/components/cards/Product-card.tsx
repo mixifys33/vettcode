@@ -70,7 +70,8 @@ const ProductCard = ({ product, isEvent }: { product: any; isEvent?: boolean }) 
   const isFree = product?.isFree || appPrice === 0;
   const isVerified = product?.verificationStatus === 'verified' || product?.verified;
   const appBadges = product?.badges || [];
-  const appSlug = product?.slug || product?.id;
+  // Use MongoDB _id for routing (applications don't have slugs)
+  const appId = product?._id || product?.id;
   
   // Currency: Use product's currency or default to USD
   const productCurrency = product?.currency || "USD";
@@ -105,7 +106,7 @@ const ProductCard = ({ product, isEvent }: { product: any; isEvent?: boolean }) 
 
         {/* Image - Larger Area */}
         <div className="relative overflow-hidden bg-gradient-to-br from-gray-900 to-gray-800 aspect-[4/3]">
-          <Link href={`/product/${appSlug}`}>
+          <Link href={`/product/${appId}`}>
             {safeImgSrc ? (
               <Image
                 src={safeImgSrc}
@@ -218,7 +219,7 @@ const ProductCard = ({ product, isEvent }: { product: any; isEvent?: boolean }) 
           )}
 
           {/* Title */}
-          <Link href={`/product/${appSlug}`}>
+          <Link href={`/product/${appId}`}>
             <h3 className="text-sm font-bold text-white line-clamp-2 leading-snug hover:text-purple-400 transition-colors mb-2" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
               {appName}
             </h3>
@@ -283,7 +284,7 @@ const ProductCard = ({ product, isEvent }: { product: any; isEvent?: boolean }) 
             onClick={() => {
               if (isFree) {
                 // For free apps, go directly to download/view page
-                router.push(`/product/${appSlug}`);
+                router.push(`/product/${appId}`);
               } else {
                 // For paid apps, add to cart
                 isInCart
