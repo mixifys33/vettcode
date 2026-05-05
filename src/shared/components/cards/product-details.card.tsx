@@ -327,17 +327,18 @@ const ProductDetailsCard = ({
               )}
             </div>
 
-            {/* Technology Stack */}
+            {/* Technology Stack - Redesigned with Better Background */}
             {data?.technologyStack?.length > 0 && (
-              <div className="mt-4">
-                <span className="text-sm font-bold text-white block mb-2">
-                  Tech Stack
-                </span>
+              <div className="mt-4 p-4 bg-gradient-to-br from-blue-900/30 to-indigo-900/30 rounded-xl border border-blue-500/30">
+                <div className="flex items-center gap-2 mb-3">
+                  <Code2 className="w-4 h-4 text-blue-400" />
+                  <span className="text-sm font-bold text-white">Tech Stack</span>
+                </div>
                 <div className="flex flex-wrap gap-2">
                   {data.technologyStack.map((tech: string, index: number) => (
                     <span
                       key={index}
-                      className="px-3 py-1.5 text-xs font-medium rounded-lg bg-blue-500/20 text-blue-300 border border-blue-500/40"
+                      className="px-3 py-1.5 text-xs font-semibold rounded-lg bg-blue-500/30 text-blue-200 border border-blue-400/50 hover:bg-blue-500/40 transition-colors"
                     >
                       {tech}
                     </span>
@@ -346,17 +347,18 @@ const ProductDetailsCard = ({
               </div>
             )}
 
-            {/* Supported Platforms */}
+            {/* Supported Platforms - Redesigned with Better Background */}
             {data?.supportedPlatforms?.length > 0 && (
-              <div className="mt-4">
-                <span className="text-sm font-bold text-white block mb-2">
-                  Platforms
-                </span>
+              <div className="mt-4 p-4 bg-gradient-to-br from-purple-900/30 to-violet-900/30 rounded-xl border border-purple-500/30">
+                <div className="flex items-center gap-2 mb-3">
+                  <Shield className="w-4 h-4 text-purple-400" />
+                  <span className="text-sm font-bold text-white">Platforms</span>
+                </div>
                 <div className="flex flex-wrap gap-2">
                   {data.supportedPlatforms.map((platform: string, index: number) => (
                     <span
                       key={index}
-                      className="px-3 py-1.5 text-xs font-medium rounded-lg bg-gray-700/60 text-gray-200 border border-gray-600"
+                      className="px-3 py-1.5 text-xs font-semibold rounded-lg bg-purple-500/30 text-purple-200 border border-purple-400/50 hover:bg-purple-500/40 transition-colors"
                     >
                       {platform}
                     </span>
@@ -452,59 +454,65 @@ const ProductDetailsCard = ({
               </div>
             </div>
 
-            {/* Quick Links - White/Purple Text Colors */}
+            {/* Quick Links - Redesigned with Card Backgrounds */}
             {(data?.liveDemo || data?.githubRepo || data?.documentationUrl) && (
-              <div className="mt-4 grid grid-cols-2 gap-2">
-                {data?.liveDemo && (
-                  <a
-                    href={data.liveDemo}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center justify-center gap-2 px-3 py-2.5 text-sm font-semibold bg-gray-800/60 text-white hover:text-purple-400 hover:bg-gray-700/60 rounded-lg transition border border-gray-700 hover:border-purple-500/50"
-                  >
-                    <ExternalLink className="w-4 h-4" />
-                    Live Demo
-                  </a>
-                )}
-                {data?.githubRepo && (
-                  <a
-                    href={data.githubRepo}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center justify-center gap-2 px-3 py-2.5 text-sm font-semibold bg-gray-800/60 text-white hover:text-purple-400 hover:bg-gray-700/60 rounded-lg transition border border-gray-700 hover:border-purple-500/50"
-                  >
-                    <Github className="w-4 h-4" />
-                    GitHub
-                  </a>
-                )}
-                {data?.documentationUrl && (
-                  <a
-                    href={data.documentationUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center justify-center gap-2 px-3 py-2.5 text-sm font-semibold bg-gray-800/60 text-white hover:text-purple-400 hover:bg-gray-700/60 rounded-lg transition border border-gray-700 hover:border-purple-500/50"
-                  >
-                    <FileText className="w-4 h-4" />
-                    Docs
-                  </a>
-                )}
+              <div className="mt-4 p-4 bg-gradient-to-br from-gray-800/60 to-gray-900/60 rounded-xl border border-gray-700/50">
+                <div className="flex items-center gap-2 mb-3">
+                  <ExternalLink className="w-4 h-4 text-gray-300" />
+                  <span className="text-sm font-bold text-white">Quick Links</span>
+                </div>
+                <div className="grid grid-cols-2 gap-2">
+                  {data?.liveDemo && (
+                    <a
+                      href={data.liveDemo}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center justify-center gap-2 px-3 py-3 text-sm font-semibold bg-gradient-to-br from-emerald-600/20 to-teal-600/20 text-emerald-300 hover:text-emerald-200 hover:from-emerald-600/30 hover:to-teal-600/30 rounded-lg transition-all border border-emerald-500/40 hover:border-emerald-400/60"
+                    >
+                      <ExternalLink className="w-4 h-4" />
+                      Live Demo
+                    </a>
+                  )}
+                  {data?.githubRepo && (
+                    <a
+                      href={data.githubRepo}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center justify-center gap-2 px-3 py-3 text-sm font-semibold bg-gradient-to-br from-gray-700/40 to-gray-800/40 text-gray-200 hover:text-white hover:from-gray-700/60 hover:to-gray-800/60 rounded-lg transition-all border border-gray-600 hover:border-gray-500"
+                    >
+                      <Github className="w-4 h-4" />
+                      GitHub
+                    </a>
+                  )}
+                  {data?.documentationUrl && (
+                    <a
+                      href={data.documentationUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center justify-center gap-2 px-3 py-3 text-sm font-semibold bg-gradient-to-br from-blue-600/20 to-indigo-600/20 text-blue-300 hover:text-blue-200 hover:from-blue-600/30 hover:to-indigo-600/30 rounded-lg transition-all border border-blue-500/40 hover:border-blue-400/60"
+                    >
+                      <FileText className="w-4 h-4" />
+                      Docs
+                    </a>
+                  )}
+                </div>
               </div>
             )}
 
-            {/* Support & Update Info */}
+            {/* Support & Update Info - Redesigned */}
             {(data?.supportLevel || data?.updateFrequency) && (
-              <div className="mt-4 p-3 bg-gray-800/40 rounded-lg border border-gray-700/50">
-                <div className="grid grid-cols-2 gap-3 text-sm">
+              <div className="mt-4 p-4 bg-gradient-to-br from-amber-900/20 to-orange-900/20 rounded-xl border border-amber-500/30">
+                <div className="grid grid-cols-2 gap-4">
                   {data?.supportLevel && (
-                    <div>
-                      <span className="text-gray-400 text-xs">Support:</span>
-                      <span className="ml-2 font-semibold text-white">{data.supportLevel}</span>
+                    <div className="flex flex-col">
+                      <span className="text-xs text-amber-400/70 mb-1">Support Level</span>
+                      <span className="text-sm font-bold text-amber-200">{data.supportLevel}</span>
                     </div>
                   )}
                   {data?.updateFrequency && (
-                    <div>
-                      <span className="text-gray-400 text-xs">Updates:</span>
-                      <span className="ml-2 font-semibold text-white">{data.updateFrequency}</span>
+                    <div className="flex flex-col">
+                      <span className="text-xs text-amber-400/70 mb-1">Update Status</span>
+                      <span className="text-sm font-bold text-amber-200">{data.updateFrequency}</span>
                     </div>
                   )}
                 </div>
