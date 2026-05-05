@@ -32,12 +32,12 @@ const useLocationTracking = () => {
 
     const fetchLocation = async () => {
       try {
-        const response = await fetch("http://ip-api.com/json/");
+        const response = await fetch("https://ipapi.co/json/");
         const data = await response.json();
         
-        if (data.country && data.city) {
+        if (data.country_name && data.city) {
           const newLocation = {
-            country: data.country,
+            country: data.country_name,
             city: data.city,
             timestamp: Date.now(),
           };
