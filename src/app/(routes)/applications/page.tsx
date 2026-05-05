@@ -155,7 +155,7 @@ const ApplicationsPageContent = () => {
 
         {/* Applications Grid */}
         {!isLoading && applications.length > 0 && (
-          <div className={`grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 gap-4 transition-opacity duration-200 ${isFetching && !isLoading ? "opacity-60" : ""}`}>
+          <div className={`grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 gap-6 transition-opacity duration-200 ${isFetching && !isLoading ? "opacity-60" : ""}`}>
             {applications.map((app: any) => (
               <ProductCard key={app._id || app.id} product={app} />
             ))}

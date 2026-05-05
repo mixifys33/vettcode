@@ -17,6 +17,7 @@ const ProductDetailsCard = ({
   setOpen: (open: boolean) => void;
 }) => {
   const [activeImage, setActiveImage] = useState(0);
+  const [showVideo, setShowVideo] = useState(false);
   const router = useRouter();
   const [showFullDescription, setShowFullDescription] = useState(false);
   const { user } = useUser();
@@ -28,6 +29,33 @@ const ProductDetailsCard = ({
   const removeFromWishlist = useStore((state) => state.removeFromWishlist);
 
   const isWishListed = wishlist.some((item) => item.id === (data.id || data._id));
+
+  // Extract YouTube video ID from URL
+  const getYouTubeEmbedUrl = (url: string) => {
+    if (!url) return null;
+    
+    // Handle various YouTube URL formats
+    const patterns = [
+      /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&\n?#]+)/,
+      /youtube\.com\/shorts\/([^&\n?#]+)/
+    ];
+    
+    for (const pattern of patterns) {
+      const match = url.match(pattern);
+      if (match && match[1]) {
+        return `https://www.youtube.com/embed/${match[1]}?autoplay=1&rel=0`;
+      }
+    }
+    
+    // If it's already an embed URL or other video platform
+    if (url.includes('embed') || url.includes('vimeo') || url.includes('loom')) {
+      return url;
+    }
+    
+    return null;
+  };
+
+  const videoEmbedUrl = data?.videoDemo ? getYouTubeEmbedUrl(data.videoDemo) : null;
 
   // Format price with application's currency
   const formatApplicationPrice = (price: number, currency: string = 'USD') => {
@@ -131,22 +159,48 @@ const ProductDetailsCard = ({
               </div>
             )}
 
-            {/* Video Demo Section - Use the space efficiently */}
+            {/* Video Demo Section - Embedded Player */}
             {data?.videoDemo && (
-              <div className="mt-4 p-4 bg-gradient-to-br from-purple-900/30 to-blue-900/30 rounded-xl border border-purple-500/30">
-                <div className="flex items-center gap-2 mb-2">
-                  <Play className="w-5 h-5 text-purple-400" />
-                  <span className="text-sm font-semibold text-gray-200">Video Demo Available</span>
-                </div>
-                <a
-                  href={data.videoDemo}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center justify-center gap-2 w-full px-4 py-2.5 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white text-sm font-medium rounded-lg transition"
-                >
-                  <Play className="w-4 h-4" />
-                  Watch Demo
-                </a>
+              <div className="mt-4">
+                {!showVideo ? (
+                  <div className="p-4 bg-gradient-to-br from-purple-900/30 to-blue-900/30 rounded-xl border border-purple-500/30">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Play className="w-5 h-5 text-purple-400" />
+                      <span className="text-sm font-semibold text-white">Video Demo Available</span>
+                    </div>
+                    <button
+                      onClick={() => setShowVideo(true)}
+                      className="flex items-center justify-center gap-2 w-full px-4 py-2.5 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white text-sm font-medium rounded-lg transition shadow-lg"
+                    >
+                      <Play className="w-4 h-4" />
+                      Watch Demo
+                    </button>
+                  </div>
+                ) : (
+                  <div className="relative rounded-xl overflow-hidden bg-black border border-purple-500/30">
+                    {videoEmbedUrl ? (
+                      <div className="relative" style={{ paddingBottom: '56.25%' }}>
+                        <iframe
+                          src={videoEmbedUrl}
+                          className="absolute inset-0 w-full h-full"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                          allowFullScreen
+                          title="Application Demo Video"
+                        />
+                      </div>
+                    ) : (
+                      <div className="aspect-video flex items-center justify-center text-gray-400">
+                        <p className="text-sm">Video format not supported for embedding</p>
+                      </div>
+                    )}
+                    <button
+                      onClick={() => setShowVideo(false)}
+                      className="absolute top-2 right-2 p-1.5 bg-black/60 hover:bg-black/80 rounded-lg transition"
+                    >
+                      <X className="w-4 h-4 text-white" />
+                    </button>
+                  </div>
+                )}
               </div>
             )}
 
@@ -237,8 +291,8 @@ const ProductDetailsCard = ({
               )}
               <div className="flex items-center gap-2">
                 <Ratings rating={data?.rating || 5.0} size="md" />
-                <span className="text-sm font-medium text-gray-300">
-                  ({data?.reviewCount || 0})
+                <span className="text-xs font-medium text-gray-400">
+                  by VettCode Admin
                 </span>
               </div>
             </div>
@@ -398,7 +452,7 @@ const ProductDetailsCard = ({
               </div>
             </div>
 
-            {/* Quick Links - Improved Design */}
+            {/* Quick Links - White/Purple Text Colors */}
             {(data?.liveDemo || data?.githubRepo || data?.documentationUrl) && (
               <div className="mt-4 grid grid-cols-2 gap-2">
                 {data?.liveDemo && (
@@ -406,7 +460,7 @@ const ProductDetailsCard = ({
                     href={data.liveDemo}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center justify-center gap-2 px-3 py-2.5 text-sm font-medium bg-gray-800/60 text-gray-200 rounded-lg hover:bg-gray-700/60 transition border border-gray-700"
+                    className="flex items-center justify-center gap-2 px-3 py-2.5 text-sm font-semibold bg-gray-800/60 text-white hover:text-purple-400 hover:bg-gray-700/60 rounded-lg transition border border-gray-700 hover:border-purple-500/50"
                   >
                     <ExternalLink className="w-4 h-4" />
                     Live Demo
@@ -417,7 +471,7 @@ const ProductDetailsCard = ({
                     href={data.githubRepo}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center justify-center gap-2 px-3 py-2.5 text-sm font-medium bg-gray-800/60 text-gray-200 rounded-lg hover:bg-gray-700/60 transition border border-gray-700"
+                    className="flex items-center justify-center gap-2 px-3 py-2.5 text-sm font-semibold bg-gray-800/60 text-white hover:text-purple-400 hover:bg-gray-700/60 rounded-lg transition border border-gray-700 hover:border-purple-500/50"
                   >
                     <Github className="w-4 h-4" />
                     GitHub
@@ -428,7 +482,7 @@ const ProductDetailsCard = ({
                     href={data.documentationUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center justify-center gap-2 px-3 py-2.5 text-sm font-medium bg-gray-800/60 text-gray-200 rounded-lg hover:bg-gray-700/60 transition border border-gray-700"
+                    className="flex items-center justify-center gap-2 px-3 py-2.5 text-sm font-semibold bg-gray-800/60 text-white hover:text-purple-400 hover:bg-gray-700/60 rounded-lg transition border border-gray-700 hover:border-purple-500/50"
                   >
                     <FileText className="w-4 h-4" />
                     Docs

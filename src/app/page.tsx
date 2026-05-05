@@ -189,13 +189,13 @@ export default function Page() {
           </div>
 
           {isLoading && (
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 sm:gap-6">
               {Array.from({ length: 10 }).map((_, i) => <ProductSkeleton key={i} />)}
             </div>
           )}
 
           {!isLoading && !isError && applications?.length > 0 && (
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 sm:gap-6">
               {applications.map((product: any) => (
                 <ProductCard key={product.id} product={product} />
               ))}
@@ -251,7 +251,7 @@ export default function Page() {
                 icon={<Flame className="w-4 h-4" />}
               />
             </div>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 sm:gap-6">
               {trendingApplications.map((product: any) => (
                 <ProductCard key={product.id} product={product} />
               ))}
@@ -273,7 +273,7 @@ export default function Page() {
                 icon={<Zap className="w-4 h-4" />}
               />
             </div>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 sm:gap-6">
               {latestApplications.map((product: any) => (
                 <ProductCard key={product.id} product={product} />
               ))}
