@@ -114,7 +114,61 @@ export default function Page() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-20 md:pb-0">
+    <div className="min-h-screen pb-20 md:pb-0 relative" style={{ 
+      background: "linear-gradient(180deg, #0f172a 0%, #1e293b 50%, #334155 100%)"
+    }}>
+      {/* Animated code-themed background pattern */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden opacity-20">
+        {/* Grid pattern */}
+        <div 
+          className="absolute inset-0" 
+          style={{
+            backgroundImage: `
+              linear-gradient(rgba(139, 92, 246, 0.1) 1px, transparent 1px),
+              linear-gradient(90deg, rgba(139, 92, 246, 0.1) 1px, transparent 1px)
+            `,
+            backgroundSize: "50px 50px"
+          }}
+        />
+        
+        {/* Floating code blocks */}
+        <div className="absolute top-20 left-10 text-purple-500/30 font-mono text-xs animate-float">
+          {"{ code: 'verified' }"}
+        </div>
+        <div className="absolute top-40 right-20 text-blue-500/30 font-mono text-xs animate-float animation-delay-1000">
+          {"<Component />"}
+        </div>
+        <div className="absolute top-60 left-1/4 text-emerald-500/30 font-mono text-xs animate-float animation-delay-2000">
+          {"const app = () => {}"}
+        </div>
+        <div className="absolute bottom-40 right-1/4 text-violet-500/30 font-mono text-xs animate-float animation-delay-3000">
+          {"npm install"}
+        </div>
+        <div className="absolute bottom-60 left-1/3 text-cyan-500/30 font-mono text-xs animate-float animation-delay-1500">
+          {"git commit -m"}
+        </div>
+        
+        {/* Binary pattern */}
+        <div className="absolute top-1/4 right-10 text-purple-400/20 font-mono text-[10px] leading-relaxed animate-pulse">
+          01010110<br/>
+          01000101<br/>
+          01010100<br/>
+          01010100
+        </div>
+        
+        {/* Gradient orbs */}
+        <div 
+          className="absolute top-20 right-1/4 w-96 h-96 rounded-full blur-3xl animate-pulse-slow"
+          style={{ background: "radial-gradient(circle, rgba(139, 92, 246, 0.15), transparent 70%)" }}
+        />
+        <div 
+          className="absolute bottom-20 left-1/4 w-80 h-80 rounded-full blur-3xl animate-pulse-slow animation-delay-2000"
+          style={{ background: "radial-gradient(circle, rgba(99, 102, 241, 0.15), transparent 70%)" }}
+        />
+      </div>
+      
+      {/* Content wrapper with backdrop */}
+      <div className="relative z-10">
 
       {/* Hero — only for guests */}
       {!user && <Hero />}
@@ -154,7 +208,7 @@ export default function Page() {
 
       {/* Category pills */}
       <section className="w-full px-4 sm:px-6 lg:px-8 py-8">
-        <div className="max-w-7xl mx-auto">
+        <div className="max-w-7xl mx-auto bg-slate-800/50 backdrop-blur-sm rounded-3xl p-6 border border-slate-700/50">
           <div className="flex items-center justify-between mb-5">
             <SectionTitle title="Browse by Category" icon={<Tag className="w-4 h-4" />} />
           </div>
@@ -166,14 +220,14 @@ export default function Page() {
                 <div className={`w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-br ${cat.color} flex items-center justify-center shadow-md group-hover:shadow-xl group-hover:scale-110 transition-all duration-300`}>
                   <cat.icon className="w-7 h-7 sm:w-8 sm:h-8 text-white" />
                 </div>
-                <span className="text-[10px] sm:text-xs font-semibold text-gray-600 group-hover:text-teal-700 text-center transition-colors leading-tight">{cat.label}</span>
+                <span className="text-[10px] sm:text-xs font-semibold text-gray-300 group-hover:text-purple-400 text-center transition-colors leading-tight">{cat.label}</span>
               </Link>
             ))}
           </div>
         </div>
       </section>
 
-      <hr className="section-divider mx-4 sm:mx-8" />
+      <hr className="section-divider mx-4 sm:mx-8 opacity-20" />
 
       {/* Suggested Applications */}
       <section className="w-full px-4 sm:px-6 lg:px-8 py-10">
@@ -203,45 +257,47 @@ export default function Page() {
           )}
 
           {!isLoading && !isError && applications?.length === 0 && (
-            <div className="text-center py-16">
-              <Package className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-              <p className="text-gray-500 font-medium">No applications available yet.</p>
+            <div className="text-center py-16 bg-slate-800/30 backdrop-blur-sm rounded-2xl border border-slate-700/50">
+              <Package className="w-12 h-12 text-gray-500 mx-auto mb-3" />
+              <p className="text-gray-400 font-medium">No applications available yet.</p>
             </div>
           )}
 
           {isError && (
-            <div className="text-center py-16">
-              <div className="w-12 h-12 rounded-2xl bg-red-50 flex items-center justify-center mx-auto mb-3">
+            <div className="text-center py-16 bg-slate-800/30 backdrop-blur-sm rounded-2xl border border-slate-700/50">
+              <div className="w-12 h-12 rounded-2xl bg-red-900/30 flex items-center justify-center mx-auto mb-3">
                 <X className="w-6 h-6 text-red-400" />
               </div>
-              <p className="text-gray-500 font-medium">Failed to load applications.</p>
-              <p className="text-gray-400 text-sm mt-1">Make sure the backend is running.</p>
+              <p className="text-gray-400 font-medium">Failed to load applications.</p>
+              <p className="text-gray-500 text-sm mt-1">Make sure the backend is running.</p>
             </div>
           )}
         </div>
       </section>
 
       {/* Trust features banner */}
-      <section className="w-full px-4 sm:px-6 lg:px-8 py-8 bg-white border-y border-gray-100">
-        <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-4">
-          {TRUST_FEATURES.map(({ icon: Icon, title, desc, color, bg }) => (
-            <div key={title} className="flex items-center gap-3 p-4 rounded-2xl hover:shadow-md transition-shadow duration-200" style={{ background: "#fafafa" }}>
-              <div className={`w-10 h-10 rounded-xl ${bg} flex items-center justify-center flex-shrink-0`}>
-                <Icon className={`w-5 h-5 ${color}`} />
+      <section className="w-full px-4 sm:px-6 lg:px-8 py-8">
+        <div className="max-w-7xl mx-auto bg-gradient-to-br from-slate-800/60 to-slate-900/60 backdrop-blur-sm rounded-3xl p-6 border border-slate-700/50">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {TRUST_FEATURES.map(({ icon: Icon, title, desc, color, bg }) => (
+              <div key={title} className="flex items-center gap-3 p-4 rounded-2xl bg-slate-800/50 hover:bg-slate-700/50 hover:shadow-lg transition-all duration-200 border border-slate-700/30">
+                <div className={`w-10 h-10 rounded-xl ${bg} flex items-center justify-center flex-shrink-0`}>
+                  <Icon className={`w-5 h-5 ${color}`} />
+                </div>
+                <div>
+                  <p className="text-sm font-bold text-white">{title}</p>
+                  <p className="text-xs text-gray-400 font-medium">{desc}</p>
+                </div>
               </div>
-              <div>
-                <p className="text-sm font-bold text-gray-900">{title}</p>
-                <p className="text-xs text-gray-500 font-medium">{desc}</p>
-              </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </section>
 
       {/* Trending Applications */}
       {trendingApplications?.length > 0 && (
-        <section className="w-full px-4 sm:px-6 lg:px-8 py-10" style={{ background: "linear-gradient(135deg, #fdf4ff, #fce7f3, #fff7ed)" }}>
-          <div className="max-w-7xl mx-auto">
+        <section className="w-full px-4 sm:px-6 lg:px-8 py-10">
+          <div className="max-w-7xl mx-auto bg-gradient-to-br from-purple-900/20 to-pink-900/20 backdrop-blur-sm rounded-3xl p-8 border border-purple-700/30">
             <div className="mb-6">
               <SectionTitle
                 title="Trending Now 🔥"
@@ -262,8 +318,8 @@ export default function Page() {
 
       {/* Latest Arrivals */}
       {latestApplications?.length > 0 && (
-        <section className="w-full px-4 sm:px-6 lg:px-8 py-10 bg-white">
-          <div className="max-w-7xl mx-auto">
+        <section className="w-full px-4 sm:px-6 lg:px-8 py-10">
+          <div className="max-w-7xl mx-auto bg-gradient-to-br from-blue-900/20 to-cyan-900/20 backdrop-blur-sm rounded-3xl p-8 border border-blue-700/30">
             <div className="mb-6">
               <SectionTitle
                 title="Latest Arrivals ✨"
@@ -315,6 +371,7 @@ export default function Page() {
       )}
 
       <Footer />
+      </div>
     </div>
   );
 }
