@@ -1,10 +1,10 @@
 "use client";
 
-import { ArrowRight, Sparkles, Zap } from "lucide-react";
+import { ArrowRight, Sparkles, Zap, Shield, CheckCircle, Users, Download, Star } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React, { useState, useEffect } from "react";
 
-// Background images array (10 images)
+// Background images array (15 images)
 const BACKGROUND_IMAGES = [
   '/background1.png',
   '/background2.png',
@@ -16,6 +16,11 @@ const BACKGROUND_IMAGES = [
   '/background8.png',
   '/background9.png',
   '/background10.png',
+  '/background11.png',
+  '/background12.png',
+  '/background13.png',
+  '/background14.png',
+  '/background15.png.png',
 ];
 
 export const Hero = () => {
@@ -60,6 +65,17 @@ export const Hero = () => {
       <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16 sm:pb-20 md:pb-24 lg:pb-28">
         <div className="max-w-4xl mx-auto text-center space-y-5 sm:space-y-6 md:space-y-8">
           
+          {/* VETTCODE Branding Badge */}
+          <div className="flex justify-center mb-4">
+            <div className="inline-flex items-center gap-2 px-4 sm:px-6 py-2 sm:py-3 rounded-full bg-gradient-to-r from-purple-600/30 via-violet-600/30 to-purple-600/30 backdrop-blur-xl border border-purple-400/30 shadow-2xl">
+              <Shield className="w-4 sm:w-5 h-4 sm:h-5 text-purple-300" />
+              <span className="text-xs sm:text-sm md:text-base font-black text-white tracking-wider" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
+                VETTCODE
+              </span>
+              <CheckCircle className="w-4 sm:w-5 h-4 sm:h-5 text-emerald-400" />
+            </div>
+          </div>
+
           {/* Main Hook - Attention grabbing */}
           <div className="space-y-2 sm:space-y-3 md:space-y-4">
             <h1 className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-black leading-tight text-white px-2" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
@@ -71,6 +87,33 @@ export const Hero = () => {
             <p className="text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl text-white/80 font-semibold max-w-3xl mx-auto leading-relaxed px-4">
               If our <span className="text-purple-300 font-bold">free codebases</span> are this great, imagine how powerful our <span className="text-purple-300 font-bold">premium ones</span> must be.
             </p>
+          </div>
+
+          {/* Trust Stats - Social Proof */}
+          <div className="grid grid-cols-3 gap-3 sm:gap-4 md:gap-6 max-w-2xl mx-auto px-4">
+            <div className="flex flex-col items-center gap-1 sm:gap-2 p-3 sm:p-4 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10">
+              <Users className="w-5 sm:w-6 md:w-7 h-5 sm:h-6 md:h-7 text-purple-400" />
+              <div className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-black text-white" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
+                5,000+
+              </div>
+              <div className="text-[10px] sm:text-xs md:text-sm text-white/60 font-semibold">Developers</div>
+            </div>
+            
+            <div className="flex flex-col items-center gap-1 sm:gap-2 p-3 sm:p-4 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10">
+              <Download className="w-5 sm:w-6 md:w-7 h-5 sm:h-6 md:h-7 text-emerald-400" />
+              <div className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-black text-white" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
+                50K+
+              </div>
+              <div className="text-[10px] sm:text-xs md:text-sm text-white/60 font-semibold">Downloads</div>
+            </div>
+            
+            <div className="flex flex-col items-center gap-1 sm:gap-2 p-3 sm:p-4 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10">
+              <Star className="w-5 sm:w-6 md:w-7 h-5 sm:h-6 md:h-7 text-amber-400" />
+              <div className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-black text-white" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
+                4.9/5
+              </div>
+              <div className="text-[10px] sm:text-xs md:text-sm text-white/60 font-semibold">Rating</div>
+            </div>
           </div>
 
           {/* Value Props - Quick scan */}
@@ -111,9 +154,25 @@ export const Hero = () => {
             </button>
           </div>
 
-          {/* Trust Signal */}
+          {/* Trust Signals - Security & Quality */}
+          <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6 md:gap-8 px-4 pt-2">
+            <div className="flex items-center gap-2 text-white/60 text-[10px] sm:text-xs md:text-sm">
+              <Shield className="w-3 sm:w-4 h-3 sm:h-4 text-blue-400" />
+              <span className="font-semibold">Bank-Level Security</span>
+            </div>
+            <div className="flex items-center gap-2 text-white/60 text-[10px] sm:text-xs md:text-sm">
+              <CheckCircle className="w-3 sm:w-4 h-3 sm:h-4 text-emerald-400" />
+              <span className="font-semibold">Code Quality Verified</span>
+            </div>
+            <div className="flex items-center gap-2 text-white/60 text-[10px] sm:text-xs md:text-sm">
+              <Star className="w-3 sm:w-4 h-3 sm:h-4 text-amber-400" />
+              <span className="font-semibold">Premium Support</span>
+            </div>
+          </div>
+
+          {/* Final Trust Line */}
           <p className="text-white/50 text-[10px] xs:text-xs sm:text-sm font-medium px-4">
-            Join 1,000+ founders who trust VETTCODE • No registration required for free apps
+            Trusted by 5,000+ developers worldwide • No registration required for free apps
           </p>
         </div>
       </div>
