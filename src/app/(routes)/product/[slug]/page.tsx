@@ -7,69 +7,46 @@ async function fetchProductDetails(slug: string) {
   const baseUrl = process.env.NEXT_PUBLIC_SERVER_URL || "http://127.0.0.1:8080";
   
   try {
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 10000);
-    
-    const response = await fetch(
-      `${baseUrl}/api/products?slug=${slug}`,
-      { 
-        cache: "no-store",
-        signal: controller.signal,
-      }
-    );
-    
-    clearTimeout(timeoutId);
-
-    if (!response.ok) {
-      console.error("Failed to fetch product:", response.status, response.statusText);
-      return null;
-    }
-
-    const data = await response.json();
-    const products = data.products || [];
-
-    // First try exact slug match
-    let product = products.find((p: any) => p.slug === slug) || null;
-
-    // Fallback: if the "slug" param looks like a MongoDB id, search by id
-    // This handles old shared links that used item.id instead of item.slug
-    if (!product && /^[a-f0-9]{24}$/i.test(slug)) {
-      product = products.find((p: any) => p.id === slug || p._id === slug) || null;
-    }
-
-    // Second fallback: try fetching directly by id from the API
-    if (!product && /^[a-f0-9]{24}$/i.test(slug)) {
-      try {
-        const idController = new AbortController();
-        const idTimeout = setTimeout(() => idController.abort(), 10000);
-        const idRes = await fetch(`${baseUrl}/api/products/${slug}`, {
+    // Applications use ID-based routing, not slugs
+    if (/^[a-f0-9]{24}$/i.test(slug)) {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000);
+      
+      const response = await fetch(
+        `${baseUrl}/api/applications/${slug}`,
+        { 
           cache: "no-store",
-          signal: idController.signal,
-        });
-        clearTimeout(idTimeout);
-        if (idRes.ok) {
-          const idData = await idRes.json();
-          product = idData.product || idData || null;
+          signal: controller.signal,
         }
-      } catch {
-        // silent — we'll return null below
-      }
-    }
+      );
+      
+      clearTimeout(timeoutId);
 
-    return product;
+      if (!response.ok) {
+        console.error("Failed to fetch application:", response.status, response.statusText);
+        return null;
+      }
+
+      const data = await response.json();
+      return data.application || null;
+    }
+    
+    // If not a valid MongoDB ID, return null
+    console.error("Invalid application ID format:", slug);
+    return null;
   } catch (error: any) {
     if (error.name === 'AbortError') {
-      console.error("Request timed out fetching product details");
+      console.error("Request timed out fetching application details");
     } else if (error.cause?.code === 'ECONNREFUSED') {
       console.error("Connection refused - is the API server running at", baseUrl, "?");
     } else {
-      console.error("Error fetching product details:", error.message || error);
+      console.error("Error fetching application details:", error.message || error);
     }
     return null;
   }
 }
 
-async function fetchSimilarProducts(category: string, currentProductId: string) {
+async function fetchSimilarApplications(category: string, currentApplicationId: string) {
   const baseUrl = process.env.NEXT_PUBLIC_SERVER_URL || "http://127.0.0.1:8080";
   
   try {
@@ -77,7 +54,7 @@ async function fetchSimilarProducts(category: string, currentProductId: string) 
     const timeoutId = setTimeout(() => controller.abort(), 10000);
     
     const response = await fetch(
-      `${baseUrl}/api/products?category=${encodeURIComponent(category)}&limit=12`,
+      `${baseUrl}/api/applications?category=${encodeURIComponent(category)}&limit=12`,
       { 
         cache: "no-store",
         signal: controller.signal,
@@ -91,29 +68,29 @@ async function fetchSimilarProducts(category: string, currentProductId: string) 
     }
 
     const data = await response.json();
-    const products = data.products || [];
+    const applications = data.applications || [];
 
-    // Filter by same category, excluding current product
-    let similar = products.filter(
-      (p: any) => p.category === category && p.id !== currentProductId
+    // Filter by same category, excluding current application
+    let similar = applications.filter(
+      (app: any) => app.appCategory === category && app._id !== currentApplicationId
     );
 
-    // If not enough products in same category, add other products
+    // If not enough applications in same category, add other applications
     if (similar.length < 5) {
-      const otherProducts = products.filter(
-        (p: any) => p.id !== currentProductId && !similar.some((s: any) => s.id === p.id)
+      const otherApplications = applications.filter(
+        (app: any) => app._id !== currentApplicationId && !similar.some((s: any) => s._id === app._id)
       );
-      similar = [...similar, ...otherProducts].slice(0, 10);
+      similar = [...similar, ...otherApplications].slice(0, 10);
     }
 
     return similar.slice(0, 10);
   } catch (error: any) {
-    console.error("Error fetching similar products:", error.message || error);
+    console.error("Error fetching similar applications:", error.message || error);
     return [];
   }
 }
 
-const BASE_URL = "https://eshopug.vercel.app";
+const BASE_URL = "https://vettcode.vercel.app";
 
 export async function generateMetadata({
   params,
@@ -121,35 +98,36 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const product = await fetchProductDetails(slug);
+  const application = await fetchProductDetails(slug);
 
-  const title = product?.title
-    ? `${product.title} — Buy Online in Uganda`
-    : "Product | EshopUG Uganda";
-  const description = product?.description
-    ? `${product.description.slice(0, 150)}... Buy now on EshopUG — Uganda's #1 online marketplace.`
-    : "Discover high quality products at the best prices on EshopUG — Uganda's leading online marketplace.";
-  const image = product?.images?.[0]?.url || `${BASE_URL}/og-image.png`;
+  const title = application?.appName
+    ? `${application.appName} — VETTCODE Marketplace`
+    : "Application | VETTCODE";
+  const description = application?.shortDescription || application?.detailedDescription
+    ? `${(application.shortDescription || application.detailedDescription).slice(0, 150)}... Get verified production-ready code on VETTCODE.`
+    : "Discover verified, production-ready applications and codebases on VETTCODE — the marketplace for developers.";
+  const image = application?.appIcon?.url || application?.screenshots?.[0]?.url || `${BASE_URL}/og-image.png`;
   const url = `${BASE_URL}/product/${slug}`;
 
   return {
     title,
     description,
     keywords: [
-      product?.title,
-      product?.category,
-      "buy online Uganda",
-      "Uganda marketplace",
-      "online shopping Uganda",
-      product?.brand,
+      application?.appName,
+      application?.appCategory,
+      "verified code",
+      "production ready",
+      "developer marketplace",
+      "VETTCODE",
+      ...(application?.technologyStack || []),
     ].filter(Boolean) as string[],
     openGraph: {
       title,
       description,
-      images: [{ url: image, width: 800, height: 800, alt: product?.title || "Product" }],
+      images: [{ url: image, width: 800, height: 800, alt: application?.appName || "Application" }],
       url,
       type: "website",
-      siteName: "EshopUG",
+      siteName: "VETTCODE",
     },
     twitter: {
       card: "summary_large_image",
@@ -165,50 +143,51 @@ export async function generateMetadata({
 
 const Page = async ({ params }: { params: Promise<{ slug: string }> }) => {
   const { slug } = await params;
-  const productDetails = await fetchProductDetails(slug);
+  const applicationDetails = await fetchProductDetails(slug);
 
-  const similarProducts = productDetails
-    ? await fetchSimilarProducts(productDetails.category, productDetails.id)
+  const similarApplications = applicationDetails
+    ? await fetchSimilarApplications(applicationDetails.appCategory, applicationDetails._id)
     : [];
 
-  const productSchema = productDetails
+  const applicationSchema = applicationDetails
     ? {
         "@context": "https://schema.org",
-        "@type": "Product",
-        name: productDetails.title,
-        description: productDetails.description,
-        image: productDetails.images?.map((img: any) => img.url) || [],
-        sku: productDetails.id,
-        brand: productDetails.brand
-          ? { "@type": "Brand", name: productDetails.brand }
-          : undefined,
+        "@type": "SoftwareApplication",
+        name: applicationDetails.appName,
+        description: applicationDetails.shortDescription || applicationDetails.detailedDescription,
+        image: applicationDetails.screenshots?.map((img: any) => img.url) || [],
+        applicationCategory: applicationDetails.appCategory,
+        operatingSystem: applicationDetails.supportedPlatforms?.join(", ") || "Cross-platform",
         offers: {
           "@type": "Offer",
           url: `${BASE_URL}/product/${slug}`,
-          priceCurrency: productDetails.currency || "UGX",
-          price: productDetails.price,
-          availability: productDetails.stock > 0
-            ? "https://schema.org/InStock"
-            : "https://schema.org/OutOfStock",
+          priceCurrency: applicationDetails.currency || "USD",
+          price: applicationDetails.price || 0,
+          availability: "https://schema.org/InStock",
           seller: {
             "@type": "Organization",
-            name: "EshopUG",
+            name: "VETTCODE",
           },
         },
+        aggregateRating: applicationDetails.rating ? {
+          "@type": "AggregateRating",
+          ratingValue: applicationDetails.rating,
+          ratingCount: 1,
+        } : undefined,
       }
     : null;
 
   return (
     <>
-      {productSchema && (
+      {applicationSchema && (
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(productSchema) }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(applicationSchema) }}
         />
       )}
       <ProductDetails
-        productDetails={productDetails}
-        similarProducts={similarProducts}
+        productDetails={applicationDetails}
+        similarProducts={similarApplications}
       />
     </>
   );
