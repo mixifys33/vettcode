@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRight, Sparkles, Zap, Shield, CheckCircle, Users, Download, Star } from "lucide-react";
+import { ArrowRight, Sparkles, Zap, Shield, CheckCircle, Star } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React, { useState, useEffect } from "react";
 
@@ -63,116 +63,116 @@ export const Hero = () => {
 
       {/* Content - Bottom positioned */}
       <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16 sm:pb-20 md:pb-24 lg:pb-28">
-        <div className="max-w-4xl mx-auto text-center space-y-5 sm:space-y-6 md:space-y-8">
+        <div className="max-w-4xl mx-auto text-center space-y-4 sm:space-y-5 md:space-y-6">
           
-          {/* VETTCODE Branding Badge */}
-          <div className="flex justify-center mb-4">
+          {/* VETTCODE Branding Badge with Fire Emoji */}
+          <div className="flex justify-center mb-3">
             <div className="inline-flex items-center gap-2 px-4 sm:px-6 py-2 sm:py-3 rounded-full bg-gradient-to-r from-purple-600/30 via-violet-600/30 to-purple-600/30 backdrop-blur-xl border border-purple-400/30 shadow-2xl">
-              <Shield className="w-4 sm:w-5 h-4 sm:h-5 text-purple-300" />
+              <span className="text-base sm:text-lg">🔥</span>
               <span className="text-xs sm:text-sm md:text-base font-black text-white tracking-wider" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
-                VETTCODE
+                VettCode Hero (Rebuilt Proper Version)
               </span>
-              <CheckCircle className="w-4 sm:w-5 h-4 sm:h-5 text-emerald-400" />
             </div>
           </div>
 
-          {/* Main Hook - Attention grabbing */}
-          <div className="space-y-2 sm:space-y-3 md:space-y-4">
+          {/* Main Headline */}
+          <div className="space-y-2 sm:space-y-3">
             <h1 className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-black leading-tight text-white px-2" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
-              Try Our <span className="bg-gradient-to-r from-purple-400 via-violet-400 to-purple-500 bg-clip-text text-transparent">Free Codebases</span>
-              <br />
-              <span className="text-xl xs:text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl text-white/90">No Credit Card. No Risk.</span>
+              Build Production-Ready Software <span className="bg-gradient-to-r from-purple-400 via-violet-400 to-purple-500 bg-clip-text text-transparent">Faster</span>
             </h1>
             
-            <p className="text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl text-white/80 font-semibold max-w-3xl mx-auto leading-relaxed px-4">
-              If our <span className="text-purple-300 font-bold">free codebases</span> are this great, imagine how powerful our <span className="text-purple-300 font-bold">premium ones</span> must be.
+            <p className="text-sm sm:text-base md:text-lg lg:text-xl text-white/80 font-medium max-w-3xl mx-auto leading-relaxed px-4">
+              Launch SaaS apps, AI tools, and scalable systems using verified codebases built for real-world deployment.
+            </p>
+            
+            <p className="text-xs sm:text-sm md:text-base text-white/70 font-semibold px-4">
+              Start instantly. No setup required.
+            </p>
+            
+            <p className="text-xs sm:text-sm md:text-base text-white/60 font-medium px-4 pt-1">
+              Explore free systems or unlock full production codebases when you're ready to build.
             </p>
           </div>
 
-          {/* Trust Stats - Social Proof */}
-          <div className="grid grid-cols-3 gap-3 sm:gap-4 md:gap-6 max-w-2xl mx-auto px-4">
-            <div className="flex flex-col items-center gap-1 sm:gap-2 p-3 sm:p-4 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10">
-              <Users className="w-5 sm:w-6 md:w-7 h-5 sm:h-6 md:h-7 text-purple-400" />
-              <div className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-black text-white" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
-                5,000+
-              </div>
-              <div className="text-[10px] sm:text-xs md:text-sm text-white/60 font-semibold">Developers</div>
-            </div>
-            
-            <div className="flex flex-col items-center gap-1 sm:gap-2 p-3 sm:p-4 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10">
-              <Download className="w-5 sm:w-6 md:w-7 h-5 sm:h-6 md:h-7 text-emerald-400" />
-              <div className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-black text-white" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
-                50K+
-              </div>
-              <div className="text-[10px] sm:text-xs md:text-sm text-white/60 font-semibold">Downloads</div>
-            </div>
-            
-            <div className="flex flex-col items-center gap-1 sm:gap-2 p-3 sm:p-4 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10">
-              <Star className="w-5 sm:w-6 md:w-7 h-5 sm:h-6 md:h-7 text-amber-400" />
-              <div className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-black text-white" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
-                4.9/5
-              </div>
-              <div className="text-[10px] sm:text-xs md:text-sm text-white/60 font-semibold">Rating</div>
-            </div>
-          </div>
-
-          {/* Value Props - Quick scan */}
-          <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 md:gap-6 text-xs sm:text-sm md:text-base px-2">
-            <div className="flex items-center gap-1.5 sm:gap-2 text-white/70">
-              <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-emerald-400 animate-pulse" />
-              <span className="font-semibold">Tested & Verified</span>
-            </div>
-            <div className="flex items-center gap-1.5 sm:gap-2 text-white/70">
-              <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-blue-400 animate-pulse" />
-              <span className="font-semibold">Production Ready</span>
-            </div>
-            <div className="flex items-center gap-1.5 sm:gap-2 text-white/70">
-              <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-purple-400 animate-pulse" />
-              <span className="font-semibold">Free Forever</span>
-            </div>
+          {/* Choose What You Need Label */}
+          <div className="pt-2">
+            <p className="text-xs sm:text-sm text-purple-300 font-bold tracking-wide uppercase">
+              Choose what you need
+            </p>
           </div>
 
           {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center pt-2 px-4">
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center px-4">
             <button
-              onClick={() => router.push("/applications?filter=free")}
+              onClick={() => router.push("/applications")}
               className="group relative px-6 sm:px-8 md:px-10 py-3 sm:py-4 md:py-5 rounded-xl sm:rounded-2xl font-bold text-white text-sm sm:text-base md:text-lg overflow-hidden shadow-2xl transition-all duration-300 hover:scale-105 active:scale-95 flex items-center justify-center gap-2 sm:gap-3 w-full sm:w-auto"
               style={{ background: "linear-gradient(135deg, #8b5cf6, #6366f1)" }}
             >
               <Sparkles className="w-4 sm:w-5 md:w-6 h-4 sm:h-5 md:h-6" />
-              Explore Free Apps
+              Explore Codebases
               <ArrowRight className="w-4 sm:w-5 md:w-6 h-4 sm:h-5 md:h-6 group-hover:translate-x-1 transition-transform" />
               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-1000" />
             </button>
             
             <button
-              onClick={() => router.push("/applications")}
+              onClick={() => router.push("/applications?filter=free")}
+              className="group px-6 sm:px-8 md:px-10 py-3 sm:py-4 md:py-5 rounded-xl sm:rounded-2xl font-bold text-white text-sm sm:text-base md:text-lg border-2 border-emerald-400/50 hover:border-emerald-400 hover:bg-emerald-500/10 transition-all duration-300 hover:scale-105 active:scale-95 flex items-center justify-center gap-2 sm:gap-3 backdrop-blur-md w-full sm:w-auto"
+            >
+              <Zap className="w-4 sm:w-5 md:w-6 h-4 sm:h-5 md:h-6 text-emerald-400" />
+              Start Building (Free Access)
+            </button>
+            
+            <button
+              onClick={() => router.push("/applications?sort=premium")}
               className="group px-6 sm:px-8 md:px-10 py-3 sm:py-4 md:py-5 rounded-xl sm:rounded-2xl font-bold text-white text-sm sm:text-base md:text-lg border-2 border-white/30 hover:border-purple-400/60 hover:bg-white/10 transition-all duration-300 hover:scale-105 active:scale-95 flex items-center justify-center gap-2 sm:gap-3 backdrop-blur-md w-full sm:w-auto"
             >
-              <Zap className="w-4 sm:w-5 md:w-6 h-4 sm:h-5 md:h-6" />
-              View Premium Apps
+              View Premium Systems
             </button>
           </div>
 
-          {/* Trust Signals - Security & Quality */}
-          <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6 md:gap-8 px-4 pt-2">
-            <div className="flex items-center gap-2 text-white/60 text-[10px] sm:text-xs md:text-sm">
-              <Shield className="w-3 sm:w-4 h-3 sm:h-4 text-blue-400" />
-              <span className="font-semibold">Bank-Level Security</span>
-            </div>
-            <div className="flex items-center gap-2 text-white/60 text-[10px] sm:text-xs md:text-sm">
-              <CheckCircle className="w-3 sm:w-4 h-3 sm:h-4 text-emerald-400" />
-              <span className="font-semibold">Code Quality Verified</span>
-            </div>
-            <div className="flex items-center gap-2 text-white/60 text-[10px] sm:text-xs md:text-sm">
-              <Star className="w-3 sm:w-4 h-3 sm:h-4 text-amber-400" />
-              <span className="font-semibold">Premium Support</span>
+          {/* Why Developers Use VettCode */}
+          <div className="pt-4 space-y-3">
+            <h3 className="text-base sm:text-lg md:text-xl font-bold text-white" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
+              Why developers use VettCode
+            </h3>
+            
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3 max-w-3xl mx-auto px-4">
+              <div className="flex flex-col items-center gap-1 p-2 sm:p-3 rounded-lg bg-white/5 backdrop-blur-sm border border-white/10">
+                <CheckCircle className="w-4 sm:w-5 h-4 sm:h-5 text-emerald-400" />
+                <span className="text-[10px] sm:text-xs text-white/80 font-semibold text-center leading-tight">Real production architecture</span>
+                <span className="text-[9px] sm:text-[10px] text-white/50">(not demos)</span>
+              </div>
+              
+              <div className="flex flex-col items-center gap-1 p-2 sm:p-3 rounded-lg bg-white/5 backdrop-blur-sm border border-white/10">
+                <Shield className="w-4 sm:w-5 h-4 sm:h-5 text-blue-400" />
+                <span className="text-[10px] sm:text-xs text-white/80 font-semibold text-center leading-tight">Scalable backend & frontend</span>
+              </div>
+              
+              <div className="flex flex-col items-center gap-1 p-2 sm:p-3 rounded-lg bg-white/5 backdrop-blur-sm border border-white/10">
+                <Star className="w-4 sm:w-5 h-4 sm:h-5 text-purple-400" />
+                <span className="text-[10px] sm:text-xs text-white/80 font-semibold text-center leading-tight">Clean, reusable code</span>
+              </div>
+              
+              <div className="flex flex-col items-center gap-1 p-2 sm:p-3 rounded-lg bg-white/5 backdrop-blur-sm border border-white/10">
+                <Zap className="w-4 sm:w-5 h-4 sm:h-5 text-amber-400" />
+                <span className="text-[10px] sm:text-xs text-white/80 font-semibold text-center leading-tight">Real startup deployment</span>
+              </div>
             </div>
           </div>
 
+          {/* Built for Builders */}
+          <div className="pt-3 space-y-2">
+            <h4 className="text-sm sm:text-base font-bold text-purple-300" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
+              Built for builders
+            </h4>
+            <p className="text-xs sm:text-sm text-white/60 font-medium max-w-2xl mx-auto px-4">
+              For developers, indie hackers, and founders shipping real products — not learning projects.
+            </p>
+          </div>
+
           {/* Final Trust Line */}
-          <p className="text-white/50 text-[10px] xs:text-xs sm:text-sm font-medium px-4">
-            Trusted by 5,000+ developers worldwide • No registration required for free apps
+          <p className="text-white/50 text-[10px] xs:text-xs sm:text-sm font-medium px-4 pt-2">
+            Thousands of developers use VettCode to accelerate development.
           </p>
         </div>
       </div>

@@ -71,6 +71,21 @@ const ProductCard = ({ product, isEvent }: { product: any; isEvent?: boolean }) 
   const isVerified = product?.verificationStatus === 'verified' || product?.verified;
   const appBadges = product?.badges || [];
   const appSlug = product?.slug || product?.id;
+  
+  // Currency: Use product's currency or default to USD
+  const productCurrency = product?.currency || "USD";
+  const currencySymbol = productCurrency === "USD" ? "$" : productCurrency === "EUR" ? "€" : productCurrency === "GBP" ? "£" : productCurrency;
+  
+  // Format price with product's currency
+  const formatProductPrice = (price: number) => {
+    if (price === 0) return "FREE";
+    // Format with proper currency symbol
+    if (productCurrency === "USD" || productCurrency === "EUR" || productCurrency === "GBP") {
+      return `${currencySymbol}${price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    }
+    // For other currencies, show symbol after amount
+    return `${price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ${productCurrency}`;
+  };
 
   const discount = regularPrice > appPrice && appPrice > 0
     ? Math.round(((regularPrice - appPrice) / regularPrice) * 100)
@@ -239,11 +254,11 @@ const ProductCard = ({ product, isEvent }: { product: any; isEvent?: boolean }) 
             ) : (
               <div className="flex items-baseline gap-1.5">
                 <span className="text-base font-black text-white" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
-                  {formatPrice(appPrice)}
+                  {formatProductPrice(appPrice)}
                 </span>
                 {discount > 0 && (
                   <span className="text-xs text-gray-500 line-through font-medium">
-                    {formatPrice(regularPrice)}
+                    {formatProductPrice(regularPrice)}
                   </span>
                 )}
               </div>
