@@ -478,12 +478,12 @@ const EasyAIPage = () => {
   }
 
   const suggestedPrompts = [
-    { icon: <Search className="w-4 h-4" />, text: "Find smartphones under 2M UGX" },
-    { icon: <TrendingUp className="w-4 h-4" />, text: "What's trending now?" },
-    { icon: <Package className="w-4 h-4" />, text: "Compare iPhone vs Samsung", href: "/compare" },
-    { icon: <Tag className="w-4 h-4" />, text: "Best deals today" },
-    { icon: <Heart className="w-4 h-4" />, text: "Home office essentials" },
-    { icon: <Headphones className="w-4 h-4" />, text: "Help with my order" },
+    { icon: <Search className="w-4 h-4" />, text: "Find React dashboard templates" },
+    { icon: <TrendingUp className="w-4 h-4" />, text: "What's trending in web apps?" },
+    { icon: <Package className="w-4 h-4" />, text: "Compare SaaS platforms", href: "/compare" },
+    { icon: <Tag className="w-4 h-4" />, text: "Best deals on APIs today" },
+    { icon: <Heart className="w-4 h-4" />, text: "E-commerce starter kits" },
+    { icon: <Headphones className="w-4 h-4" />, text: "Help with my purchase" },
   ]
 
   const formatTime = (date: Date) => {
@@ -521,10 +521,17 @@ const EasyAIPage = () => {
   }
 
   return (
-    <div className="fixed inset-0 z-[100] flex bg-gray-50">
+    <div className="fixed inset-0 z-[100] flex bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+      {/* Code pattern overlay */}
+      <div className="fixed inset-0 opacity-5 pointer-events-none" style={{
+        backgroundImage: `linear-gradient(rgba(139, 92, 246, 0.3) 1px, transparent 1px),
+                         linear-gradient(90deg, rgba(139, 92, 246, 0.3) 1px, transparent 1px)`,
+        backgroundSize: "40px 40px"
+      }} />
+      
       {/* Action Notification */}
       {actionNotification && (
-        <div className="fixed top-4 left-1/2 -translate-x-1/2 z-[110] bg-green-600 text-white px-4 py-2.5 rounded-lg shadow-lg text-sm font-medium animate-in slide-in-from-top">
+        <div className="fixed top-4 left-1/2 -translate-x-1/2 z-[110] bg-gradient-to-r from-purple-600 to-indigo-600 text-white px-4 py-2.5 rounded-lg shadow-lg text-sm font-medium animate-in slide-in-from-top border border-purple-400/30">
           {actionNotification}
         </div>
       )}
@@ -540,26 +547,26 @@ const EasyAIPage = () => {
       {/* Sidebar */}
       <aside className={`
         fixed lg:relative inset-y-0 left-0 z-[102]
-        w-72 bg-gray-900 text-white flex flex-col
+        w-72 bg-slate-900/95 backdrop-blur-xl border-r border-slate-700/50 text-white flex flex-col
         transform transition-transform duration-300 ease-in-out
         ${mobileSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
         ${!sidebarOpen && 'lg:w-0 lg:overflow-hidden'}
       `}>
         {/* Sidebar Header */}
-        <div className="flex-shrink-0 p-4 border-b border-gray-700">
+        <div className="flex-shrink-0 p-4 border-b border-slate-700/50">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <div className="w-9 h-9 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center">
+              <div className="w-9 h-9 bg-gradient-to-br from-purple-500 via-indigo-500 to-blue-500 rounded-xl flex items-center justify-center shadow-lg">
                 <Sparkles className="w-5 h-5 text-white" />
               </div>
               <div>
-                <h1 className="font-bold">E-AI</h1>
-                <p className="text-xs text-gray-400">Shopping Assistant</p>
+                <h1 className="font-bold text-white">VettCode AI</h1>
+                <p className="text-xs text-slate-400">Developer Assistant</p>
               </div>
             </div>
             <button 
               onClick={() => setMobileSidebarOpen(false)}
-              className="lg:hidden p-1.5 hover:bg-gray-800 rounded-lg"
+              className="lg:hidden p-1.5 hover:bg-slate-800 rounded-lg"
             >
               <X className="w-5 h-5" />
             </button>
@@ -570,7 +577,7 @@ const EasyAIPage = () => {
         <div className="flex-shrink-0 p-3">
           <button
             onClick={createNewSession}
-            className="w-full flex items-center gap-2 px-4 py-2.5 bg-blue-600 hover:bg-blue-700 rounded-xl transition font-medium text-sm"
+            className="w-full flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 rounded-xl transition font-medium text-sm shadow-lg"
           >
             <Plus className="w-4 h-4" />
             New Chat
@@ -579,26 +586,26 @@ const EasyAIPage = () => {
 
         {/* Chat Sessions - Scrollable */}
         <div className="flex-1 overflow-y-auto px-3 min-h-0">
-          <p className="text-xs text-gray-500 px-2 py-2 font-medium sticky top-0 bg-gray-900">Recent</p>
+          <p className="text-xs text-slate-500 px-2 py-2 font-medium sticky top-0 bg-slate-900/95">Recent</p>
           <div className="space-y-1 pb-3">
             {sessions.map(session => (
               <div
                 key={session.id}
                 className={`group flex items-center gap-2 px-3 py-2 rounded-lg cursor-pointer transition ${
-                  activeSessionId === session.id ? 'bg-gray-700' : 'hover:bg-gray-800'
+                  activeSessionId === session.id ? 'bg-slate-800/80 border border-purple-500/30' : 'hover:bg-slate-800/50'
                 }`}
                 onClick={() => { setActiveSessionId(session.id); setMobileSidebarOpen(false) }}
               >
-                <MessageSquare className="w-4 h-4 text-gray-400 flex-shrink-0" />
+                <MessageSquare className="w-4 h-4 text-slate-400 flex-shrink-0" />
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm truncate">{session.title}</p>
-                  <p className="text-xs text-gray-500">{formatDate(session.updatedAt)}</p>
+                  <p className="text-sm truncate text-white">{session.title}</p>
+                  <p className="text-xs text-slate-500">{formatDate(session.updatedAt)}</p>
                 </div>
                 <button
                   onClick={(e) => { e.stopPropagation(); deleteSession(session.id) }}
-                  className="opacity-0 group-hover:opacity-100 p-1 hover:bg-gray-600 rounded"
+                  className="opacity-0 group-hover:opacity-100 p-1 hover:bg-slate-700 rounded"
                 >
-                  <Trash2 className="w-3.5 h-3.5 text-gray-400" />
+                  <Trash2 className="w-3.5 h-3.5 text-slate-400" />
                 </button>
               </div>
             ))}
@@ -606,79 +613,79 @@ const EasyAIPage = () => {
         </div>
 
         {/* Sidebar Footer */}
-        <div className="flex-shrink-0 p-3 border-t border-gray-700 space-y-2">
+        <div className="flex-shrink-0 p-3 border-t border-slate-700/50 space-y-2">
           {sessions.length > 0 && (
             <button
               onClick={clearAllSessions}
-              className="w-full flex items-center justify-center gap-2 px-3 py-2 text-xs text-gray-400 hover:text-white hover:bg-gray-800 rounded-lg transition"
+              className="w-full flex items-center justify-center gap-2 px-3 py-2 text-xs text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition"
             >
               <Trash2 className="w-3.5 h-3.5" />
               Clear all
             </button>
           )}
           {user && (
-            <div className="flex items-center gap-2 px-3 py-2 bg-gray-800 rounded-lg">
-              <div className="w-7 h-7 bg-gradient-to-br from-orange-500 to-pink-500 rounded-full flex items-center justify-center text-xs font-bold">
+            <div className="flex items-center gap-2 px-3 py-2 bg-slate-800/50 rounded-lg border border-slate-700/50">
+              <div className="w-7 h-7 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-xs font-bold">
                 {user.name?.charAt(0).toUpperCase() || 'U'}
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-xs font-medium truncate">{user.name}</p>
+                <p className="text-xs font-medium truncate text-white">{user.name}</p>
               </div>
             </div>
           )}
           <Link 
             href="/" 
-            className="flex items-center justify-center gap-2 px-3 py-2 text-sm text-gray-300 hover:text-white hover:bg-gray-800 rounded-lg transition"
+            className="flex items-center justify-center gap-2 px-3 py-2 text-sm text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg transition"
           >
             <ShoppingBag className="w-4 h-4" />
-            Back to Shop
+            Back to Marketplace
           </Link>
           <Link 
             href="/compare" 
-            className="flex items-center justify-center gap-2 px-3 py-2 text-sm text-gray-300 hover:text-white hover:bg-gray-800 rounded-lg transition"
+            className="flex items-center justify-center gap-2 px-3 py-2 text-sm text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg transition"
           >
             <Package className="w-4 h-4" />
-            Compare Products
+            Compare Apps
           </Link>
         </div>
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 flex flex-col min-w-0 h-full">
+      <main className="flex-1 flex flex-col min-w-0 h-full relative">
         {/* Header - Fixed */}
-        <header className="flex-shrink-0 bg-white border-b border-gray-200 px-3 sm:px-4 py-2.5 flex items-center gap-2">
+        <header className="flex-shrink-0 bg-slate-900/95 backdrop-blur-xl border-b border-slate-700/50 px-3 sm:px-4 py-2.5 flex items-center gap-2">
           <button
             onClick={() => setMobileSidebarOpen(true)}
-            className="lg:hidden p-2 hover:bg-gray-100 rounded-lg"
+            className="lg:hidden p-2 hover:bg-slate-800 rounded-lg text-slate-300"
           >
             <Menu className="w-5 h-5" />
           </button>
           <button
             onClick={() => setSidebarOpen(!sidebarOpen)}
-            className="hidden lg:flex p-2 hover:bg-gray-100 rounded-lg"
+            className="hidden lg:flex p-2 hover:bg-slate-800 rounded-lg text-slate-300"
           >
             {sidebarOpen ? <ChevronLeft className="w-5 h-5" /> : <ChevronRight className="w-5 h-5" />}
           </button>
           <div className="flex items-center gap-2 flex-1 min-w-0">
-            <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center flex-shrink-0">
+            <div className="w-8 h-8 bg-gradient-to-br from-purple-500 via-indigo-500 to-blue-500 rounded-lg flex items-center justify-center flex-shrink-0 shadow-lg">
               <Sparkles className="w-4 h-4 text-white" />
             </div>
             <div className="min-w-0">
-              <h2 className="font-semibold text-gray-900 text-sm sm:text-base">E-AI Assistant</h2>
-              <p className="text-xs text-gray-500 hidden sm:block">Search, compare, support</p>
+              <h2 className="font-semibold text-white text-sm sm:text-base">VettCode AI</h2>
+              <p className="text-xs text-slate-400 hidden sm:block">Search, compare, discover apps</p>
             </div>
           </div>
           
           {cart.length > 0 && (
-            <Link href="/cart" className="relative p-2 text-gray-600 hover:bg-gray-100 rounded-lg">
+            <Link href="/cart" className="relative p-2 text-slate-300 hover:bg-slate-800 rounded-lg">
               <ShoppingCart className="w-5 h-5" />
-              <span className="absolute -top-0.5 -right-0.5 bg-orange-500 text-white text-xs w-4 h-4 rounded-full flex items-center justify-center text-[10px]">
+              <span className="absolute -top-0.5 -right-0.5 bg-purple-500 text-white text-xs w-4 h-4 rounded-full flex items-center justify-center text-[10px]">
                 {cart.length}
               </span>
             </Link>
           )}
           
-          <Link href="/" className="p-2 text-gray-600 hover:bg-gray-100 rounded-lg">
+          <Link href="/" className="p-2 text-slate-300 hover:bg-slate-800 rounded-lg">
             <ShoppingBag className="w-5 h-5" />
           </Link>
         </header>
@@ -689,15 +696,15 @@ const EasyAIPage = () => {
             /* Welcome Screen */
             <div className="h-full flex flex-col items-center justify-center p-4 sm:p-6">
               <div className="max-w-xl w-full text-center">
-                <div className="w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-4 sm:mb-6 bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 rounded-2xl sm:rounded-3xl flex items-center justify-center shadow-lg">
+                <div className="w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-4 sm:mb-6 bg-gradient-to-br from-purple-500 via-indigo-500 to-blue-500 rounded-2xl sm:rounded-3xl flex items-center justify-center shadow-2xl">
                   <Sparkles className="w-8 h-8 sm:w-10 sm:h-10 text-white" />
                 </div>
 
-                <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
-                  Welcome to <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">E-AI</span>
+                <h1 className="text-2xl sm:text-3xl font-bold text-white mb-2">
+                  Welcome to <span className="bg-gradient-to-r from-purple-400 to-indigo-400 bg-clip-text text-transparent">VettCode AI</span>
                 </h1>
-                <p className="text-gray-600 mb-6 text-sm sm:text-base">
-                  Your intelligent shopping assistant for vettcode Worldwide
+                <p className="text-slate-300 mb-6 text-sm sm:text-base">
+                  Your intelligent assistant for discovering production-ready applications
                 </p>
 
                 {/* Features Grid */}
@@ -706,50 +713,54 @@ const EasyAIPage = () => {
                     {
                       icon: <Search className="w-5 h-5" />,
                       label: "Search",
-                      color: "text-blue-600",
-                      hoverBorder: "hover:border-blue-200",
-                      prompt: "Help me search for a product. What are you looking for?",
+                      color: "text-purple-400",
+                      hoverBorder: "hover:border-purple-500/50",
+                      bgHover: "hover:bg-purple-500/10",
+                      prompt: "Help me search for an application. What are you looking for?",
                     },
                     {
                       icon: <Package className="w-5 h-5" />,
                       label: "Compare",
-                      color: "text-purple-600",
-                      hoverBorder: "hover:border-purple-200",
+                      color: "text-indigo-400",
+                      hoverBorder: "hover:border-indigo-500/50",
+                      bgHover: "hover:bg-indigo-500/10",
                       href: "/compare",
                     },
                     {
                       icon: <TrendingUp className="w-5 h-5" />,
                       label: "Trending",
-                      color: "text-orange-600",
-                      hoverBorder: "hover:border-orange-200",
-                      prompt: "What products are trending on vettcode right now?",
+                      color: "text-pink-400",
+                      hoverBorder: "hover:border-pink-500/50",
+                      bgHover: "hover:bg-pink-500/10",
+                      prompt: "What applications are trending on VettCode right now?",
                     },
                     {
                       icon: <Headphones className="w-5 h-5" />,
                       label: "Support",
-                      color: "text-cyan-600",
-                      hoverBorder: "hover:border-cyan-200",
-                      prompt: "I need help with my order or account. Can you assist me?",
+                      color: "text-cyan-400",
+                      hoverBorder: "hover:border-cyan-500/50",
+                      bgHover: "hover:bg-cyan-500/10",
+                      prompt: "I need help with my purchase or account. Can you assist me?",
                     },
                   ].map((f, i) => (
                     f.href ? (
                       <Link
                         key={i}
                         href={f.href}
-                        className={`flex flex-col items-center gap-2 p-3 bg-white rounded-xl border border-gray-100 ${f.hoverBorder} hover:shadow-md transition-all duration-200 group cursor-pointer`}
+                        className={`flex flex-col items-center gap-2 p-3 bg-slate-800/50 backdrop-blur-sm rounded-xl border border-slate-700/50 ${f.hoverBorder} ${f.bgHover} hover:shadow-lg transition-all duration-200 group cursor-pointer`}
                       >
                         <div className={`${f.color} group-hover:scale-110 transition-transform`}>{f.icon}</div>
-                        <span className="text-xs font-semibold text-gray-700">{f.label}</span>
+                        <span className="text-xs font-semibold text-slate-200">{f.label}</span>
                       </Link>
                     ) : (
                       <button
                         key={i}
                         onClick={() => f.prompt && sendMessage(f.prompt)}
                         disabled={isLoading}
-                        className={`flex flex-col items-center gap-2 p-3 bg-white rounded-xl border border-gray-100 ${f.hoverBorder} hover:shadow-md transition-all duration-200 group cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed w-full`}
+                        className={`flex flex-col items-center gap-2 p-3 bg-slate-800/50 backdrop-blur-sm rounded-xl border border-slate-700/50 ${f.hoverBorder} ${f.bgHover} hover:shadow-lg transition-all duration-200 group cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed w-full`}
                       >
                         <div className={`${f.color} group-hover:scale-110 transition-transform`}>{f.icon}</div>
-                        <span className="text-xs font-semibold text-gray-700">{f.label}</span>
+                        <span className="text-xs font-semibold text-slate-200">{f.label}</span>
                       </button>
                     )
                   ))}
@@ -757,31 +768,31 @@ const EasyAIPage = () => {
 
                 {/* Suggested Prompts */}
                 <div className="space-y-2">
-                  <p className="text-xs text-gray-500 mb-2">Try asking:</p>
+                  <p className="text-xs text-slate-500 mb-2">Try asking:</p>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                     {suggestedPrompts.map((prompt, index) => (
                       prompt.href ? (
                         <Link
                           key={index}
                           href={prompt.href}
-                          className="flex items-center gap-2 p-3 bg-white border border-gray-200 rounded-xl hover:border-purple-300 hover:bg-purple-50 text-left transition text-sm"
+                          className="flex items-center gap-2 p-3 bg-slate-800/50 backdrop-blur-sm border border-slate-700/50 rounded-xl hover:border-purple-500/50 hover:bg-purple-500/10 text-left transition text-sm"
                         >
-                          <div className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center text-gray-600 flex-shrink-0">
+                          <div className="w-8 h-8 bg-slate-700/50 rounded-lg flex items-center justify-center text-slate-400 flex-shrink-0">
                             {prompt.icon}
                           </div>
-                          <span className="text-gray-700 truncate">{prompt.text}</span>
+                          <span className="text-slate-200 truncate">{prompt.text}</span>
                         </Link>
                       ) : (
                         <button
                           key={index}
                           onClick={() => sendMessage(prompt.text)}
                           disabled={isLoading}
-                          className="flex items-center gap-2 p-3 bg-white border border-gray-200 rounded-xl hover:border-blue-300 hover:bg-blue-50 text-left transition disabled:opacity-50 text-sm"
+                          className="flex items-center gap-2 p-3 bg-slate-800/50 backdrop-blur-sm border border-slate-700/50 rounded-xl hover:border-purple-500/50 hover:bg-purple-500/10 text-left transition disabled:opacity-50 text-sm"
                         >
-                          <div className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center text-gray-600 flex-shrink-0">
+                          <div className="w-8 h-8 bg-slate-700/50 rounded-lg flex items-center justify-center text-slate-400 flex-shrink-0">
                             {prompt.icon}
                           </div>
-                          <span className="text-gray-700 truncate">{prompt.text}</span>
+                          <span className="text-slate-200 truncate">{prompt.text}</span>
                         </button>
                       )
                     ))}
@@ -796,7 +807,7 @@ const EasyAIPage = () => {
                 <div key={message.id}>
                   <div className={`flex gap-2 sm:gap-3 ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                     {message.role === 'assistant' && (
-                      <div className="w-8 h-8 sm:w-9 sm:h-9 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center flex-shrink-0">
+                      <div className="w-8 h-8 sm:w-9 sm:h-9 bg-gradient-to-br from-purple-500 via-indigo-500 to-blue-500 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg">
                         <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                       </div>
                     )}
@@ -804,10 +815,10 @@ const EasyAIPage = () => {
                     <div className={`max-w-[85%] sm:max-w-[80%] ${message.role === 'user' ? 'order-first' : ''}`}>
                       <div className={`rounded-2xl px-3 sm:px-4 py-2.5 sm:py-3 ${
                         message.role === 'user'
-                          ? 'bg-blue-600 text-white rounded-br-sm'
+                          ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-br-sm shadow-lg'
                           : message.isError
-                          ? 'bg-red-50 border border-red-200 text-red-800 rounded-bl-sm'
-                          : 'bg-white border border-gray-200 text-gray-800 rounded-bl-sm shadow-sm'
+                          ? 'bg-red-500/20 border border-red-500/30 text-red-200 rounded-bl-sm'
+                          : 'bg-slate-800/80 backdrop-blur-sm border border-slate-700/50 text-slate-100 rounded-bl-sm shadow-lg'
                       }`}>
                         {message.role === 'user' ? (
                           <div>
@@ -828,10 +839,10 @@ const EasyAIPage = () => {
 
                         {/* Intent Badge + Web Search */}
                         {message.role === 'assistant' && (message.usedWebSearch || message.intent) && (
-                          <div className="flex items-center gap-2 mt-2 pt-2 border-t border-gray-100 flex-wrap">
+                          <div className="flex items-center gap-2 mt-2 pt-2 border-t border-slate-700/50 flex-wrap">
                             {message.intent && getIntentBadge(message.intent)}
                             {message.usedWebSearch && (
-                              <span className="inline-flex items-center gap-1 text-xs text-green-600 font-medium">
+                              <span className="inline-flex items-center gap-1 text-xs text-green-400 font-medium">
                                 <Globe className="w-3 h-3" />
                                 Live data
                               </span>
@@ -843,7 +854,7 @@ const EasyAIPage = () => {
                         {message.action?.type === 'add_to_cart' && message.action.data && (
                           <button
                             onClick={() => handleAddToCart(message.action!.data)}
-                            className="mt-2 flex items-center gap-1.5 px-3 py-1.5 bg-green-600 text-white rounded-lg hover:bg-green-700 transition text-xs"
+                            className="mt-2 flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-lg hover:from-purple-700 hover:to-indigo-700 transition text-xs shadow-lg"
                           >
                             <ShoppingCart className="w-3.5 h-3.5" />
                             Add to Cart
@@ -853,7 +864,7 @@ const EasyAIPage = () => {
 
                       {/* Message Footer */}
                       <div className={`flex items-center gap-2 mt-1 ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                        <span className="flex items-center gap-1 text-xs text-gray-400">
+                        <span className="flex items-center gap-1 text-xs text-slate-500">
                           <Clock className="w-3 h-3" />
                           {formatTime(message.timestamp)}
                         </span>
@@ -870,7 +881,7 @@ const EasyAIPage = () => {
                     </div>
 
                     {message.role === 'user' && (
-                      <div className="w-8 h-8 sm:w-9 sm:h-9 bg-gradient-to-br from-orange-500 to-pink-500 rounded-xl flex items-center justify-center flex-shrink-0">
+                      <div className="w-8 h-8 sm:w-9 sm:h-9 bg-gradient-to-br from-pink-500 to-purple-500 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg">
                         <User className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                       </div>
                     )}
@@ -879,7 +890,7 @@ const EasyAIPage = () => {
                   {/* Product Recommendations */}
                   {message.productRecommendations && message.productRecommendations.length > 0 && (
                     <div className="mt-3 ml-10 sm:ml-12">
-                      <p className="text-xs font-medium text-gray-500 mb-2 flex items-center gap-1">
+                      <p className="text-xs font-medium text-slate-400 mb-2 flex items-center gap-1">
                         <Package className="w-3 h-3" />
                         Recommended:
                       </p>
@@ -889,14 +900,14 @@ const EasyAIPage = () => {
                           const inWishlist = wishlist.some((i: any) => i.id === product.id)
                           const outOfStock = product.stock !== undefined && product.stock === 0
                           return (
-                            <div key={product.id} className="flex-shrink-0 w-36 bg-white border border-gray-200 rounded-xl overflow-hidden hover:border-teal-300 hover:shadow-md transition flex flex-col">
+                            <div key={product.id} className="flex-shrink-0 w-36 bg-slate-800/80 backdrop-blur-sm border border-slate-700/50 rounded-xl overflow-hidden hover:border-purple-500/50 hover:shadow-lg transition flex flex-col">
                               {/* Image */}
-                              <Link href={`/product/${product.slug}`} className="relative block w-full h-24 bg-gray-100">
+                              <Link href={`/product/${product.slug}`} className="relative block w-full h-24 bg-slate-700/50">
                                 {product.image ? (
                                   <Image src={product.image} alt={product.title} fill className="object-cover" sizes="144px" />
                                 ) : (
                                   <div className="w-full h-full flex items-center justify-center">
-                                    <ShoppingBag className="w-6 h-6 text-gray-300" />
+                                    <ShoppingBag className="w-6 h-6 text-slate-600" />
                                   </div>
                                 )}
                                 {/* Badges */}
@@ -909,27 +920,27 @@ const EasyAIPage = () => {
                                   <span className="absolute top-1 left-1 bg-orange-500 text-white text-[10px] px-1.5 py-0.5 rounded font-medium">Low stock</span>
                                 )}
                                 {inCart && (
-                                  <span className="absolute top-1 right-1 bg-teal-600 text-white text-[10px] px-1.5 py-0.5 rounded font-medium">In Cart</span>
+                                  <span className="absolute top-1 right-1 bg-purple-600 text-white text-[10px] px-1.5 py-0.5 rounded font-medium">In Cart</span>
                                 )}
                                 {/* Wishlist button */}
                                 <button
                                   onClick={(e) => { e.preventDefault(); handleToggleWishlist(product) }}
-                                  className="absolute bottom-1 right-1 w-6 h-6 rounded-full bg-white/90 flex items-center justify-center shadow hover:scale-110 transition"
+                                  className="absolute bottom-1 right-1 w-6 h-6 rounded-full bg-slate-800/90 flex items-center justify-center shadow hover:scale-110 transition"
                                 >
-                                  <Heart className={`w-3.5 h-3.5 ${inWishlist ? 'fill-red-500 text-red-500' : 'text-gray-400'}`} />
+                                  <Heart className={`w-3.5 h-3.5 ${inWishlist ? 'fill-red-500 text-red-500' : 'text-slate-400'}`} />
                                 </button>
                               </Link>
 
                               {/* Info */}
                               <div className="p-2 flex-1 flex flex-col">
-                                <p className="text-xs font-semibold text-gray-800 truncate leading-tight">{product.title}</p>
-                                {product.brand && <p className="text-[10px] text-gray-400 truncate">{product.brand}</p>}
+                                <p className="text-xs font-semibold text-white truncate leading-tight">{product.title}</p>
+                                {product.brand && <p className="text-[10px] text-slate-500 truncate">{product.brand}</p>}
                                 <div className="flex items-center justify-between mt-1">
-                                  <p className="text-xs text-teal-700 font-bold">
+                                  <p className="text-xs text-purple-400 font-bold">
                                     UGX {product.price >= 1000 ? `${(product.price / 1000).toFixed(0)}k` : product.price}
                                   </p>
                                   {product.rating > 0 && (
-                                    <span className="flex items-center gap-0.5 text-[10px] text-gray-400">
+                                    <span className="flex items-center gap-0.5 text-[10px] text-slate-400">
                                       <Star className="w-3 h-3 text-yellow-400 fill-yellow-400" />
                                       {product.rating.toFixed(1)}
                                     </span>
@@ -943,8 +954,8 @@ const EasyAIPage = () => {
                                 disabled={outOfStock}
                                 className={`w-full py-1.5 text-xs font-semibold flex items-center justify-center gap-1 transition active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed ${
                                   inCart
-                                    ? 'bg-teal-600 text-white hover:bg-red-500'
-                                    : 'bg-gray-50 text-gray-700 hover:bg-teal-600 hover:text-white'
+                                    ? 'bg-purple-600 text-white hover:bg-red-500'
+                                    : 'bg-slate-700/50 text-slate-200 hover:bg-purple-600 hover:text-white'
                                 }`}
                               >
                                 <ShoppingCart className="w-3 h-3" />
@@ -962,17 +973,17 @@ const EasyAIPage = () => {
               {/* Loading */}
               {isLoading && (
                 <div className="flex gap-2 sm:gap-3 justify-start">
-                  <div className="w-8 h-8 sm:w-9 sm:h-9 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center">
+                  <div className="w-8 h-8 sm:w-9 sm:h-9 bg-gradient-to-br from-purple-500 via-indigo-500 to-blue-500 rounded-xl flex items-center justify-center shadow-lg">
                     <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                   </div>
-                  <div className="bg-white border border-gray-200 rounded-2xl rounded-bl-sm px-4 py-3 shadow-sm">
+                  <div className="bg-slate-800/80 backdrop-blur-sm border border-slate-700/50 rounded-2xl rounded-bl-sm px-4 py-3 shadow-lg">
                     <div className="flex items-center gap-2">
                       <div className="flex gap-1">
-                        <span className="w-2 h-2 bg-blue-600 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-                        <span className="w-2 h-2 bg-blue-600 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-                        <span className="w-2 h-2 bg-blue-600 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                        <span className="w-2 h-2 bg-purple-500 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                        <span className="w-2 h-2 bg-purple-500 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+                        <span className="w-2 h-2 bg-purple-500 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
                       </div>
-                      <span className="text-sm text-gray-500">Thinking...</span>
+                      <span className="text-sm text-slate-300">Thinking...</span>
                     </div>
                   </div>
                 </div>
@@ -984,7 +995,7 @@ const EasyAIPage = () => {
         </div>
 
         {/* Input Area - Fixed at bottom with safe area padding */}
-        <div className="flex-shrink-0 border-t border-gray-200 bg-white p-3 sm:p-4 pb-4 sm:pb-4">
+        <div className="flex-shrink-0 border-t border-slate-700/50 bg-slate-900/95 backdrop-blur-xl p-3 sm:p-4 pb-4 sm:pb-4">
           <div className="max-w-3xl mx-auto">
             {/* Image Preview */}
             {imagePreview && (
@@ -992,7 +1003,7 @@ const EasyAIPage = () => {
                 <img 
                   src={imagePreview} 
                   alt="Selected" 
-                  className="h-20 w-20 object-cover rounded-xl border border-gray-200"
+                  className="h-20 w-20 object-cover rounded-xl border border-slate-700"
                 />
                 <button
                   onClick={clearImageSelection}
@@ -1015,7 +1026,7 @@ const EasyAIPage = () => {
               <button
                 onClick={() => fileInputRef.current?.click()}
                 disabled={isLoading || isUploadingImage}
-                className="p-2.5 sm:p-3 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition disabled:opacity-50 flex-shrink-0"
+                className="p-2.5 sm:p-3 text-slate-400 hover:text-purple-400 hover:bg-slate-800 rounded-xl transition disabled:opacity-50 flex-shrink-0"
                 title="Upload image"
               >
                 {isUploadingImage ? (
@@ -1031,10 +1042,10 @@ const EasyAIPage = () => {
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   onKeyDown={handleKeyDown}
-                  placeholder={selectedImage ? "Add a message about this image..." : "Ask E-AI anything..."}
+                  placeholder={selectedImage ? "Add a message about this image..." : "Ask VettCode AI anything..."}
                   disabled={isLoading}
                   rows={1}
-                  className="w-full px-3 sm:px-4 py-2.5 sm:py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none disabled:bg-gray-50 text-sm"
+                  className="w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-slate-800/50 border border-slate-700 text-white placeholder-slate-500 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none disabled:bg-slate-800/30 text-sm"
                   style={{ minHeight: '44px', maxHeight: '100px' }}
                   onInput={(e) => {
                     const target = e.target as HTMLTextAreaElement
@@ -1046,13 +1057,13 @@ const EasyAIPage = () => {
               <button
                 onClick={() => sendMessage()}
                 disabled={isLoading || (!input.trim() && !selectedImage)}
-                className="p-2.5 sm:p-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed flex-shrink-0"
+                className="p-2.5 sm:p-3 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-xl hover:from-purple-700 hover:to-indigo-700 transition disabled:opacity-50 disabled:cursor-not-allowed flex-shrink-0 shadow-lg"
               >
                 <Send className="w-5 h-5" />
               </button>
             </div>
-            <p className="text-[10px] sm:text-xs text-gray-400 mt-2 text-center">
-              Upload images to find similar products • E-AI uses web search for current info
+            <p className="text-[10px] sm:text-xs text-slate-500 mt-2 text-center">
+              Upload images to find similar applications • VettCode AI uses web search for current info
             </p>
           </div>
         </div>
