@@ -28,13 +28,19 @@ import {
   Clock,
   Package,
   Lock,
-  Unlock
+  Unlock,
+  Bot,
+  Crown,
+  Flame,
+  Verified,
+  BadgeCheck
 } from "lucide-react"
 import { useStore } from "@/store"
 import useUser from "@/hooks/useUser"
 import useDeviceTracking from "@/hooks/useDeviceTracking"
 import useLocationTracking from "@/hooks/useLocationTracking"
 import ProductCard from "@/shared/components/cards/Product-card"
+import ProductAIChat from "@/shared/components/product/ProductAIChat"
 import { toast } from "sonner"
 
 // Type Definitions
@@ -168,6 +174,8 @@ const ProductDetails = ({
   const [activeImage, setActiveImage] = useState(0);
   const [showVideoModal, setShowVideoModal] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [activeTab, setActiveTab] = useState<'overview' | 'badges' | 'features' | 'requirements'>('overview');
+  const [showAIChat, setShowAIChat] = useState(false);
   const [activeTab, setActiveTab] = useState<'overview' | 'features' | 'requirements'>('overview');
 
   // Store
@@ -499,21 +507,6 @@ const ProductDetails = ({
                 </div>
               )}
 
-              {/* Badges */}
-              {badges.length > 0 && (
-                <div className="mt-3 flex flex-wrap gap-2">
-                  {badges.map((badge: string, index: number) => (
-                    <span
-                      key={index}
-                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-yellow-500/20 text-yellow-300 border border-yellow-500/40"
-                    >
-                      <Award className="w-3.5 h-3.5" />
-                      {badge}
-                    </span>
-                  ))}
-                </div>
-              )}
-
               {/* Description */}
               <div className="mt-4">
                 <p className="text-sm leading-relaxed text-gray-300 line-clamp-3">
@@ -644,6 +637,15 @@ const ProductDetails = ({
                     )}
                   </button>
                 </div>
+
+                {/* Ask AI Button */}
+                <button
+                  onClick={() => setShowAIChat(true)}
+                  className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl font-semibold transition border-2 border-purple-500/40 bg-gradient-to-r from-purple-900/30 to-blue-900/30 text-purple-300 hover:from-purple-900/50 hover:to-blue-900/50"
+                >
+                  <Bot className="w-5 h-5" />
+                  Ask AI About This App
+                </button>
               </div>
 
               {/* Quick Links */}
@@ -727,6 +729,21 @@ const ProductDetails = ({
                 Overview
               </div>
             </button>
+            {badges.length > 0 && (
+              <button
+                onClick={() => setActiveTab('badges')}
+                className={`flex-1 px-6 py-4 text-sm font-semibold transition ${
+                  activeTab === 'badges'
+                    ? 'text-white bg-purple-600/20 border-b-2 border-purple-500'
+                    : 'text-gray-400 hover:text-white hover:bg-gray-800/50'
+                }`}
+              >
+                <div className="flex items-center justify-center gap-2">
+                  <Award className="w-4 h-4" />
+                  Badges
+                </div>
+              </button>
+            )}
             {features.length > 0 && (
               <button
                 onClick={() => setActiveTab('features')}
@@ -814,6 +831,76 @@ const ProductDetails = ({
               </div>
             )}
 
+            {activeTab === 'badges' && badges.length > 0 && (
+              <div>
+                <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                  <Award className="w-5 h-5 text-yellow-400" />
+                  Application Badges & Achievements
+                </h3>
+                <p className="text-gray-400 text-sm mb-6">
+                  This application has earned the following badges for quality, performance, and excellence.
+                </p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {badges.map((badge: string, index: number) => {
+                    // Determine icon and color based on badge name
+                    let BadgeIcon = Award;
+                    let colorClass = "from-yellow-900/30 to-amber-900/30";
+                    let borderClass = "border-yellow-500/30";
+                    let iconColor = "text-yellow-400";
+                    let textColor = "text-yellow-200";
+
+                    const badgeLower = badge.toLowerCase();
+                    if (badgeLower.includes('verified') || badgeLower.includes('certified')) {
+                      BadgeIcon = BadgeCheck;
+                      colorClass = "from-blue-900/30 to-indigo-900/30";
+                      borderClass = "border-blue-500/30";
+                      iconColor = "text-blue-400";
+                      textColor = "text-blue-200";
+                    } else if (badgeLower.includes('premium') || badgeLower.includes('pro')) {
+                      BadgeIcon = Crown;
+                      colorClass = "from-purple-900/30 to-violet-900/30";
+                      borderClass = "border-purple-500/30";
+                      iconColor = "text-purple-400";
+                      textColor = "text-purple-200";
+                    } else if (badgeLower.includes('trending') || badgeLower.includes('popular') || badgeLower.includes('hot')) {
+                      BadgeIcon = Flame;
+                      colorClass = "from-orange-900/30 to-red-900/30";
+                      borderClass = "border-orange-500/30";
+                      iconColor = "text-orange-400";
+                      textColor = "text-orange-200";
+                    } else if (badgeLower.includes('featured') || badgeLower.includes('editor')) {
+                      BadgeIcon = Sparkles;
+                      colorClass = "from-pink-900/30 to-rose-900/30";
+                      borderClass = "border-pink-500/30";
+                      iconColor = "text-pink-400";
+                      textColor = "text-pink-200";
+                    } else if (badgeLower.includes('best') || badgeLower.includes('top')) {
+                      BadgeIcon = Star;
+                      colorClass = "from-amber-900/30 to-yellow-900/30";
+                      borderClass = "border-amber-500/30";
+                      iconColor = "text-amber-400";
+                      textColor = "text-amber-200";
+                    }
+
+                    return (
+                      <div
+                        key={index}
+                        className={`flex items-center gap-4 p-5 bg-gradient-to-br ${colorClass} rounded-xl border ${borderClass} hover:scale-105 transition-transform duration-200`}
+                      >
+                        <div className={`w-12 h-12 rounded-full bg-gray-900/50 flex items-center justify-center ${iconColor} flex-shrink-0`}>
+                          <BadgeIcon className="w-6 h-6" />
+                        </div>
+                        <div className="flex-1">
+                          <p className={`font-bold ${textColor} text-base`}>{badge}</p>
+                          <p className="text-gray-400 text-xs mt-1">Awarded by VettCode</p>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
             {activeTab === 'features' && features.length > 0 && (
               <div>
                 <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
@@ -873,6 +960,19 @@ const ProductDetails = ({
           </div>
         )}
       </div>
+
+      {/* AI Chat Modal */}
+      <ProductAIChat
+        productInfo={{
+          ...productDetails,
+          title: appName,
+          sale_price: price,
+          regular_price: price,
+          stock: 999, // Applications are always "in stock"
+        }}
+        isOpen={showAIChat}
+        onClose={() => setShowAIChat(false)}
+      />
     </div>
   );
 };
