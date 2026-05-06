@@ -245,8 +245,6 @@ const ProductsPageContent = () => {
         newFilters.technologyStack = prev.technologyStack?.filter((t) => t !== value);
       } else if (key === "platforms" && value) {
         newFilters.platforms = prev.platforms?.filter((p) => p !== value);
-      } else if (key === "sizes" && value) {
-        newFilters.sizes = prev.sizes?.filter((s) => s !== value);
       } else if (key === "price_min") {
         newFilters.price_min = undefined;
         newFilters.price_max = undefined;
