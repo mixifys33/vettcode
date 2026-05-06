@@ -5,8 +5,9 @@ import Link from "next/link";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import {
-  Search, Store, MapPin, Star, X, ChevronDown,
-  Grid3X3, List, Loader2, Package, CheckCircle, SlidersHorizontal, RefreshCw
+  Search, Code2, MapPin, Star, X, ChevronDown,
+  Grid3X3, List, Loader2, Package, CheckCircle, SlidersHorizontal, RefreshCw,
+  Users, Award, Zap, Terminal
 } from "lucide-react";
 import axiosInstance from "@/utils/axiosInstance";
 
@@ -34,37 +35,37 @@ interface FilterState {
 }
 
 const CATEGORIES = [
-  "All Categories", "Electronics", "Fashion", "Home & Garden",
-  "Health & Beauty", "Sports & Outdoors", "Automotive", "Other"
+  "All Categories", "Web Applications", "Mobile Apps", "SaaS Platforms",
+  "APIs & Services", "Templates & Themes", "Dashboards", "E-Commerce", "Other"
 ];
 
 const SORT_OPTIONS = [
   { value: "popular", label: "Most Popular" },
   { value: "rating", label: "Highest Rated" },
-  { value: "newest", label: "Newest First" },
+  { value: "newest", label: "Newest Sellers" },
   { value: "name_asc", label: "Name (A-Z)" },
 ];
 
-// Shop Card Component
+// Seller Card Component
 const ShopCard = ({ shop, viewMode }: { shop: Shop; viewMode: "grid" | "list" }) => {
   const [avatarError, setAvatarError] = React.useState(false);
   const shopAvatar = (!avatarError && shop.avatar && shop.avatar.startsWith('http')) ? shop.avatar : (shop.images?.[0]?.url || null);
   const coverBanner = shop.coverBanner || null;
-  const initials = shop.name?.slice(0, 2).toUpperCase() || "ES";
+  const initials = shop.name?.slice(0, 2).toUpperCase() || "DV";
   const showInitials = !shopAvatar || avatarError;
 
   if (viewMode === "list") {
     return (
       <Link href={`/shop/${shop.id}`} className="block group">
-        <div className="bg-white rounded-2xl border hover:border-blue-200 hover:shadow-xl transition-all p-4 flex gap-4">
-          <div className="relative w-20 h-20 rounded-full overflow-hidden bg-gradient-to-br from-blue-100 to-purple-100 shrink-0 ring-4 ring-white shadow-lg">
+        <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl border border-slate-700/50 hover:border-purple-500/50 hover:shadow-xl transition-all p-4 flex gap-4">
+          <div className="relative w-20 h-20 rounded-full overflow-hidden bg-gradient-to-br from-purple-500 to-indigo-600 shrink-0 ring-4 ring-slate-700/50 shadow-lg">
             {!showInitials ? (
               <Image src={shopAvatar!} alt={shop.name} fill className="object-cover" unoptimized onError={() => setAvatarError(true)} />
             ) : (
-              <div className="w-full h-full flex items-center justify-center text-blue-600 font-black text-xl">{initials}</div>
+              <div className="w-full h-full flex items-center justify-center text-white font-black text-xl">{initials}</div>
             )}
             {shop.isVerified && (
-              <div className="absolute -bottom-1 -right-1 bg-blue-600 text-white p-1.5 rounded-full">
+              <div className="absolute -bottom-1 -right-1 bg-blue-500 text-white p-1.5 rounded-full shadow-lg">
                 <CheckCircle className="w-3 h-3" />
               </div>
             )}
@@ -72,23 +73,23 @@ const ShopCard = ({ shop, viewMode }: { shop: Shop; viewMode: "grid" | "list" })
           <div className="flex-1 min-w-0">
             <div className="flex items-start justify-between gap-2">
               <div>
-                <h3 className="font-bold text-gray-900 text-lg truncate group-hover:text-blue-600">
+                <h3 className="font-bold text-white text-lg truncate group-hover:text-purple-400 transition">
                   {shop.name}
                 </h3>
-                <p className="text-sm text-blue-600 font-medium">{shop.category}</p>
+                <p className="text-sm text-purple-400 font-medium">{shop.category}</p>
               </div>
-              <div className="flex items-center gap-1 bg-yellow-50 px-3 py-1.5 rounded-full border border-yellow-200">
-                <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />
-                <span className="text-sm font-bold">{shop.ratings?.toFixed(1) || "5.0"}</span>
+              <div className="flex items-center gap-1 bg-amber-500/20 px-3 py-1.5 rounded-full border border-amber-500/30">
+                <Star className="w-4 h-4 text-amber-400 fill-amber-400" />
+                <span className="text-sm font-bold text-amber-300">{shop.ratings?.toFixed(1) || "5.0"}</span>
               </div>
             </div>
-            {shop.bio && <p className="text-sm text-gray-600 mt-2 line-clamp-2">{shop.bio}</p>}
-            <div className="flex items-center gap-4 mt-3 text-xs text-gray-500">
-              <span className="flex items-center gap-1.5 bg-gray-50 px-2 py-1 rounded-full">
-                <MapPin className="w-3.5 h-3.5" />{shop.address || "Worldwide"}
+            {shop.bio && <p className="text-sm text-slate-400 mt-2 line-clamp-2">{shop.bio}</p>}
+            <div className="flex items-center gap-4 mt-3 text-xs text-slate-400">
+              <span className="flex items-center gap-1.5 bg-slate-700/50 px-2 py-1 rounded-full">
+                <MapPin className="w-3.5 h-3.5" />{shop.address || "Global"}
               </span>
-              <span className="flex items-center gap-1.5 bg-blue-50 px-2 py-1 rounded-full text-blue-600">
-                <Package className="w-3.5 h-3.5" />{shop.productCount || 0} products
+              <span className="flex items-center gap-1.5 bg-purple-500/20 px-2 py-1 rounded-full text-purple-300">
+                <Package className="w-3.5 h-3.5" />{shop.productCount || 0} applications
               </span>
             </div>
           </div>
@@ -99,43 +100,49 @@ const ShopCard = ({ shop, viewMode }: { shop: Shop; viewMode: "grid" | "list" })
 
   return (
     <Link href={`/shop/${shop.id}`} className="block group">
-      <div className="bg-white rounded-2xl border hover:border-blue-200 hover:shadow-2xl transition-all overflow-hidden">
+      <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl border border-slate-700/50 hover:border-purple-500/50 hover:shadow-2xl transition-all overflow-hidden">
         {/* Cover Banner */}
-        <div className="relative h-32 sm:h-40 bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500">
+        <div className="relative h-32 sm:h-40 bg-gradient-to-br from-purple-600 via-indigo-600 to-blue-600">
           {coverBanner && <Image src={coverBanner} alt="" fill className="object-cover" unoptimized />}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
-          <div className="absolute top-3 right-3 flex items-center gap-1 bg-white/95 px-2.5 py-1 rounded-full shadow-lg">
-            <Star className="w-3.5 h-3.5 text-yellow-500 fill-yellow-500" />
-            <span className="text-xs font-bold">{shop.ratings?.toFixed(1) || "5.0"}</span>
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+          {/* Code pattern overlay */}
+          <div className="absolute inset-0 opacity-10" style={{
+            backgroundImage: `linear-gradient(rgba(139, 92, 246, 0.3) 1px, transparent 1px),
+                             linear-gradient(90deg, rgba(139, 92, 246, 0.3) 1px, transparent 1px)`,
+            backgroundSize: "30px 30px"
+          }} />
+          <div className="absolute top-3 right-3 flex items-center gap-1 bg-slate-900/90 backdrop-blur-sm px-2.5 py-1 rounded-full shadow-lg border border-amber-500/30">
+            <Star className="w-3.5 h-3.5 text-amber-400 fill-amber-400" />
+            <span className="text-xs font-bold text-amber-300">{shop.ratings?.toFixed(1) || "5.0"}</span>
           </div>
           {shop.isVerified && (
-            <div className="absolute top-3 left-3 bg-blue-600 text-white px-2.5 py-1 rounded-full flex items-center gap-1 shadow-lg">
+            <div className="absolute top-3 left-3 bg-blue-500 text-white px-2.5 py-1 rounded-full flex items-center gap-1 shadow-lg">
               <CheckCircle className="w-3 h-3" /><span className="text-xs font-medium">Verified</span>
             </div>
           )}
         </div>
         {/* Avatar positioned at bottom center of cover */}
         <div className="relative px-4 pb-4">
-          <div className="absolute -top-10 left-1/2 -translate-x-1/2 w-20 h-20 rounded-full border-4 border-white bg-gradient-to-br from-blue-100 to-purple-100 shadow-xl overflow-hidden">
+          <div className="absolute -top-10 left-1/2 -translate-x-1/2 w-20 h-20 rounded-full border-4 border-slate-800 bg-gradient-to-br from-purple-500 to-indigo-600 shadow-xl overflow-hidden">
             {!showInitials ? (
               <Image src={shopAvatar!} alt={shop.name} fill className="object-cover" unoptimized onError={() => setAvatarError(true)} />
             ) : (
-              <div className="w-full h-full flex items-center justify-center text-blue-600 font-black text-xl">{initials}</div>
+              <div className="w-full h-full flex items-center justify-center text-white font-black text-xl">{initials}</div>
             )}
           </div>
           <div className="pt-12 text-center">
-            <h3 className="font-bold text-gray-900 text-lg truncate group-hover:text-blue-600 px-2">{shop.name}</h3>
-            <p className="text-sm text-blue-600 font-medium">{shop.category}</p>
-            {shop.bio && <p className="text-xs text-gray-500 mt-2 line-clamp-2 px-2">{shop.bio}</p>}
-            <div className="flex items-center justify-center gap-3 mt-4 pt-4 border-t">
-              <div className="flex items-center gap-1.5 text-xs text-gray-500">
-                <Package className="w-4 h-4 text-blue-500" />
-                <span className="font-medium">{shop.productCount || 0}</span> items
+            <h3 className="font-bold text-white text-lg truncate group-hover:text-purple-400 transition px-2">{shop.name}</h3>
+            <p className="text-sm text-purple-400 font-medium">{shop.category}</p>
+            {shop.bio && <p className="text-xs text-slate-400 mt-2 line-clamp-2 px-2">{shop.bio}</p>}
+            <div className="flex items-center justify-center gap-3 mt-4 pt-4 border-t border-slate-700/50">
+              <div className="flex items-center gap-1.5 text-xs text-slate-400">
+                <Package className="w-4 h-4 text-purple-400" />
+                <span className="font-medium text-white">{shop.productCount || 0}</span> apps
               </div>
-              <div className="w-1 h-1 bg-gray-300 rounded-full" />
-              <div className="flex items-center gap-1.5 text-xs text-gray-500">
-                <MapPin className="w-4 h-4 text-pink-500" />
-                <span className="truncate max-w-[80px]">{shop.address?.split(",")[0] || "Worldwide"}</span>
+              <div className="w-1 h-1 bg-slate-600 rounded-full" />
+              <div className="flex items-center gap-1.5 text-xs text-slate-400">
+                <MapPin className="w-4 h-4 text-pink-400" />
+                <span className="truncate max-w-[80px]">{shop.address?.split(",")[0] || "Global"}</span>
               </div>
             </div>
           </div>
@@ -199,11 +206,11 @@ function ShopsContent() {
         setNextCursor(data.nextCursor);
         setHasMore(data.hasMore);
       } else {
-        setError(data.message || "Failed to fetch shops");
+        setError(data.message || "Failed to fetch sellers");
       }
     } catch (err: any) {
-      console.error("Error fetching shops:", err);
-      setError(err.response?.data?.message || "Failed to fetch shops");
+      console.error("Error fetching sellers:", err);
+      setError(err.response?.data?.message || "Failed to fetch sellers");
     } finally {
       setLoading(false);
       setLoadingMore(false);
@@ -257,36 +264,47 @@ function ShopsContent() {
   const hasActiveFilters = filters.category !== "All Categories" || filters.rating > 0 || filters.search;
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-20 md:pb-0">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 pb-20 md:pb-0">
       {/* Hero Section */}
-      <div className="bg-gradient-to-br from-blue-600 via-purple-600 to-pink-500 text-white">
-        <div className="max-w-7xl mx-auto px-4 py-12 sm:py-16">
+      <div className="relative overflow-hidden bg-gradient-to-br from-purple-900 via-indigo-900 to-blue-900 text-white">
+        {/* Background Pattern */}
+        <div className="absolute inset-0 opacity-10" style={{
+          backgroundImage: `linear-gradient(rgba(139, 92, 246, 0.3) 1px, transparent 1px),
+                           linear-gradient(90deg, rgba(139, 92, 246, 0.3) 1px, transparent 1px)`,
+          backgroundSize: "50px 50px"
+        }} />
+        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+          <div className="absolute -top-32 -left-32 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl" />
+          <div className="absolute -bottom-32 -right-32 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl" />
+        </div>
+
+        <div className="relative max-w-7xl mx-auto px-4 py-12 sm:py-16">
           <div className="text-center">
-            <div className="inline-flex items-center gap-2 bg-white/20 px-4 py-2 rounded-full mb-4">
-              <Store className="w-5 h-5" />
-              <span className="text-sm font-medium">Discover Amazing Shops</span>
+            <div className="inline-flex items-center gap-2 bg-purple-500/20 backdrop-blur-sm px-4 py-2 rounded-full mb-4 border border-purple-400/30">
+              <Users className="w-5 h-5" />
+              <span className="text-sm font-medium">Discover Talented Developers</span>
             </div>
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4">
-              Explore Our Marketplace
+              Meet Our Developer Community
             </h1>
             <p className="text-lg text-white/80 max-w-2xl mx-auto mb-8">
-              Find unique products from verified sellers across Worldwide
+              Connect with verified developers and sellers offering production-ready applications
             </p>
 
             {/* Search Bar */}
             <form onSubmit={handleSearch} className="max-w-2xl mx-auto">
               <div className="relative">
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
                 <input
                   type="text"
                   value={searchInput}
                   onChange={(e) => setSearchInput(e.target.value)}
-                  placeholder="Search shops by name, category, or location..."
-                  className="w-full pl-12 pr-24 py-4 rounded-2xl text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-white/30"
+                  placeholder="Search developers by name, category, or expertise..."
+                  className="w-full pl-12 pr-24 py-4 rounded-2xl bg-slate-800/50 backdrop-blur-sm border border-slate-700 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                 />
                 <button
                   type="submit"
-                  className="absolute right-2 top-1/2 -translate-y-1/2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-xl font-medium transition-colors"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white px-6 py-2 rounded-xl font-medium transition-all shadow-lg"
                 >
                   Search
                 </button>
@@ -300,7 +318,7 @@ function ShopsContent() {
       {/* Filters & Content */}
       <div className="max-w-7xl mx-auto px-4 py-8">
         {/* Filter Bar */}
-        <div className="bg-white rounded-2xl shadow-sm border p-4 mb-8">
+        <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl shadow-lg border border-slate-700/50 p-4 mb-8">
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div className="flex flex-wrap items-center gap-3">
               {/* Category Filter */}
@@ -308,13 +326,13 @@ function ShopsContent() {
                 <select
                   value={filters.category}
                   onChange={(e) => setFilters((prev) => ({ ...prev, category: e.target.value }))}
-                  className="appearance-none bg-gray-50 border rounded-xl px-4 py-2.5 pr-10 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="appearance-none bg-slate-700/50 border border-slate-600 text-white rounded-xl px-4 py-2.5 pr-10 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-purple-500"
                 >
                   {CATEGORIES.map((cat) => (
                     <option key={cat} value={cat}>{cat}</option>
                   ))}
                 </select>
-                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 pointer-events-none" />
+                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
               </div>
 
               {/* Sort Filter */}
@@ -322,13 +340,13 @@ function ShopsContent() {
                 <select
                   value={filters.sortBy}
                   onChange={(e) => setFilters((prev) => ({ ...prev, sortBy: e.target.value }))}
-                  className="appearance-none bg-gray-50 border rounded-xl px-4 py-2.5 pr-10 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="appearance-none bg-slate-700/50 border border-slate-600 text-white rounded-xl px-4 py-2.5 pr-10 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-purple-500"
                 >
                   {SORT_OPTIONS.map((opt) => (
                     <option key={opt.value} value={opt.value}>{opt.label}</option>
                   ))}
                 </select>
-                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 pointer-events-none" />
+                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
               </div>
 
               {/* Rating Filter */}
@@ -336,20 +354,20 @@ function ShopsContent() {
                 <select
                   value={filters.rating}
                   onChange={(e) => setFilters((prev) => ({ ...prev, rating: parseFloat(e.target.value) }))}
-                  className="appearance-none bg-gray-50 border rounded-xl px-4 py-2.5 pr-10 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="appearance-none bg-slate-700/50 border border-slate-600 text-white rounded-xl px-4 py-2.5 pr-10 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-purple-500"
                 >
                   <option value="0">All Ratings</option>
                   <option value="4">4+ Stars</option>
                   <option value="4.5">4.5+ Stars</option>
                 </select>
-                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 pointer-events-none" />
+                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
               </div>
 
               {/* Clear Filters */}
               {hasActiveFilters && (
                 <button
                   onClick={clearFilters}
-                  className="flex items-center gap-1.5 text-sm text-red-600 hover:text-red-700 font-medium"
+                  className="flex items-center gap-1.5 text-sm text-red-400 hover:text-red-300 font-medium"
                 >
                   <X className="w-4 h-4" />
                   Clear
@@ -358,16 +376,16 @@ function ShopsContent() {
             </div>
 
             {/* View Toggle */}
-            <div className="flex items-center gap-2 bg-gray-100 p-1 rounded-xl">
+            <div className="flex items-center gap-2 bg-slate-700/50 p-1 rounded-xl">
               <button
                 onClick={() => setViewMode("grid")}
-                className={`p-2 rounded-lg transition-colors ${viewMode === "grid" ? "bg-white shadow text-blue-600" : "text-gray-500 hover:text-gray-700"}`}
+                className={`p-2 rounded-lg transition-colors ${viewMode === "grid" ? "bg-purple-600 shadow-lg text-white" : "text-slate-400 hover:text-white"}`}
               >
                 <Grid3X3 className="w-5 h-5" />
               </button>
               <button
                 onClick={() => setViewMode("list")}
-                className={`p-2 rounded-lg transition-colors ${viewMode === "list" ? "bg-white shadow text-blue-600" : "text-gray-500 hover:text-gray-700"}`}
+                className={`p-2 rounded-lg transition-colors ${viewMode === "list" ? "bg-purple-600 shadow-lg text-white" : "text-slate-400 hover:text-white"}`}
               >
                 <List className="w-5 h-5" />
               </button>
@@ -378,16 +396,16 @@ function ShopsContent() {
         {/* Results Count */}
         {!loading && (
           <div className="flex items-center justify-between mb-6">
-            <p className="text-gray-600">
+            <p className="text-slate-300">
               {shops.length > 0 ? (
-                <>Showing <span className="font-semibold text-gray-900">{shops.length}</span> shops</>
+                <>Showing <span className="font-semibold text-white">{shops.length}</span> sellers</>
               ) : (
-                "No shops found"
+                "No sellers found"
               )}
             </p>
             <button
               onClick={() => fetchShops(null, false)}
-              className="flex items-center gap-2 text-sm text-blue-600 hover:text-blue-700 font-medium"
+              className="flex items-center gap-2 text-sm text-purple-400 hover:text-purple-300 font-medium"
             >
               <RefreshCw className="w-4 h-4" />
               Refresh
@@ -398,15 +416,15 @@ function ShopsContent() {
         {/* Loading State */}
         {loading && (
           <div className="flex flex-col items-center justify-center py-20">
-            <Loader2 className="w-10 h-10 text-blue-600 animate-spin mb-4" />
-            <p className="text-gray-500">Loading shops...</p>
+            <Loader2 className="w-10 h-10 text-purple-500 animate-spin mb-4" />
+            <p className="text-slate-400">Loading sellers...</p>
           </div>
         )}
 
         {/* Error State */}
         {error && !loading && (
           <div className="text-center py-20">
-            <div className="bg-red-50 text-red-600 px-6 py-4 rounded-2xl inline-block">
+            <div className="bg-red-500/20 text-red-300 px-6 py-4 rounded-2xl inline-block border border-red-500/30">
               <p className="font-medium">{error}</p>
               <button
                 onClick={() => fetchShops(null, false)}
@@ -418,7 +436,7 @@ function ShopsContent() {
           </div>
         )}
 
-        {/* Shops Grid/List */}
+        {/* Sellers Grid/List */}
         {!loading && !error && shops.length > 0 && (
           <>
             <div className={viewMode === "grid"
@@ -433,13 +451,13 @@ function ShopsContent() {
             {/* Load More Trigger */}
             <div ref={loadMoreRef} className="py-8 flex justify-center">
               {loadingMore && (
-                <div className="flex items-center gap-2 text-gray-500">
+                <div className="flex items-center gap-2 text-slate-400">
                   <Loader2 className="w-5 h-5 animate-spin" />
-                  <span>Loading more shops...</span>
+                  <span>Loading more sellers...</span>
                 </div>
               )}
               {!hasMore && shops.length > 0 && (
-                <p className="text-gray-400 text-sm">You&apos;ve seen all shops</p>
+                <p className="text-slate-500 text-sm">You&apos;ve seen all sellers</p>
               )}
             </div>
           </>
@@ -448,12 +466,12 @@ function ShopsContent() {
         {/* Empty State */}
         {!loading && !error && shops.length === 0 && (
           <div className="text-center py-20">
-            <Store className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">No shops found</h3>
-            <p className="text-gray-500 mb-6">Try adjusting your filters or search terms</p>
+            <Users className="w-16 h-16 text-slate-600 mx-auto mb-4" />
+            <h3 className="text-xl font-semibold text-white mb-2">No sellers found</h3>
+            <p className="text-slate-400 mb-6">Try adjusting your filters or search terms</p>
             <button
               onClick={clearFilters}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-medium transition-colors"
+              className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white px-6 py-3 rounded-xl font-medium transition-all shadow-lg"
             >
               Clear all filters
             </button>
