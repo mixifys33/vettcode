@@ -1,11 +1,10 @@
 "use client";
 import React from "react";
 import { X } from "lucide-react";
-import { ProductFilters } from "@/types/product";
 
 interface ActiveFiltersProps {
-  filters: ProductFilters;
-  onRemoveFilter: (key: keyof ProductFilters, value?: string) => void;
+  filters: any;
+  onRemoveFilter: (key: string, value?: string) => void;
   onClearAll: () => void;
 }
 
@@ -14,7 +13,7 @@ const ActiveFilters: React.FC<ActiveFiltersProps> = ({
   onRemoveFilter,
   onClearAll,
 }) => {
-  const activeFilters: { key: keyof ProductFilters; label: string; value: string }[] = [];
+  const activeFilters: { key: string; label: string; value: string }[] = [];
 
   if (filters.category) {
     activeFilters.push({
@@ -32,6 +31,7 @@ const ActiveFilters: React.FC<ActiveFiltersProps> = ({
     });
   }
 
+  // Product-specific filters
   if (filters.brand) {
     activeFilters.push({
       key: "brand",
@@ -41,7 +41,7 @@ const ActiveFilters: React.FC<ActiveFiltersProps> = ({
   }
 
   if (filters.colors && filters.colors.length > 0) {
-    filters.colors.forEach((color) => {
+    filters.colors.forEach((color: string) => {
       activeFilters.push({
         key: "colors",
         label: "Color",
@@ -51,7 +51,7 @@ const ActiveFilters: React.FC<ActiveFiltersProps> = ({
   }
 
   if (filters.sizes && filters.sizes.length > 0) {
-    filters.sizes.forEach((size) => {
+    filters.sizes.forEach((size: string) => {
       activeFilters.push({
         key: "sizes",
         label: "Size",
@@ -60,8 +60,46 @@ const ActiveFilters: React.FC<ActiveFiltersProps> = ({
     });
   }
 
+  // Application-specific filters
+  if (filters.technologyStack && filters.technologyStack.length > 0) {
+    filters.technologyStack.forEach((tech: string) => {
+      activeFilters.push({
+        key: "technologyStack",
+        label: "Tech Stack",
+        value: tech,
+      });
+    });
+  }
+
+  if (filters.platforms && filters.platforms.length > 0) {
+    filters.platforms.forEach((platform: string) => {
+      activeFilters.push({
+        key: "platforms",
+        label: "Platform",
+        value: platform,
+      });
+    });
+  }
+
+  if (filters.isFree !== undefined) {
+    activeFilters.push({
+      key: "isFree",
+      label: "Pricing",
+      value: filters.isFree ? "Free Only" : "Paid Only",
+    });
+  }
+
+  if (filters.verificationStatus) {
+    activeFilters.push({
+      key: "verificationStatus",
+      label: "Status",
+      value: "Verified Only",
+    });
+  }
+
+  // Common filters
   if (filters.price_min !== undefined || filters.price_max !== undefined) {
-    const priceLabel = `UGX ${filters.price_min?.toLocaleString() || 0} - ${filters.price_max?.toLocaleString() || "Max"}`;
+    const priceLabel = `$${filters.price_min?.toLocaleString() || 0} - ${filters.price_max?.toLocaleString() || "Max"}`;
     activeFilters.push({
       key: "price_min",
       label: "Price",
@@ -89,18 +127,18 @@ const ActiveFilters: React.FC<ActiveFiltersProps> = ({
 
   return (
     <div className="flex flex-wrap items-center gap-2 py-3">
-      <span className="text-sm text-gray-500">Active Filters:</span>
+      <span className="text-sm text-slate-500 dark:text-slate-400">Active Filters:</span>
       
       {activeFilters.map((filter, index) => (
         <span
           key={`${filter.key}-${filter.value}-${index}`}
-          className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#115061]/10 text-[#115061] rounded-full text-sm"
+          className="inline-flex items-center gap-1.5 px-3 py-1 bg-purple-500/10 text-purple-600 dark:text-purple-400 rounded-full text-sm border border-purple-500/20"
         >
-          <span className="text-xs text-gray-500">{filter.label}:</span>
+          <span className="text-xs text-slate-500 dark:text-slate-400">{filter.label}:</span>
           <span className="font-medium">{filter.value}</span>
           <button
             onClick={() => onRemoveFilter(filter.key, filter.value)}
-            className="ml-1 p-0.5 hover:bg-[#115061]/20 rounded-full transition-colors"
+            className="ml-1 p-0.5 hover:bg-purple-500/20 rounded-full transition-colors"
           >
             <X className="w-3 h-3" />
           </button>
