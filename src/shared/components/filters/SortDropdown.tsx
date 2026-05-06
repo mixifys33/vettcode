@@ -8,7 +8,8 @@ interface SortOption {
   value: ProductSort | null;
 }
 
-const sortOptions: SortOption[] = [
+// Default sort options for products
+const productSortOptions: SortOption[] = [
   { label: "Newest First", value: { field: "createdAt", order: "desc" } },
   { label: "Price: Low to High", value: { field: "price", order: "asc" } },
   { label: "Price: High to Low", value: { field: "price", order: "desc" } },
@@ -16,14 +17,27 @@ const sortOptions: SortOption[] = [
   { label: "Top Rated", value: { field: "ratings", order: "desc" } },
 ];
 
+// Sort options for applications
+const applicationSortOptions: SortOption[] = [
+  { label: "Newest First", value: { field: "createdAt", order: "desc" } as any },
+  { label: "Price: Low to High", value: { field: "price", order: "asc" } as any },
+  { label: "Price: High to Low", value: { field: "price", order: "desc" } as any },
+  { label: "Most Downloads", value: { field: "downloads", order: "desc" } as any },
+  { label: "Most Views", value: { field: "views", order: "desc" } as any },
+  { label: "Top Rated", value: { field: "rating", order: "desc" } as any },
+];
+
 interface SortDropdownProps {
-  value: ProductSort | undefined;
-  onChange: (sort: ProductSort | undefined) => void;
+  value: any;
+  onChange: (sort: any) => void;
+  mode?: "product" | "application";
 }
 
-const SortDropdown: React.FC<SortDropdownProps> = ({ value, onChange }) => {
+const SortDropdown: React.FC<SortDropdownProps> = ({ value, onChange, mode = "product" }) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  const sortOptions = mode === "application" ? applicationSortOptions : productSortOptions;
 
   const currentLabel = value
     ? sortOptions.find(
@@ -58,7 +72,7 @@ const SortDropdown: React.FC<SortDropdownProps> = ({ value, onChange }) => {
     <div className="relative" ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:border-gray-400 transition-colors"
+        className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-600 rounded-lg text-sm font-medium text-gray-700 dark:text-slate-300 hover:border-gray-400 dark:hover:border-slate-500 transition-colors"
       >
         <span>{currentLabel}</span>
         <ChevronDown
@@ -67,15 +81,15 @@ const SortDropdown: React.FC<SortDropdownProps> = ({ value, onChange }) => {
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-50 overflow-hidden">
+        <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-lg shadow-lg z-50 overflow-hidden">
           {sortOptions.map((option) => (
             <button
               key={option.label}
               onClick={() => handleSelect(option)}
               className={`w-full flex items-center justify-between px-4 py-2.5 text-sm transition-colors ${
                 isSelected(option)
-                  ? "bg-[#115061]/10 text-[#115061]"
-                  : "text-gray-700 hover:bg-gray-50"
+                  ? "bg-purple-500/10 text-purple-600 dark:text-purple-400"
+                  : "text-gray-700 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-700"
               }`}
             >
               <span>{option.label}</span>

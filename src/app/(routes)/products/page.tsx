@@ -533,7 +533,7 @@ const ProductsPageContent = () => {
               </div>
             </div>
 
-            <SortDropdown value={sort} onChange={handleSortChange} />
+            <SortDropdown value={sort} onChange={handleSortChange} mode="application" />
           </div>
 
           {/* Active Filters */}
