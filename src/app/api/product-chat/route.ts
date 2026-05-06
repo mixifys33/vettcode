@@ -39,17 +39,20 @@ export async function POST(req: NextRequest) {
       _id: productInfo.id || productInfo._id,
       name: productInfo.appName || productInfo.title,
       title: productInfo.appName || productInfo.title,
+      appName: productInfo.appName || productInfo.title,
       price: productInfo.price || productInfo.sale_price || 0,
       originalPrice: productInfo.regular_price || productInfo.price || 0,
       isFree: productInfo.isFree || productInfo.price === 0,
       currency: productInfo.currency || "USD",
       category: productInfo.appCategory || productInfo.category,
       appCategory: productInfo.appCategory,
+      subCategory: productInfo.subCategory,
       technologyStack: productInfo.technologyStack || [],
       supportedPlatforms: productInfo.supportedPlatforms || [],
       licenseType: productInfo.licenseType,
       description: productInfo.detailedDescription || productInfo.shortDescription || productInfo.description,
       shortDescription: productInfo.shortDescription,
+      detailedDescription: productInfo.detailedDescription,
       liveDemo: productInfo.liveDemo,
       githubRepo: productInfo.githubRepo,
       documentationUrl: productInfo.documentationUrl,
@@ -60,6 +63,8 @@ export async function POST(req: NextRequest) {
       verificationStatus: productInfo.verificationStatus,
       features: productInfo.features || [],
       requirements: productInfo.requirements || [],
+      badges: productInfo.badges || [],
+      images: productInfo.images || [],
       seller: productInfo.Seller || productInfo.Shop || productInfo.shops
         ? { 
             name: (productInfo.Seller || productInfo.Shop || productInfo.shops)?.name, 
@@ -88,13 +93,13 @@ export async function POST(req: NextRequest) {
     // Normalise relatedProducts from backend shape → web shape
     const similarProducts = (data.relatedProducts || []).map((p: any) => ({
       id: p._id || p.id,
-      title: p.title,
+      title: p.appName || p.title,
       slug: p.slug || p._id || p.id,
-      price: p.salePrice || p.price,
+      price: p.price || p.salePrice || 0,
+      currency: p.currency || "USD",
       image: p.image || p.images?.[0]?.url || "",
       rating: p.rating || 0,
-      brand: p.brand || "",
-      stock: p.stock || 0,
+      isFree: p.isFree || p.price === 0,
     }));
 
     return NextResponse.json({
