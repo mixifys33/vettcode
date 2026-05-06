@@ -78,8 +78,8 @@ const ProductCard = ({ product, isEvent }: { product: any; isEvent?: boolean }) 
   const currencySymbol = productCurrency === "USD" ? "$" : productCurrency === "EUR" ? "€" : productCurrency === "GBP" ? "£" : productCurrency;
   
   // Format price with product's currency
-  const formatProductPrice = (price: number) => {
-    if (price === 0) return "FREE";
+  const formatProductPrice = (price: number | undefined | null) => {
+    if (!price || price === 0) return "FREE";
     // Format with proper currency symbol
     if (productCurrency === "USD" || productCurrency === "EUR" || productCurrency === "GBP") {
       return `${currencySymbol}${price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
@@ -239,13 +239,13 @@ const ProductCard = ({ product, isEvent }: { product: any; isEvent?: boolean }) 
             {appDownloads > 0 && (
               <div className="flex items-center gap-1 text-gray-400">
                 <Download className="w-3.5 h-3.5" />
-                <span className="text-gray-300 font-medium">{appDownloads.toLocaleString()}</span>
+                <span className="text-gray-300 font-medium">{(appDownloads || 0).toLocaleString()}</span>
               </div>
             )}
             {product?.views > 0 && (
               <div className="flex items-center gap-1 text-gray-400">
                 <Eye className="w-3.5 h-3.5" />
-                <span className="text-gray-300 font-medium">{product.views.toLocaleString()}</span>
+                <span className="text-gray-300 font-medium">{(product.views || 0).toLocaleString()}</span>
               </div>
             )}
             {adminCompletionScore !== null && (

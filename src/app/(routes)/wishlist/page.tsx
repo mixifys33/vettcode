@@ -83,8 +83,8 @@ const WishlistPage = () => {
     }
   };
 
-  const formatPrice = (amount: number, currency: string = "USD") => {
-    if (amount === 0) return "FREE";
+  const formatPrice = (amount: number | undefined | null, currency: string = "USD") => {
+    if (amount === undefined || amount === null || amount === 0) return "FREE";
     return `${currency} ${amount.toLocaleString()}`;
   };
 

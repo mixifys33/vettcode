@@ -119,7 +119,7 @@ const ProductAIChat = ({ productInfo, isOpen, onClose, onAddToCart }: ProductAIC
 
 I'm here to help you with **${productInfo?.title || productInfo?.appName || "this application"}**
 
-${isFree ? `✨ Great news! This application is **FREE** to access!\n` : `💰 **Price**: ${currency} ${price.toLocaleString()}\n`}
+${isFree ? `✨ Great news! This application is **FREE** to access!\n` : `💰 **Price**: ${currency} ${(price || 0).toLocaleString()}\n`}
 - **Category**: ${productInfo?.appCategory || productInfo?.category || "Application"}
 - **Status**: ✅ Production-Ready & Verified
 
@@ -413,7 +413,7 @@ Ask me anything about features, tech stack, use cases, security, or implementati
                         <p className="text-xs font-medium text-slate-800 dark:text-slate-100 truncate mb-1">{product.title}</p>
                         <div className="flex items-center justify-between">
                           <p className="text-xs text-purple-600 dark:text-purple-400 font-semibold">
-                            {product.price === 0 ? 'FREE' : `${product.currency || 'USD'} ${product.price?.toLocaleString()}`}
+                            {product.price === 0 ? 'FREE' : `${product.currency || 'USD'} ${(product.price || 0).toLocaleString()}`}
                           </p>
                           {product.rating > 0 && (
                             <span className="flex items-center text-xs text-slate-500 dark:text-slate-400">
