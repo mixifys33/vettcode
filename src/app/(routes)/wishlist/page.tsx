@@ -53,7 +53,7 @@ const WishlistPage = () => {
   };
 
   const handleShare = async (item: any) => {
-    const url = `${window.location.origin}/product/${item.slug || item.id}`;
+    const url = `${window.location.origin}/product/${item.id}`;
     
     if (navigator.share) {
       try {
@@ -72,7 +72,7 @@ const WishlistPage = () => {
   };
 
   const handleCopyLink = async (item: any) => {
-    const url = `${window.location.origin}/product/${item.slug || item.id}`;
+    const url = `${window.location.origin}/product/${item.id}`;
     try {
       await navigator.clipboard.writeText(url);
       setCopiedId(item.id);
@@ -144,7 +144,7 @@ const WishlistPage = () => {
                 >
                   {/* Image */}
                   <div className="relative aspect-square bg-gradient-to-br from-slate-100 to-slate-200">
-                    <Link href={`/product/${item.slug || item.id}`}>
+                    <Link href={`/product/${item.id}`}>
                       <Image
                         src={item?.image || item?.screenshots?.[0]?.url || item?.screenshots?.[0]?.thumbnailUrl || "/placeholder.jpg"}
                         alt={item.appName || item.title}
@@ -179,7 +179,7 @@ const WishlistPage = () => {
                     {/* Quick Actions Overlay */}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
                       <Link
-                        href={`/product/${item.slug || item.id}`}
+                        href={`/product/${item.id}`}
                         className="p-3 bg-white/90 backdrop-blur-sm rounded-full hover:bg-white transition shadow-lg"
                         title="View Application"
                       >
@@ -208,7 +208,7 @@ const WishlistPage = () => {
 
                   {/* Content */}
                   <div className="p-5">
-                    <Link href={`/product/${item.slug || item.id}`}>
+                    <Link href={`/product/${item.id}`}>
                       <h3 className="font-bold text-slate-900 line-clamp-2 hover:text-purple-600 transition mb-2 text-lg">
                         {item.appName || item.title}
                       </h3>
@@ -306,7 +306,7 @@ const WishlistPage = () => {
                       {/* Secondary Actions */}
                       <div className="grid grid-cols-2 gap-2">
                         <Link
-                          href={`/product/${item.slug || item.id}`}
+                          href={`/product/${item.id}`}
                           className="flex items-center justify-center gap-1.5 py-2.5 bg-slate-50 text-slate-700 rounded-lg text-sm hover:bg-slate-100 transition font-medium border border-slate-200"
                           title="View Details"
                         >

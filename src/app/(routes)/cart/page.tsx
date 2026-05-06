@@ -262,7 +262,7 @@ const CartPage = () => {
                     <div className="flex gap-4">
                       {/* Application Image - Clickable */}
                       <Link 
-                        href={`/product/${item.slug || item.id}`}
+                        href={`/product/${item.id}`}
                         className="relative w-24 h-24 md:w-32 md:h-32 flex-shrink-0 rounded-xl overflow-hidden bg-gradient-to-br from-slate-100 to-slate-200 group-hover:shadow-lg transition-all cursor-pointer"
                       >
                         <Image
@@ -370,7 +370,7 @@ const CartPage = () => {
                         {/* Action Buttons */}
                         <div className="flex items-center gap-2 flex-wrap">
                           <Link
-                            href={`/product/${item.slug || item.id}`}
+                            href={`/product/${item.id}`}
                             className="flex items-center gap-1.5 text-xs text-purple-600 hover:text-purple-700 transition px-3 py-2 border border-purple-200 rounded-lg hover:bg-purple-50 font-medium"
                           >
                             <Info className="w-4 h-4" />
@@ -393,7 +393,7 @@ const CartPage = () => {
                           
                           <button
                             onClick={() => {
-                              const shareUrl = `${window.location.origin}/product/${item.slug || item.id}`;
+                              const shareUrl = `${window.location.origin}/product/${item.id}`;
                               if (navigator.share) {
                                 navigator.share({
                                   title: item.appName || item.title,

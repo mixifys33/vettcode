@@ -293,7 +293,7 @@ const WishlistTab = () => {
           const inCart = cart.some((c: any) => c.id === item.id);
           return (
             <div key={item.id} className="bg-white border rounded-xl overflow-hidden group flex flex-col">
-              <Link href={`/product/${item.slug || item.id}`} className="block flex-1">
+              <Link href={`/product/${item.id}`} className="block flex-1">
                 <div className="relative aspect-square bg-gray-100">
                   {item.image ? (
                     <Image
