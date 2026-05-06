@@ -179,7 +179,6 @@ const ProductDetails = ({
   const [showAIChat, setShowAIChat] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [authActionType, setAuthActionType] = useState<'download' | 'purchase' | 'access'>('access');
-  const [activeTab, setActiveTab] = useState<'overview' | 'features' | 'requirements'>('overview');
 
   // Store
   const wishlist = useStore((state) => state.wishlist);
