@@ -5,8 +5,8 @@ import { useState, useEffect } from "react";
 import { ChevronDown, Search, MessageCircle, Mail, Phone, HelpCircle } from "lucide-react";
 
 // Set page metadata via useEffect for client component
-const PAGE_TITLE = "FAQs - Frequently Asked Questions | EshopUG";
-const PAGE_DESCRIPTION = "Find answers to common questions about shopping on EshopUG - Uganda's #1 online marketplace. Learn about orders, payments, delivery, returns, and more.";
+const PAGE_TITLE = "FAQs - Frequently Asked Questions | VETTCODE";
+const PAGE_DESCRIPTION = "Find answers to common questions about VETTCODE - the trusted marketplace for verified applications. Learn about orders, payments, delivery, support, and more.";
 
 // FAQ Categories with questions
 const faqCategories = [
@@ -16,15 +16,15 @@ const faqCategories = [
     icon: "❓",
     faqs: [
       {
-        question: "What is EshopUG?",
-        answer: "EshopUG is Uganda's leading online marketplace connecting buyers with trusted sellers across the country. We offer a wide range of products from electronics to fashion, home goods, and more, all delivered right to your doorstep."
+        question: "What is VETTCODE?",
+        answer: "VETTCODE is Uganda's leading online marketplace connecting buyers with trusted sellers across the country. We offer a wide range of products from electronics to fashion, home goods, and more, all delivered right to your doorstep."
       },
       {
         question: "How do I create an account?",
         answer: "Click the 'Sign Up' button in the top right corner, fill in your details (name, email, phone number), and verify your email. You can also sign up using your Google account for faster registration."
       },
       {
-        question: "Is EshopUG available throughout Uganda?",
+        question: "Is VETTCODE available throughout Uganda?",
         answer: "Yes! We deliver to all major cities and towns across Uganda including Kampala, Entebbe, Jinja, Mbarara, Gulu, and many more locations. Check our delivery zones during checkout."
       },
       {
@@ -98,7 +98,7 @@ const faqCategories = [
       },
       {
         question: "When will I receive my refund?",
-        answer: "Refunds are processed within 3-5 business days after we receive and inspect the returned item. The money will be credited to your original payment method (Mobile Money, bank account, or EshopUG wallet)."
+        answer: "Refunds are processed within 3-5 business days after we receive and inspect the returned item. The money will be credited to your original payment method (Mobile Money, bank account, or VETTCODE wallet)."
       },
       {
         question: "Can I exchange an item instead of returning it?",
@@ -135,7 +135,7 @@ const faqCategories = [
     icon: "🏪",
     faqs: [
       {
-        question: "How do I become a seller on EshopUG?",
+        question: "How do I become a seller on VETTCODE?",
         answer: "Visit our 'Become a Seller' page, fill out the registration form with your business details, and submit required documents (business license, ID, tax info). Our team will review your application within 2-3 business days."
       },
       {
@@ -354,14 +354,14 @@ export default function FAQsPage() {
 
             <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
               <a
-                href="mailto:support@eshopug.com"
+                href="mailto:support@VETTCODE.com"
                 className="bg-white/10 backdrop-blur-sm hover:bg-white/20 rounded-2xl p-6 transition-all duration-300 hover:scale-105 hover:shadow-xl group"
               >
                 <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                   <Mail className="w-6 h-6" />
                 </div>
                 <h3 className="font-bold text-lg mb-2">Email Us</h3>
-                <p className="text-blue-100 text-sm">support@eshopug.com</p>
+                <p className="text-blue-100 text-sm">support@VETTCODE.com</p>
               </a>
 
               <a
@@ -454,3 +454,4 @@ export default function FAQsPage() {
     </main>
   );
 }
+

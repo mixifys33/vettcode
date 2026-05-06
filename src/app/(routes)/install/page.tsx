@@ -47,7 +47,7 @@ const STEPS_ANDROID = [
 ];
 const STEPS_DESKTOP = [
   { step: "1", text: 'Look for the install icon (⊕) in the address bar' },
-  { step: "2", text: 'Click "Install Eshop.ug" in the popup' },
+  { step: "2", text: 'Click "Install VETTCODE" in the popup' },
   { step: "3", text: 'The app opens in its own window — enjoy!' },
 ];
 
@@ -246,7 +246,7 @@ export default function InstallPage() {
           <div>
             <h1 className="text-5xl md:text-7xl font-black tracking-tight mb-4">
               <span className="bg-gradient-to-r from-yellow-400 via-pink-400 to-purple-400 bg-clip-text text-transparent">
-                Eshop.ug
+                VETTCODE
               </span>
             </h1>
             <p className="text-xl md:text-2xl text-white/80 max-w-2xl">
@@ -331,7 +331,7 @@ export default function InstallPage() {
               </div>
               <h3 className="text-2xl font-black mb-2">Install PWA Version</h3>
               <p className="text-white/80 text-sm mb-6 max-w-sm mx-auto">
-                Add Eshop.ug directly to your home screen or desktop — works like a native app, no app store needed.
+                Add VETTCODE directly to your home screen or desktop — works like a native app, no app store needed.
               </p>
 
               {installed ? (
@@ -420,7 +420,7 @@ export default function InstallPage() {
             <div className="bg-gradient-to-r from-green-500 to-emerald-600 rounded-2xl p-8 text-white text-center shadow-xl">
               <CheckCircle size={48} className="mx-auto mb-4" />
               <h3 className="text-2xl font-black mb-2">Successfully Installed!</h3>
-              <p className="text-white/90">Eshop.ug is now on your device. Enjoy the full app experience!</p>
+              <p className="text-white/90">VETTCODE is now on your device. Enjoy the full app experience!</p>
             </div>
           )}
         </section>
@@ -582,7 +582,7 @@ export default function InstallPage() {
             <ShoppingBag size={48} className="mx-auto mb-4 text-yellow-400" />
             <h2 className="text-3xl font-black mb-3">Start shopping smarter</h2>
             <p className="text-white/70 mb-8 max-w-md mx-auto">
-              Install Eshop-ug today and get access to exclusive app-only deals, faster checkout, and real-time order tracking.
+              Install VETTCODE today and get access to exclusive app-only deals, faster checkout, and real-time order tracking.
             </p>
             <div className="flex flex-wrap justify-center gap-4">
               <button

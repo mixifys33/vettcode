@@ -1,7 +1,7 @@
 import { ImageResponse } from "next/og";
 
 export const runtime = "edge";
-export const alt = "EshopUG — Uganda's #1 Online Marketplace";
+export const alt = "VETTCODE — Verified Codebases for Founders";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -29,7 +29,7 @@ export default async function Image() {
             marginBottom: 16,
           }}
         >
-          EshopUG
+          VETTCODE
         </div>
         <div
           style={{
@@ -69,7 +69,7 @@ export default async function Image() {
             color: "rgba(255,255,255,0.6)",
           }}
         >
-          eshopug.vercel.app
+          vettcode.vercel.app
         </div>
       </div>
     ),

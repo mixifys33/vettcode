@@ -747,7 +747,7 @@ const CartPage = () => {
                                 if (navigator.share) {
                                   navigator.share({
                                     title: item.title,
-                                    text: `Check out ${item.title} on EshopUG!`,
+                                    text: `Check out ${item.title} on VETTCODE!`,
                                     url: shareUrl
                                   }).catch(() => {});
                                 } else {
@@ -1297,3 +1297,4 @@ const CartPage = () => {
   );
 };
 export default CartPage;
+

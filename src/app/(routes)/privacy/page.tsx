@@ -5,10 +5,10 @@ import Link from "next/link";
 import { Shield, Lock, Eye, FileText, Mail, CheckCircle } from "lucide-react";
 
 const LAST_UPDATED = "April 26, 2026";
-const CONTACT_EMAIL = "support@eshopug.com";
-const APP_NAME = "EshopUG";
-const COMPANY = "EshopUG (AD Technologies Uganda)";
-const WEBSITE = "https://eshopug.vercel.app";
+const CONTACT_EMAIL = "support@VETTCODE.com";
+const APP_NAME = "VETTCODE";
+const COMPANY = "VETTCODE (VETTCODE Technologies)";
+const WEBSITE = "https://VETTCODE.vercel.app";
 
 // ── Section wrapper with animation ──────────────────────────────────────────
 const Section = ({
@@ -597,3 +597,4 @@ export default function PrivacyPage() {
     </main>
   );
 }
+

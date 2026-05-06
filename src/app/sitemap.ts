@@ -1,6 +1,6 @@
 import { MetadataRoute } from "next";
 
-const BASE_URL = "https://eshopug.vercel.app";
+const BASE_URL = "https://vettcode.vercel.app";
 const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:3000";
 
 async function fetchProducts() {

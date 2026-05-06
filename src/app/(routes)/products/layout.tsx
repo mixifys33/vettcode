@@ -1,30 +1,30 @@
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Shop All Products — Electronics, Fashion, Home & More",
+  title: "Browse All Applications — Web Apps, Mobile Apps, APIs & More",
   description:
-    "Browse thousands of products on EshopUG — Uganda's #1 online marketplace. Shop electronics, fashion, home goods, beauty, groceries, sports gear and more at the best prices with fast delivery.",
+    "Browse thousands of verified applications on VETTCODE — the trusted marketplace for production-ready code. Shop web applications, mobile apps, SaaS templates, APIs, and more at the best prices with instant access.",
   keywords: [
-    "buy products online Uganda",
-    "online shopping Uganda",
-    "electronics Uganda",
-    "fashion Uganda",
-    "home goods Uganda",
-    "beauty products Uganda",
-    "groceries Uganda",
-    "affordable products Uganda",
-    "Uganda online store",
-    "best deals Uganda",
+    "buy applications online",
+    "production ready apps",
+    "web applications",
+    "mobile applications",
+    "SaaS templates",
+    "API marketplace",
+    "verified codebases",
+    "affordable applications",
+    "developer marketplace",
+    "best code deals",
   ],
   openGraph: {
-    title: "Shop All Products | EshopUG Uganda",
+    title: "Browse All Applications | VETTCODE",
     description:
-      "Thousands of products across electronics, fashion, home, beauty, groceries and more. Best prices in Uganda with fast delivery.",
-    url: "https://eshopug.vercel.app/products",
+      "Thousands of verified applications across web, mobile, SaaS, APIs and more. Best prices with instant access.",
+    url: "https://vettcode.vercel.app/products",
     type: "website",
   },
   alternates: {
-    canonical: "https://eshopug.vercel.app/products",
+    canonical: "https://vettcode.vercel.app/products",
   },
 };
 

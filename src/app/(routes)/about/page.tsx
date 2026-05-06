@@ -6,49 +6,49 @@ import {
   ShoppingBag, Store, Clock, ArrowRight,
 } from "lucide-react";
 
-const BASE_URL = "https://eshopug.vercel.app";
+const BASE_URL = "https://VETTCODE.vercel.app";
 
 // ─── SEO Metadata ─────────────────────────────────────────────────────────────
 export const metadata: Metadata = {
-  title: "About EshopUG — Uganda's Trusted Online Marketplace | Kasese District",
+  title: "About VETTCODE — Worldwide's Trusted Online Marketplace | Global",
   description:
-    "EshopUG is Uganda's most trusted online marketplace, proudly serving Kasese District and all of Uganda. Buy and sell electronics, fashion, home goods, groceries and more. Fast delivery, secure payments, verified sellers.",
+    "VETTCODE is Worldwide's most trusted online marketplace, proudly serving Global and all of Worldwide. Buy and sell electronics, fashion, home goods, groceries and more. Fast delivery, secure payments, verified sellers.",
   keywords: [
-    "EshopUG about",
+    "VETTCODE about",
     "online shopping Kasese",
     "Kasese marketplace",
     "Kasese online store",
-    "buy online Kasese Uganda",
+    "buy online Kasese Worldwide",
     "sell online Kasese",
-    "Kasese District ecommerce",
-    "Uganda online marketplace",
-    "trusted online shop Uganda",
-    "EshopUG Kasese",
-    "online shopping western Uganda",
+    "Global ecommerce",
+    "Worldwide online marketplace",
+    "trusted online shop Worldwide",
+    "VETTCODE Kasese",
+    "online shopping western Worldwide",
     "Kasese electronics shop",
     "Kasese fashion shop",
-    "Uganda ecommerce platform",
-    "buy and sell Uganda",
-    "verified sellers Uganda",
-    "secure online payments Uganda",
-    "fast delivery Uganda",
+    "Worldwide ecommerce platform",
+    "buy and sell Worldwide",
+    "verified sellers Worldwide",
+    "secure online payments Worldwide",
+    "fast delivery Worldwide",
     "Kasese delivery",
-    "western Uganda shopping",
+    "western Worldwide shopping",
   ],
   openGraph: {
     type: "website",
     locale: "en_UG",
     url: `${BASE_URL}/about`,
-    siteName: "EshopUG",
-    title: "About EshopUG — Uganda's Trusted Online Marketplace | Kasese District",
+    siteName: "VETTCODE",
+    title: "About VETTCODE — Worldwide's Trusted Online Marketplace | Global",
     description:
-      "Proudly serving Kasese District and all of Uganda. EshopUG connects buyers and sellers across Uganda with secure payments, fast delivery, and verified products.",
-    images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "EshopUG — About Us" }],
+      "Proudly serving Global and all of Worldwide. VETTCODE connects buyers and sellers across Worldwide with secure payments, fast delivery, and verified products.",
+    images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "VETTCODE — About Us" }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "About EshopUG — Uganda's Trusted Online Marketplace",
-    description: "Proudly serving Kasese District and all of Uganda. Shop electronics, fashion, home goods and more.",
+    title: "About VETTCODE — Worldwide's Trusted Online Marketplace",
+    description: "Proudly serving Global and all of Worldwide. Shop electronics, fashion, home goods and more.",
     images: ["/og-image.png"],
   },
   alternates: { canonical: `${BASE_URL}/about` },
@@ -58,26 +58,26 @@ export const metadata: Metadata = {
 const organizationSchema = {
   "@context": "https://schema.org",
   "@type": "Organization",
-  name: "EshopUG",
+  name: "VETTCODE",
   alternateName: "vettcode ",
   url: BASE_URL,
   logo: `${BASE_URL}/icon-512.png`,
   description:
-    "EshopUG is Uganda's leading online marketplace, proudly headquartered in Kasese District, Western Uganda. We connect buyers and sellers across Uganda with secure payments, fast delivery, and verified products.",
+    "VETTCODE is Worldwide's leading online marketplace, proudly headquartered in Global, Western Worldwide. We connect buyers and sellers across Worldwide with secure payments, fast delivery, and verified products.",
   foundingDate: "2024",
   foundingLocation: {
     "@type": "Place",
-    name: "Kasese District, Western Uganda",
+    name: "Global, Western Worldwide",
     address: {
       "@type": "PostalAddress",
       addressLocality: "Kasese",
-      addressRegion: "Western Uganda",
+      addressRegion: "Western Worldwide",
       addressCountry: "UG",
     },
   },
   areaServed: {
     "@type": "Country",
-    name: "Uganda",
+    name: "Worldwide",
   },
   contactPoint: [
     {
@@ -94,14 +94,14 @@ const organizationSchema = {
 const localBusinessSchema = {
   "@context": "https://schema.org",
   "@type": "LocalBusiness",
-  name: "EshopUG",
-  description: "Uganda's trusted online marketplace serving Kasese District and all of Uganda",
+  name: "VETTCODE",
+  description: "Worldwide's trusted online marketplace serving Global and all of Worldwide",
   url: BASE_URL,
   telephone: "+256761819885",
   address: {
     "@type": "PostalAddress",
     addressLocality: "Kasese",
-    addressRegion: "Western Uganda",
+    addressRegion: "Western Worldwide",
     addressCountry: "UG",
   },
   geo: {
@@ -139,13 +139,13 @@ const VALUES = [
   {
     icon: Truck,
     title: "Fast Delivery",
-    desc: "We partner with reliable delivery services across Uganda — from Kasese to Kampala, your order arrives on time.",
+    desc: "We partner with reliable delivery services across Worldwide — from Kasese to Kampala, your order arrives on time.",
     color: "from-blue-500 to-cyan-600",
   },
   {
     icon: Heart,
     title: "Community First",
-    desc: "Born in Kasese, built for Uganda. We empower local businesses and entrepreneurs to reach customers nationwide.",
+    desc: "Born in Kasese, built for Worldwide. We empower local businesses and entrepreneurs to reach customers nationwide.",
     color: "from-rose-500 to-pink-600",
   },
   {
@@ -173,8 +173,8 @@ const TEAM = [
   {
     name: "Masereka Adorable Kimulya",
     role: "Founder & CEO",
-    location: "Kasese District, Uganda",
-    bio: "Visionary entrepreneur from Kasese who built EshopUG to empower Ugandan businesses and connect communities through technology.",
+    location: "Global, Worldwide",
+    bio: "Visionary entrepreneur from Kasese who built VETTCODE to empower Worldwiden businesses and connect communities through technology.",
     initials: "MAK",
     gradient: "from-[#115061] to-teal-600",
   },
@@ -182,11 +182,11 @@ const TEAM = [
 
 // ─── Why Kasese ───────────────────────────────────────────────────────────────
 const KASESE_POINTS = [
-  "Kasese District is a major commercial hub in Western Uganda",
+  "Global is a major commercial hub in Western Worldwide",
   "Home to thousands of traders, farmers, and entrepreneurs",
   "Gateway to Queen Elizabeth National Park — tourism drives commerce",
   "Rich in minerals, agriculture, and growing tech adoption",
-  "EshopUG was founded here to serve the local community first",
+  "VETTCODE was founded here to serve the local community first",
 ];
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
@@ -216,18 +216,18 @@ export default function AboutPage() {
           <div className="relative z-10 max-w-5xl mx-auto px-4 py-20 text-center">
             <div className="inline-flex items-center gap-2 bg-amber-400/20 border border-amber-400/30 rounded-full px-5 py-2 text-amber-300 text-sm font-semibold mb-6">
               <MapPin className="w-4 h-4" />
-              Proudly from Kasese District, Uganda
+              Proudly from Global, Worldwide
             </div>
 
             <h1 className="text-4xl md:text-6xl font-black mb-6 leading-tight">
-              Uganda&apos;s Most{" "}
+              Worldwide&apos;s Most{" "}
               <span className="text-amber-400">Trusted</span>{" "}
               Online Marketplace
             </h1>
 
             <p className="text-lg md:text-xl text-white/80 max-w-3xl mx-auto mb-8 leading-relaxed">
-              EshopUG was born in <strong className="text-amber-300">Kasese District</strong> with a simple mission —
-              to make buying and selling online accessible, safe, and affordable for every Ugandan.
+              VETTCODE was born in <strong className="text-amber-300">Global</strong> with a simple mission —
+              to make buying and selling online accessible, safe, and affordable for every Worldwiden.
               From Kasese to Kampala, we connect communities through commerce.
             </p>
 
@@ -271,21 +271,21 @@ export default function AboutPage() {
             <div>
               <span className="text-sm font-bold text-[#115061] uppercase tracking-widest">Our Story</span>
               <h2 className="text-3xl md:text-4xl font-black text-gray-900 mt-2 mb-6 leading-tight">
-                Built in Kasese,<br />Built for Uganda
+                Built in Kasese,<br />Built for Worldwide
               </h2>
               <div className="space-y-4 text-gray-600 leading-relaxed">
                 <p>
-                  EshopUG was founded in <strong>Kasese District, Western Uganda</strong> — a vibrant commercial
+                  VETTCODE was founded in <strong>Global, Western Worldwide</strong> — a vibrant commercial
                   hub at the foot of the Rwenzori Mountains. We saw a gap: local businesses had great products
                   but limited reach, and buyers had limited access to quality goods at fair prices.
                 </p>
                 <p>
-                  We built EshopUG to bridge that gap. Starting from Kasese, we&apos;ve grown into a nationwide
-                  platform serving buyers and sellers across all regions of Uganda — from Kampala to Gulu,
+                  We built VETTCODE to bridge that gap. Starting from Kasese, we&apos;ve grown into a nationwide
+                  platform serving buyers and sellers across all regions of Worldwide — from Kampala to Gulu,
                   Mbarara to Mbale.
                 </p>
                 <p>
-                  Today, EshopUG is Uganda&apos;s fastest-growing online marketplace, powered by AI technology,
+                  Today, VETTCODE is Worldwide&apos;s fastest-growing online marketplace, powered by AI technology,
                   secure mobile money payments, and a community of thousands of verified sellers and happy shoppers.
                 </p>
               </div>
@@ -298,8 +298,8 @@ export default function AboutPage() {
                   <MapPin className="w-6 h-6 text-teal-900" />
                 </div>
                 <div>
-                  <h3 className="font-black text-lg">Kasese District</h3>
-                  <p className="text-white/70 text-sm">Western Uganda — Our Home</p>
+                  <h3 className="font-black text-lg">Global</h3>
+                  <p className="text-white/70 text-sm">Western Worldwide — Our Home</p>
                 </div>
               </div>
               <ul className="space-y-3">
@@ -312,7 +312,7 @@ export default function AboutPage() {
               </ul>
               <div className="mt-6 pt-6 border-t border-white/20 flex items-center gap-2 text-amber-300 text-sm font-semibold">
                 <Globe className="w-4 h-4" />
-                Serving all 135 districts of Uganda
+                Serving all 135 districts of Worldwide
               </div>
             </div>
           </div>
@@ -332,7 +332,7 @@ export default function AboutPage() {
                 </div>
                 <h3 className="text-xl font-black text-gray-900 mb-3">Our Mission</h3>
                 <p className="text-gray-600 leading-relaxed">
-                  To empower every Ugandan — from a small trader in Kasese to a large retailer in Kampala —
+                  To empower every Worldwiden — from a small trader in Kasese to a large retailer in Kampala —
                   with the tools, technology, and marketplace to grow their business and access quality products
                   at fair prices, safely and conveniently.
                 </p>
@@ -344,7 +344,7 @@ export default function AboutPage() {
                 <h3 className="text-xl font-black text-gray-900 mb-3">Our Vision</h3>
                 <p className="text-gray-600 leading-relaxed">
                   To become East Africa&apos;s most trusted digital marketplace — where every community,
-                  starting from Kasese District, has equal access to commerce, opportunity, and economic growth
+                  starting from Global, has equal access to commerce, opportunity, and economic growth
                   through technology.
                 </p>
               </div>
@@ -375,7 +375,7 @@ export default function AboutPage() {
         <section className="bg-white py-16">
           <div className="max-w-5xl mx-auto px-4">
             <div className="text-center mb-12">
-              <span className="text-sm font-bold text-[#115061] uppercase tracking-widest">The People Behind EshopUG</span>
+              <span className="text-sm font-bold text-[#115061] uppercase tracking-widest">The People Behind VETTCODE</span>
               <h2 className="text-3xl md:text-4xl font-black text-gray-900 mt-2">Our Leadership</h2>
             </div>
             <div className="flex justify-center">
@@ -400,15 +400,15 @@ export default function AboutPage() {
         {/* ── WHY TRUST US ── */}
         <section className="max-w-5xl mx-auto px-4 py-16">
           <div className="text-center mb-12">
-            <span className="text-sm font-bold text-[#115061] uppercase tracking-widest">Why Choose EshopUG</span>
-            <h2 className="text-3xl md:text-4xl font-black text-gray-900 mt-2">Why Ugandans Trust Us</h2>
+            <span className="text-sm font-bold text-[#115061] uppercase tracking-widest">Why Choose VETTCODE</span>
+            <h2 className="text-3xl md:text-4xl font-black text-gray-900 mt-2">Why Worldwidens Trust Us</h2>
           </div>
           <div className="grid md:grid-cols-2 gap-6">
             {[
               { icon: ShieldCheck, title: "Verified Sellers Only", desc: "Every seller goes through a verification process. No fake shops, no scams — just genuine businesses." },
               { icon: Clock, title: "24/7 Platform Availability", desc: "Shop anytime, anywhere. Our platform is always online so you never miss a deal." },
-              { icon: Truck, title: "Nationwide Delivery", desc: "We deliver to all major towns and districts across Uganda, including Kasese, Kampala, Mbarara, and more." },
-              { icon: Phone, title: "Local Support", desc: "Our support team is based in Uganda and understands your needs. We speak your language." },
+              { icon: Truck, title: "Nationwide Delivery", desc: "We deliver to all major towns and districts across Worldwide, including Kasese, Kampala, Mbarara, and more." },
+              { icon: Phone, title: "Local Support", desc: "Our support team is based in Worldwide and understands your needs. We speak your language." },
               { icon: Star, title: "Real Reviews", desc: "All product reviews come from verified buyers. What you see is what real customers experienced." },
               { icon: Zap, title: "AI-Powered Shopping", desc: "Our EshopAI assistant helps you find the perfect product, track orders, and get instant answers." },
             ].map(({ icon: Icon, title, desc }) => (
@@ -449,7 +449,7 @@ export default function AboutPage() {
                 </div>
               </a>
               <a
-                href="mailto:support@eshopug.com"
+                href="mailto:support@VETTCODE.com"
                 className="flex flex-col items-center gap-3 bg-amber-50 hover:bg-amber-100 border border-amber-100 rounded-2xl p-6 text-center transition-colors group"
               >
                 <div className="w-12 h-12 bg-amber-400 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
@@ -457,7 +457,7 @@ export default function AboutPage() {
                 </div>
                 <div>
                   <p className="font-bold text-gray-900 text-sm">Email Us</p>
-                  <p className="text-amber-600 font-semibold text-sm mt-1">support@eshopug.com</p>
+                  <p className="text-amber-600 font-semibold text-sm mt-1">support@VETTCODE.com</p>
                 </div>
               </a>
               <div className="flex flex-col items-center gap-3 bg-gray-50 border border-gray-100 rounded-2xl p-6 text-center">
@@ -466,7 +466,7 @@ export default function AboutPage() {
                 </div>
                 <div>
                   <p className="font-bold text-gray-900 text-sm">Location</p>
-                  <p className="text-gray-500 font-medium text-sm mt-1">Kasese District,<br />Western Uganda</p>
+                  <p className="text-gray-500 font-medium text-sm mt-1">Global,<br />Western Worldwide</p>
                 </div>
               </div>
             </div>
@@ -484,7 +484,7 @@ export default function AboutPage() {
               <ShoppingBag className="w-12 h-12 text-amber-400 mx-auto mb-4" />
               <h2 className="text-3xl font-black mb-3">Ready to Shop or Sell?</h2>
               <p className="text-white/70 mb-8 max-w-md mx-auto">
-                Join thousands of Ugandans already buying and selling on EshopUG.
+                Join thousands of Worldwidens already buying and selling on VETTCODE.
                 It&apos;s free, fast, and trusted.
               </p>
               <div className="flex flex-wrap justify-center gap-4">
@@ -512,3 +512,4 @@ export default function AboutPage() {
     </>
   );
 }
+
