@@ -130,11 +130,11 @@ Ask me anything about features, tech stack, use cases, security, or implementati
   }, [isOpen, productInfo])
 
   const suggestedQuestions = [
-    { text: "Key features?", icon: "✨" },
-    { text: "Tech stack used?", icon: "⚙️" },
-    { text: "Production ready?", icon: "🚀" },
-    { text: "Security verified?", icon: "🔒" },
-    { text: "Setup guide?", icon: "📖" },
+    { text: "What are the key features?" },
+    { text: "What tech stack is used?" },
+    { text: "Is it production ready?" },
+    { text: "How secure is it?" },
+    { text: "How do I set it up?" },
   ]
 
   const sendMessage = async (messageText?: string) => {
@@ -261,131 +261,110 @@ Ask me anything about features, tech stack, use cases, security, or implementati
   const LoadingIcon = currentLoadingState.icon
 
   return (
-    <div className={`fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-md transition-all duration-300 ${isFullscreen ? 'p-0' : 'p-2 sm:p-4'}`}>
-      <div className={`bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 shadow-2xl flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-300 border border-slate-200 dark:border-slate-700 ${
+    <div className={`fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-sm transition-all duration-300 ${isFullscreen ? 'p-0' : 'p-2 sm:p-4'}`}>
+      <div className={`bg-white dark:bg-[#212121] shadow-2xl flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-300 ${
         isFullscreen 
           ? 'w-full h-full rounded-none' 
-          : 'w-full max-w-4xl h-[90vh] sm:h-[85vh] max-h-[800px] rounded-2xl'
+          : 'w-full max-w-4xl h-[90vh] sm:h-[85vh] max-h-[800px] rounded-xl'
       }`}>
-        {/* Header - Fixed */}
-        <div className="flex-shrink-0 bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-600 text-white p-3 sm:p-4 md:p-5 shadow-lg">
-          <div className="flex items-center justify-between gap-2 sm:gap-3">
-            <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
-              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg">
-                <Sparkles className="w-5 h-5 sm:w-6 sm:h-6 text-white animate-pulse" />
+        {/* Header - Minimal ChatGPT Style */}
+        <div className="flex-shrink-0 border-b border-slate-200 dark:border-slate-700 px-4 py-3">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3 min-w-0 flex-1">
+              <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-blue-500 rounded-lg flex items-center justify-center flex-shrink-0">
+                <Sparkles className="w-4 h-4 text-white" />
               </div>
               <div className="min-w-0 flex-1">
-                <h3 className="font-bold text-base sm:text-lg md:text-xl">VettCode AI Assistant</h3>
-                <p className="text-xs sm:text-sm text-purple-100 truncate">
-                  {productInfo?.appName || productInfo?.title || "Application Expert"}
-                </p>
+                <h3 className="font-semibold text-sm text-slate-900 dark:text-slate-100 truncate">
+                  {productInfo?.appName || productInfo?.title || "Application Assistant"}
+                </h3>
               </div>
             </div>
-            <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
+            <div className="flex items-center gap-1 flex-shrink-0">
               <button
                 onClick={() => setIsFullscreen(!isFullscreen)}
-                className="p-2 sm:p-2.5 hover:bg-white/20 rounded-lg transition-all duration-200 hover:scale-110"
+                className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
                 title={isFullscreen ? "Exit fullscreen" : "Fullscreen"}
               >
                 {isFullscreen ? (
-                  <Minimize2 className="w-4 h-4 sm:w-5 sm:h-5" />
+                  <Minimize2 className="w-4 h-4 text-slate-600 dark:text-slate-400" />
                 ) : (
-                  <Maximize2 className="w-4 h-4 sm:w-5 sm:h-5" />
+                  <Maximize2 className="w-4 h-4 text-slate-600 dark:text-slate-400" />
                 )}
               </button>
               <button
                 onClick={onClose}
-                className="p-2 sm:p-2.5 hover:bg-white/20 rounded-lg transition-all duration-200 hover:scale-110"
+                className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
               >
-                <X className="w-4 h-4 sm:w-5 sm:h-5" />
+                <X className="w-4 h-4 text-slate-600 dark:text-slate-400" />
               </button>
             </div>
           </div>
-          
-          {/* Quick Access/Download */}
-          {!productInfo?.isFree && productInfo?.price > 0 && onAddToCart && (
-            <button
-              onClick={handleAddToCart}
-              className="mt-3 sm:mt-4 w-full flex items-center justify-center gap-2 px-3 sm:px-4 py-2.5 sm:py-3 bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-xl transition-all duration-200 text-xs sm:text-sm font-semibold shadow-lg hover:shadow-xl hover:scale-[1.02]"
-            >
-              <ShoppingCart className="w-4 h-4" />
-              Get Application - {productInfo.currency || 'USD'} {(productInfo.price || productInfo.sale_price)?.toLocaleString()}
-            </button>
-          )}
-          {productInfo?.isFree && onAddToCart && (
-            <button
-              onClick={handleAddToCart}
-              className="mt-3 sm:mt-4 w-full flex items-center justify-center gap-2 px-3 sm:px-4 py-2.5 sm:py-3 bg-green-500/90 hover:bg-green-500 backdrop-blur-sm rounded-xl transition-all duration-200 text-xs sm:text-sm font-semibold shadow-lg hover:shadow-xl hover:scale-[1.02]"
-            >
-              <Package className="w-4 h-4" />
-              Get Free Application
-            </button>
-          )}
         </div>
 
         {/* Messages - Scrollable */}
         <div 
           ref={messagesContainerRef}
-          className="flex-1 overflow-y-auto overscroll-contain p-3 sm:p-4 md:p-6 space-y-3 sm:space-y-4 bg-gradient-to-b from-slate-50 to-white dark:from-slate-900 dark:to-slate-800"
+          className="flex-1 overflow-y-auto overscroll-contain p-3 sm:p-4 md:p-6 space-y-3 sm:space-y-4 bg-white dark:bg-[#212121]"
         >
           {messages.map((message) => (
-            <div key={message.id} className="space-y-2 sm:space-y-3 animate-in fade-in slide-in-from-bottom-4 duration-500">
-              <div className={`flex gap-2 sm:gap-3 md:gap-4 ${message.role === "user" ? "justify-end" : "justify-start"}`}>
+            <div key={message.id} className="space-y-2 animate-in fade-in slide-in-from-bottom-4 duration-500">
+              <div className={`flex gap-3 ${message.role === "user" ? "justify-end" : "justify-start"}`}>
                 {message.role === "assistant" && (
-                  <div className="w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 bg-gradient-to-br from-purple-500 via-indigo-500 to-blue-500 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg">
-                    <Sparkles className="w-4 h-4 sm:w-4 sm:h-4 md:w-5 md:h-5 text-white" />
+                  <div className="w-7 h-7 bg-gradient-to-br from-purple-500 to-blue-500 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <Sparkles className="w-4 h-4 text-white" />
                   </div>
                 )}
                 <div className={`max-w-[85%] sm:max-w-[80%] ${message.role === "user" ? "order-first" : ""}`}>
-                  <div className={`p-3 sm:p-4 rounded-2xl shadow-md transition-all duration-200 hover:shadow-lg ${
+                  <div className={`px-4 py-3 rounded-2xl transition-all duration-200 ${
                     message.role === "user"
-                      ? "bg-gradient-to-br from-purple-600 to-indigo-600 text-white rounded-br-sm"
+                      ? "bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900"
                       : message.isError
-                      ? "bg-red-50 dark:bg-red-900/20 text-red-800 dark:text-red-200 border-2 border-red-200 dark:border-red-800 rounded-bl-sm"
-                      : "bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 border border-slate-200 dark:border-slate-700 rounded-bl-sm"
+                      ? "bg-red-50 dark:bg-red-900/20 text-red-800 dark:text-red-200 border border-red-200 dark:border-red-800"
+                      : "bg-slate-100 dark:bg-[#2f2f2f] text-slate-900 dark:text-slate-100"
                   }`}>
                     {message.role === "user" ? (
-                      <p className="whitespace-pre-wrap text-sm sm:text-base leading-relaxed font-medium break-words">
+                      <p className="whitespace-pre-wrap text-sm leading-relaxed break-words">
                         {message.content}
                       </p>
                     ) : (
-                      <div className="prose prose-sm sm:prose-base dark:prose-invert max-w-none
+                      <div className="prose prose-sm dark:prose-invert max-w-none
                         prose-headings:text-slate-900 dark:prose-headings:text-slate-100
-                        prose-headings:font-bold prose-headings:mb-2 sm:prose-headings:mb-3
-                        prose-h1:text-xl sm:prose-h1:text-2xl prose-h2:text-lg sm:prose-h2:text-xl prose-h3:text-base sm:prose-h3:text-lg
-                        prose-p:text-slate-700 dark:prose-p:text-slate-300 prose-p:leading-relaxed prose-p:mb-2 sm:prose-p:mb-3
-                        prose-a:text-purple-600 dark:prose-a:text-purple-400 prose-a:no-underline hover:prose-a:underline prose-a:font-semibold prose-a:break-words
-                        prose-strong:text-slate-900 dark:prose-strong:text-slate-100 prose-strong:font-bold
-                        prose-code:text-purple-600 dark:prose-code:text-purple-400 prose-code:bg-purple-50 dark:prose-code:bg-purple-900/20 prose-code:px-1 sm:prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:font-mono prose-code:text-xs sm:prose-code:text-sm prose-code:break-words
-                        prose-pre:bg-slate-900 dark:prose-pre:bg-slate-950 prose-pre:text-slate-100 prose-pre:p-3 sm:prose-pre:p-4 prose-pre:rounded-xl prose-pre:shadow-lg prose-pre:border prose-pre:border-slate-700 prose-pre:overflow-x-auto prose-pre:text-xs sm:prose-pre:text-sm
-                        prose-ul:list-disc prose-ul:ml-3 sm:prose-ul:ml-4 prose-ul:space-y-1 sm:prose-ul:space-y-1.5
-                        prose-ol:list-decimal prose-ol:ml-3 sm:prose-ol:ml-4 prose-ol:space-y-1 sm:prose-ol:space-y-1.5
+                        prose-headings:font-semibold prose-headings:mb-2
+                        prose-h1:text-lg prose-h2:text-base prose-h3:text-sm
+                        prose-p:text-slate-700 dark:prose-p:text-slate-300 prose-p:leading-relaxed prose-p:mb-2
+                        prose-a:text-blue-600 dark:prose-a:text-blue-400 prose-a:no-underline hover:prose-a:underline prose-a:break-words
+                        prose-strong:text-slate-900 dark:prose-strong:text-slate-100 prose-strong:font-semibold
+                        prose-code:text-purple-600 dark:prose-code:text-purple-400 prose-code:bg-purple-50 dark:prose-code:bg-purple-900/20 prose-code:px-1 prose-code:py-0.5 prose-code:rounded prose-code:font-mono prose-code:text-xs prose-code:break-words
+                        prose-pre:bg-slate-900 dark:prose-pre:bg-slate-950 prose-pre:text-slate-100 prose-pre:p-3 prose-pre:rounded-lg prose-pre:overflow-x-auto prose-pre:text-xs
+                        prose-ul:list-disc prose-ul:ml-4 prose-ul:space-y-1
+                        prose-ol:list-decimal prose-ol:ml-4 prose-ol:space-y-1
                         prose-li:text-slate-700 dark:prose-li:text-slate-300 prose-li:leading-relaxed
-                        prose-blockquote:border-l-4 prose-blockquote:border-purple-500 prose-blockquote:pl-3 sm:prose-blockquote:pl-4 prose-blockquote:italic prose-blockquote:text-slate-600 dark:prose-blockquote:text-slate-400
-                        prose-img:rounded-lg prose-img:shadow-md prose-img:max-w-full
+                        prose-blockquote:border-l-2 prose-blockquote:border-slate-300 dark:prose-blockquote:border-slate-600 prose-blockquote:pl-3 prose-blockquote:italic prose-blockquote:text-slate-600 dark:prose-blockquote:text-slate-400
+                        prose-img:rounded-lg prose-img:max-w-full
                         prose-hr:border-slate-200 dark:prose-hr:border-slate-700
-                        prose-table:border-collapse prose-table:w-full prose-table:text-xs sm:prose-table:text-sm
-                        prose-th:bg-slate-100 dark:prose-th:bg-slate-800 prose-th:p-1.5 sm:prose-th:p-2 prose-th:text-left prose-th:font-semibold
-                        prose-td:border prose-td:border-slate-200 dark:prose-td:border-slate-700 prose-td:p-1.5 sm:prose-td:p-2
+                        prose-table:text-xs
+                        prose-th:bg-slate-100 dark:prose-th:bg-slate-800 prose-th:p-2 prose-th:text-left
+                        prose-td:border prose-td:border-slate-200 dark:prose-td:border-slate-700 prose-td:p-2
                       ">
                         <MarkdownRenderer content={message.content} />
                       </div>
                     )}
                     
                     {message.usedWebSearch && (
-                      <div className="flex items-center gap-2 mt-2 sm:mt-3 pt-2 sm:pt-3 border-t border-slate-200 dark:border-slate-700">
-                        <Globe className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-green-600 dark:text-green-400" />
-                        <span className="text-xs text-green-600 dark:text-green-400 font-semibold">Live web data used</span>
+                      <div className="flex items-center gap-2 mt-2 pt-2 border-t border-slate-200 dark:border-slate-700">
+                        <Globe className="w-3.5 h-3.5 text-green-600 dark:text-green-400" />
+                        <span className="text-xs text-green-600 dark:text-green-400 font-medium">Web search used</span>
                       </div>
                     )}
                   </div>
                   
                   {/* Message Footer with Actions */}
-                  <div className={`flex items-center gap-2 sm:gap-3 mt-1.5 sm:mt-2 ${
+                  <div className={`flex items-center gap-2 mt-1.5 ${
                     message.role === "user" ? "justify-end" : "justify-start"
                   }`}>
-                    <div className="flex items-center gap-1 sm:gap-1.5 text-xs text-slate-400 dark:text-slate-500">
-                      <Clock className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
+                    <div className="flex items-center gap-1 text-xs text-slate-400 dark:text-slate-500">
+                      <Clock className="w-3 h-3" />
                       {formatTime(message.timestamp)}
                     </div>
                     {message.role === "assistant" && (
@@ -400,40 +379,40 @@ Ask me anything about features, tech stack, use cases, security, or implementati
                   </div>
                 </div>
                 {message.role === "user" && (
-                  <div className="w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 bg-gradient-to-br from-orange-500 to-pink-500 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg">
-                    <User className="w-4 h-4 sm:w-4 sm:h-4 md:w-5 md:h-5 text-white" />
+                  <div className="w-7 h-7 bg-gradient-to-br from-orange-500 to-pink-500 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <User className="w-4 h-4 text-white" />
                   </div>
                 )}
               </div>
               
               {/* Similar Applications */}
               {message.similarProducts && message.similarProducts.length > 0 && (
-                <div className="ml-8 sm:ml-10 md:ml-14 mr-2 mt-2 sm:mt-3">
-                  <p className="text-xs font-semibold text-slate-600 dark:text-slate-400 mb-2 sm:mb-3 flex items-center gap-2">
-                    <Package className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                    Similar Applications You Might Like:
+                <div className="ml-10 mr-2 mt-2">
+                  <p className="text-xs font-medium text-slate-600 dark:text-slate-400 mb-2 flex items-center gap-2">
+                    <Package className="w-3.5 h-3.5" />
+                    Similar Applications:
                   </p>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-3">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2">
                     {message.similarProducts.slice(0, 4).map(product => (
                       <Link
                         key={product.id}
                         href={`/product/${product.slug}`}
-                        className="group p-2 sm:p-3 bg-white dark:bg-slate-800 rounded-xl border-2 border-slate-200 dark:border-slate-700 hover:border-purple-400 dark:hover:border-purple-500 hover:shadow-lg transition-all duration-200 hover:scale-105"
+                        className="group p-2 bg-white dark:bg-[#2f2f2f] rounded-lg border border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 hover:shadow-md transition-all"
                       >
                         {product.image && (
-                          <div className="w-full h-20 sm:h-24 bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-700 dark:to-slate-800 rounded-lg overflow-hidden mb-1.5 sm:mb-2 shadow-sm">
+                          <div className="w-full h-20 bg-slate-100 dark:bg-slate-800 rounded-md overflow-hidden mb-1.5">
                             <Image 
                               src={product.image} 
                               alt={product.title}
                               width={200}
-                              height={96}
-                              className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                              height={80}
+                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                             />
                           </div>
                         )}
-                        <p className="text-xs font-semibold text-slate-800 dark:text-slate-100 truncate mb-1 sm:mb-1.5">{product.title}</p>
+                        <p className="text-xs font-medium text-slate-800 dark:text-slate-100 truncate mb-1">{product.title}</p>
                         <div className="flex items-center justify-between">
-                          <p className="text-xs text-purple-600 dark:text-purple-400 font-bold">
+                          <p className="text-xs text-purple-600 dark:text-purple-400 font-semibold">
                             {product.price === 0 ? 'FREE' : `${product.currency || 'USD'} ${product.price?.toLocaleString()}`}
                           </p>
                           {product.rating > 0 && (
@@ -451,23 +430,23 @@ Ask me anything about features, tech stack, use cases, security, or implementati
             </div>
           ))}
           
-          {/* Enhanced Loading Animation */}
+          {/* Loading Animation */}
           {isLoading && (
-            <div className="flex gap-2 sm:gap-3 md:gap-4 justify-start animate-in fade-in slide-in-from-bottom-4 duration-500">
-              <div className="w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 bg-gradient-to-br from-purple-500 via-indigo-500 to-blue-500 rounded-xl flex items-center justify-center shadow-lg animate-pulse">
-                <Sparkles className="w-4 h-4 sm:w-4 sm:h-4 md:w-5 md:h-5 text-white" />
+            <div className="flex gap-3 justify-start animate-in fade-in slide-in-from-bottom-4 duration-500">
+              <div className="w-7 h-7 bg-gradient-to-br from-purple-500 to-blue-500 rounded-lg flex items-center justify-center animate-pulse">
+                <Sparkles className="w-4 h-4 text-white" />
               </div>
-              <div className="bg-white dark:bg-slate-800 p-3 sm:p-4 rounded-2xl rounded-bl-sm shadow-lg border border-slate-200 dark:border-slate-700 min-w-[200px] sm:min-w-[280px]">
-                <div className="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-3">
-                  <LoadingIcon className={`w-4 h-4 sm:w-5 sm:h-5 ${currentLoadingState.color} animate-spin`} />
-                  <span className="text-xs sm:text-sm font-medium text-slate-700 dark:text-slate-300 animate-pulse">
+              <div className="bg-slate-100 dark:bg-[#2f2f2f] px-4 py-3 rounded-2xl min-w-[200px]">
+                <div className="flex items-center gap-2 mb-2">
+                  <LoadingIcon className={`w-4 h-4 ${currentLoadingState.color} animate-spin`} />
+                  <span className="text-xs font-medium text-slate-700 dark:text-slate-300 animate-pulse">
                     {currentLoadingState.text}
                   </span>
                 </div>
-                <div className="flex gap-1 sm:gap-1.5">
-                  <span className="w-2 h-2 sm:w-2.5 sm:h-2.5 bg-purple-500 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-                  <span className="w-2 h-2 sm:w-2.5 sm:h-2.5 bg-indigo-500 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-                  <span className="w-2 h-2 sm:w-2.5 sm:h-2.5 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                <div className="flex gap-1">
+                  <span className="w-2 h-2 bg-purple-500 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                  <span className="w-2 h-2 bg-indigo-500 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+                  <span className="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
                 </div>
               </div>
             </div>
@@ -477,57 +456,44 @@ Ask me anything about features, tech stack, use cases, security, or implementati
 
         {/* Suggested Questions - Fixed */}
         {messages.length <= 1 && !isLoading && (
-          <div className="flex-shrink-0 px-3 sm:px-4 md:px-6 py-2 sm:py-3 bg-white dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700 shadow-lg">
-            <p className="text-xs font-semibold text-slate-600 dark:text-slate-400 mb-2">Quick Questions:</p>
-            <div className="flex flex-wrap gap-1.5 sm:gap-2">
+          <div className="flex-shrink-0 px-3 sm:px-4 md:px-6 py-3 bg-white dark:bg-[#212121] border-t border-slate-200 dark:border-slate-700">
+            <div className="flex flex-wrap gap-2">
               {suggestedQuestions.map((question, index) => (
                 <button
                   key={index}
                   onClick={() => sendMessage(question.text)}
                   disabled={isLoading}
-                  className="text-xs bg-gradient-to-r from-purple-50 to-indigo-50 dark:from-purple-900/20 dark:to-indigo-900/20 text-purple-700 dark:text-purple-300 px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-full hover:from-purple-100 hover:to-indigo-100 dark:hover:from-purple-900/40 dark:hover:to-indigo-900/40 transition-all duration-200 disabled:opacity-50 flex items-center gap-1 sm:gap-1.5 font-medium border border-purple-200 dark:border-purple-800 hover:scale-105 hover:shadow-md"
+                  className="text-xs bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 px-3 py-2 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors disabled:opacity-50 border border-slate-200 dark:border-slate-700"
                 >
-                  <span>{question.icon}</span>
-                  <span className="hidden xs:inline">{question.text}</span>
-                  <span className="xs:hidden">{question.text.split(' ')[0]}</span>
+                  {question.text}
                 </button>
               ))}
             </div>
           </div>
         )}
 
-        {/* Input - Fixed at bottom */}
-        <div className="flex-shrink-0 p-3 sm:p-4 md:p-6 bg-white dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700 shadow-2xl">
-          <div className="flex gap-2 sm:gap-3">
-            <input
-              ref={inputRef}
-              type="text"
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyPress={handleKeyPress}
-              placeholder="Ask about this application..."
-              disabled={isLoading}
-              className="flex-1 px-3 sm:px-4 py-2.5 sm:py-3 border-2 border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent disabled:bg-slate-100 dark:disabled:bg-slate-800 disabled:cursor-not-allowed text-sm sm:text-base transition-all duration-200 placeholder:text-slate-400 dark:placeholder:text-slate-500"
-            />
-            <button
-              onClick={() => sendMessage()}
-              disabled={isLoading || !input.trim()}
-              className="p-2.5 sm:p-3 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-xl hover:from-purple-700 hover:to-indigo-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex-shrink-0 shadow-lg hover:shadow-xl hover:scale-105 disabled:hover:scale-100"
-            >
-              <Send className="w-4 h-4 sm:w-5 sm:h-5" />
-            </button>
-          </div>
-          <div className="flex items-center justify-between mt-2 sm:mt-3 flex-wrap gap-2">
-            <p className="text-xs text-slate-500 dark:text-slate-400">
-              Powered by VettCode AI
-            </p>
-            <Link 
-              href="/ai-assistant"
-              className="text-xs text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 flex items-center gap-1 font-medium transition-colors"
-            >
-              Full AI Assistant
-              <ExternalLink className="w-3 h-3" />
-            </Link>
+        {/* Input - ChatGPT Style */}
+        <div className="flex-shrink-0 p-3 sm:p-4 bg-white dark:bg-[#212121] border-t border-slate-200 dark:border-slate-700">
+          <div className="max-w-3xl mx-auto">
+            <div className="relative flex items-end gap-2 bg-slate-100 dark:bg-[#2f2f2f] rounded-2xl border border-slate-200 dark:border-slate-600 focus-within:border-slate-300 dark:focus-within:border-slate-500 transition-colors shadow-sm">
+              <input
+                ref={inputRef}
+                type="text"
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyPress={handleKeyPress}
+                placeholder="Message VettCode AI..."
+                disabled={isLoading}
+                className="flex-1 px-4 py-3 bg-transparent text-slate-900 dark:text-slate-100 focus:outline-none disabled:cursor-not-allowed text-sm placeholder:text-slate-500 dark:placeholder:text-slate-400"
+              />
+              <button
+                onClick={() => sendMessage()}
+                disabled={isLoading || !input.trim()}
+                className="m-1.5 p-2 bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 rounded-xl hover:bg-slate-800 dark:hover:bg-slate-200 transition-colors disabled:opacity-40 disabled:cursor-not-allowed flex-shrink-0"
+              >
+                <Send className="w-4 h-4" />
+              </button>
+            </div>
           </div>
         </div>
       </div>
