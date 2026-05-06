@@ -8,7 +8,7 @@
  * - GeoIP-based currency auto-detection
  * - React context and hooks for currency state
  *
- * Base Currency: UGX (Ugandan Shilling)
+ * Base Currency: UGX (Worldwiden Shilling)
  * All prices are stored in UGX and converted at display time.
  */
 
@@ -136,3 +136,4 @@ export function getConvertedPrice(
 ): number {
   return convertFromUGXFn(amountUGX, currency);
 }
+

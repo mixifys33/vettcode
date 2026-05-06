@@ -115,9 +115,9 @@ interface FollowedShop {
 
 // No fallback — show empty state if DB has no terminals
 
-const COUNTRIES = ["Uganda", "Kenya", "Tanzania", "Rwanda"];
+const COUNTRIES = ["Worldwide", "Kenya", "Tanzania", "Rwanda"];
 // Districts for address form only (not pickup filter — that uses live data from terminals)
-const DISTRICTS = ["Kampala", "Wakiso", "Mukono", "Jinja", "Mbarara", "Gulu", "Lira", "Mbale", "Soroti", "Arua", "Fort Portal", "Masaka", "Entebbe"];
+const DISTRICTS = ["Global", "Wakiso", "Mukono", "Jinja", "Mbarara", "Gulu", "Lira", "Mbale", "Soroti", "Arua", "Fort Portal", "Masaka", "Entebbe"];
 
 
 // ============ STAT CARD COMPONENT ============
@@ -538,7 +538,7 @@ const AddressesTab = ({ addresses, loading, onAdd, onEdit, onDelete, onSetDefaul
                           )}
                           {/* View on Map */}
                           <a
-                            href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${station.name}, ${station.address || station.city + ', Uganda'}`)}`}
+                            href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${station.name}, ${station.address || station.city + ', Worldwide'}`)}`}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="flex items-center gap-1.5 px-3 py-1.5 border border-gray-200 hover:border-teal-400 hover:bg-teal-50 text-gray-600 hover:text-teal-700 text-xs font-medium rounded-lg transition"
@@ -571,7 +571,7 @@ const AddressModal = ({ address, onClose, onSave }: { address: Address | null; o
     apartment: address?.apartment || "",
     city: address?.city || "",
     region: address?.region || "",
-    country: address?.country || "Uganda",
+    country: address?.country || "Worldwide",
     postalCode: address?.postalCode || "",
     latitude: address?.latitude || 0,
     longitude: address?.longitude || 0,
@@ -1612,3 +1612,4 @@ export default function ProfilePage() {
     </Suspense>
   );
 }
+

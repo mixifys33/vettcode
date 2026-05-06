@@ -78,3 +78,4 @@ const ProductGrid: React.FC<ProductGridProps> = ({ products, isLoading }) => {
 };
 
 export default ProductGrid;
+

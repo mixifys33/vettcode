@@ -266,3 +266,4 @@ const OffersSection: React.FC<OffersSectionProps> = ({ minOffersToShow = 5 }) =>
 };
 
 export default OffersSection;
+

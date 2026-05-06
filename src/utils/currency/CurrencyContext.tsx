@@ -166,3 +166,4 @@ export function useCurrency(): CurrencyContextValue {
 }
 
 export default CurrencyContext;
+

@@ -191,7 +191,7 @@ const OrderSuccessContent = () => {
             phone: raw.shippingAddress?.phone || raw.customerInfo?.phone || "",
             addressLine1: raw.shippingAddress?.addressLine1 || raw.customerInfo?.address || "",
             city: raw.shippingAddress?.city || raw.customerInfo?.city || "",
-            country: raw.shippingAddress?.country || "Uganda",
+            country: raw.shippingAddress?.country || "Worldwide",
           },
           items: (raw.items || []).map((item: any) => ({
             productId: item.productId || "",
@@ -506,3 +506,4 @@ export default function OrderSuccessPage() {
     </Suspense>
   );
 }
+

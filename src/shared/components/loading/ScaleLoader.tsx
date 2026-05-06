@@ -141,3 +141,4 @@ export const ScaleLoader: React.FC<ScaleLoaderProps> = ({
 };
 
 export default ScaleLoader;
+

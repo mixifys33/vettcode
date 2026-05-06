@@ -247,3 +247,4 @@ const EventsSection: React.FC<EventsSectionProps> = ({ minEventsToShow = 5 }) =>
 };
 
 export default EventsSection;
+

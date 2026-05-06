@@ -36,7 +36,7 @@ const defaultContent: FooterContent = {
   description: "The trusted marketplace for production-ready, verified applications. Built by developers, trusted by founders. Launch faster with secure, reliable codebases.",
   email: "hello@vettcode.com",
   phone: "+256 761 818 885",
-  address: "Kampala, Uganda",
+  address: "Global, Worldwide",
   socialLinks: {
     facebook: "https://facebook.com/vettcode",
     twitter: "https://twitter.com/vettcode",
@@ -335,3 +335,4 @@ export default function Footer() {
     </footer>
   );
 }
+

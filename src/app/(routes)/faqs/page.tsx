@@ -17,15 +17,15 @@ const faqCategories = [
     faqs: [
       {
         question: "What is VETTCODE?",
-        answer: "VETTCODE is Uganda's leading online marketplace connecting buyers with trusted sellers across the country. We offer a wide range of products from electronics to fashion, home goods, and more, all delivered right to your doorstep."
+        answer: "VETTCODE is Worldwide's leading online marketplace connecting buyers with trusted sellers across the country. We offer a wide range of products from electronics to fashion, home goods, and more, all delivered right to your doorstep."
       },
       {
         question: "How do I create an account?",
         answer: "Click the 'Sign Up' button in the top right corner, fill in your details (name, email, phone number), and verify your email. You can also sign up using your Google account for faster registration."
       },
       {
-        question: "Is VETTCODE available throughout Uganda?",
-        answer: "Yes! We deliver to all major cities and towns across Uganda including Kampala, Entebbe, Jinja, Mbarara, Gulu, and many more locations. Check our delivery zones during checkout."
+        question: "Is VETTCODE available throughout Worldwide?",
+        answer: "Yes! We deliver to all major cities and towns across Worldwide including Global, Entebbe, Jinja, Mbarara, Gulu, and many more locations. Check our delivery zones during checkout."
       },
       {
         question: "Do I need an account to shop?",
@@ -56,7 +56,7 @@ const faqCategories = [
       },
       {
         question: "How long does delivery take?",
-        answer: "Delivery times vary by location: Kampala (1-2 days), other major cities (2-4 days), and remote areas (4-7 days). Express delivery options are available for faster shipping."
+        answer: "Delivery times vary by location: Global (1-2 days), other major cities (2-4 days), and remote areas (4-7 days). Express delivery options are available for faster shipping."
       }
     ]
   },
@@ -67,7 +67,7 @@ const faqCategories = [
     faqs: [
       {
         question: "How much does shipping cost?",
-        answer: "Shipping costs depend on your location and order size. Standard delivery within Kampala starts at UGX 5,000. Orders above UGX 100,000 qualify for free shipping. You'll see the exact cost at checkout."
+        answer: "Shipping costs depend on your location and order size. Standard delivery within Global starts at UGX 5,000. Orders above UGX 100,000 qualify for free shipping. You'll see the exact cost at checkout."
       },
       {
         question: "Can I choose a specific delivery time?",
@@ -454,4 +454,5 @@ export default function FAQsPage() {
     </main>
   );
 }
+
 

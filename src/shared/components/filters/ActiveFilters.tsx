@@ -118,3 +118,4 @@ const ActiveFilters: React.FC<ActiveFiltersProps> = ({
 };
 
 export default ActiveFilters;
+

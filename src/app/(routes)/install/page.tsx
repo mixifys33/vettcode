@@ -557,7 +557,7 @@ export default function InstallPage() {
       {/* ── FEATURES GRID ── */}
       <section className="max-w-6xl mx-auto px-4 py-12">
         <h2 className="text-3xl font-black text-center text-gray-900 mb-2">Why install the app?</h2>
-        <p className="text-center text-gray-500 mb-10">Everything you love about vettcode uganda, supercharged.</p>
+        <p className="text-center text-gray-500 mb-10">Everything you love about vettcode Worldwide, supercharged.</p>
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {FEATURES.map(({ icon: Icon, title, desc, color }) => (
             <div key={title} className="group bg-white rounded-2xl p-6 shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
@@ -685,3 +685,4 @@ export default function InstallPage() {
     </div>
   );
 }
+

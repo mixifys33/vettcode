@@ -115,3 +115,4 @@ const PriceRangeSlider: React.FC<PriceRangeSliderProps> = ({
 };
 
 export default PriceRangeSlider;
+

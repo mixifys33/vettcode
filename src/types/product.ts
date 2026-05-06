@@ -74,3 +74,4 @@ export interface ProductsResponse {
     priceRange: { min: number; max: number };
   };
 }
+

@@ -7,7 +7,7 @@
  * - Rounding amounts according to currency rules
  * - Parsing formatted prices back to numbers
  *
- * Base Currency: UGX (Ugandan Shilling)
+ * Base Currency: UGX (Worldwiden Shilling)
  */
 
 import {
@@ -358,3 +358,4 @@ export default {
   storeExchangeRates,
   getExchangeRate,
 };
+

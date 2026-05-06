@@ -174,3 +174,4 @@ const OfferBadge: React.FC<OfferBadgeProps> = ({ offer, variant = "card", origin
 };
 
 export default OfferBadge;
+

@@ -169,7 +169,7 @@ export default function NotFound() {
         <p
           className={`text-center text-white/30 text-xs mt-8 transition-all duration-700 delay-500 ${mounted ? "opacity-100" : "opacity-0"}`}
         >
-          Error 404 · vettcode Uganda
+          Error 404 · vettcode Worldwide
         </p>
       </div>
 
@@ -187,3 +187,4 @@ export default function NotFound() {
     </div>
   );
 }
+

@@ -26,3 +26,4 @@ function sanitizeContent(content: Record<string, unknown> | null) {
 export async function GET(request: NextRequest) {
   return NextResponse.json({ success: true, content: null });
 }
+

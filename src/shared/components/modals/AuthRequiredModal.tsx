@@ -182,3 +182,4 @@ if (user.isVerified) {
 }
 
 export default AuthRequiredModal
+

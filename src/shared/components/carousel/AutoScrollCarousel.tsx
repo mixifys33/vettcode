@@ -154,3 +154,4 @@ const AutoScrollCarousel: React.FC<AutoScrollCarouselProps> = ({
 };
 
 export default AutoScrollCarousel;
+

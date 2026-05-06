@@ -65,7 +65,7 @@ export async function GET(req: NextRequest) {
       region: t.region || "",
       city: t.city || "",
       county: t.region || "",
-      country: "Uganda",
+      country: "Worldwide",
       phone: t.phone || "",
       company: t.company || "Link Bus",
       type: t.type || "bus_terminal",
@@ -94,3 +94,4 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ success: false, stations: [], sellers: [] }, { status: 500 });
   }
 }
+

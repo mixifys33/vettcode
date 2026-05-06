@@ -85,7 +85,7 @@ const ShopCard = ({ shop, viewMode }: { shop: Shop; viewMode: "grid" | "list" })
             {shop.bio && <p className="text-sm text-gray-600 mt-2 line-clamp-2">{shop.bio}</p>}
             <div className="flex items-center gap-4 mt-3 text-xs text-gray-500">
               <span className="flex items-center gap-1.5 bg-gray-50 px-2 py-1 rounded-full">
-                <MapPin className="w-3.5 h-3.5" />{shop.address || "Uganda"}
+                <MapPin className="w-3.5 h-3.5" />{shop.address || "Worldwide"}
               </span>
               <span className="flex items-center gap-1.5 bg-blue-50 px-2 py-1 rounded-full text-blue-600">
                 <Package className="w-3.5 h-3.5" />{shop.productCount || 0} products
@@ -135,7 +135,7 @@ const ShopCard = ({ shop, viewMode }: { shop: Shop; viewMode: "grid" | "list" })
               <div className="w-1 h-1 bg-gray-300 rounded-full" />
               <div className="flex items-center gap-1.5 text-xs text-gray-500">
                 <MapPin className="w-4 h-4 text-pink-500" />
-                <span className="truncate max-w-[80px]">{shop.address?.split(",")[0] || "Uganda"}</span>
+                <span className="truncate max-w-[80px]">{shop.address?.split(",")[0] || "Worldwide"}</span>
               </div>
             </div>
           </div>
@@ -270,7 +270,7 @@ function ShopsContent() {
               Explore Our Marketplace
             </h1>
             <p className="text-lg text-white/80 max-w-2xl mx-auto mb-8">
-              Find unique products from verified sellers across Uganda
+              Find unique products from verified sellers across Worldwide
             </p>
 
             {/* Search Bar */}
@@ -471,3 +471,4 @@ export default function ShopsPage() {
     </Suspense>
   );
 }
+

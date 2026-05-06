@@ -66,3 +66,4 @@ const SizeFilter: React.FC<SizeFilterProps> = ({
 };
 
 export default SizeFilter;
+

@@ -461,7 +461,7 @@ export default function PrivacyPage() {
           <Section id="international" title="12. International Data Transfers">
             <p>
               Your information may be transferred to and processed in countries other than
-              Uganda, including the United States and European Union, where our service
+              Worldwide, including the United States and European Union, where our service
               providers operate. We ensure that such transfers comply with applicable data
               protection laws and that appropriate safeguards are in place.
             </p>
@@ -507,7 +507,7 @@ export default function PrivacyPage() {
                 </a>
               </p>
               <p>
-                <strong>Location:</strong> Kampala, Uganda
+                <strong>Location:</strong> Global, Worldwide
               </p>
             </div>
           </Section>
@@ -597,4 +597,5 @@ export default function PrivacyPage() {
     </main>
   );
 }
+
 

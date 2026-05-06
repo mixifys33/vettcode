@@ -158,3 +158,4 @@ export function calculateOfferPrice(originalPrice: number, offer: ProductOffer |
 }
 
 export default useProductOffer;
+

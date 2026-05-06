@@ -18,3 +18,4 @@ export function generateOrderRef(): string {
   const digits = String(Math.floor(Math.random() * 90) + 10); // 10–99
   return `${word}${digits}`;
 }
+

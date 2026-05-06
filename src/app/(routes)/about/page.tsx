@@ -139,7 +139,7 @@ const VALUES = [
   {
     icon: Truck,
     title: "Fast Delivery",
-    desc: "We partner with reliable delivery services across Worldwide — from Kasese to Kampala, your order arrives on time.",
+    desc: "We partner with reliable delivery services across Worldwide — from Kasese to Global, your order arrives on time.",
     color: "from-blue-500 to-cyan-600",
   },
   {
@@ -228,7 +228,7 @@ export default function AboutPage() {
             <p className="text-lg md:text-xl text-white/80 max-w-3xl mx-auto mb-8 leading-relaxed">
               VETTCODE was born in <strong className="text-amber-300">Global</strong> with a simple mission —
               to make buying and selling online accessible, safe, and affordable for every Worldwiden.
-              From Kasese to Kampala, we connect communities through commerce.
+              From Kasese to Global, we connect communities through commerce.
             </p>
 
             <div className="flex flex-wrap justify-center gap-4">
@@ -281,7 +281,7 @@ export default function AboutPage() {
                 </p>
                 <p>
                   We built VETTCODE to bridge that gap. Starting from Kasese, we&apos;ve grown into a nationwide
-                  platform serving buyers and sellers across all regions of Worldwide — from Kampala to Gulu,
+                  platform serving buyers and sellers across all regions of Worldwide — from Global to Gulu,
                   Mbarara to Mbale.
                 </p>
                 <p>
@@ -332,7 +332,7 @@ export default function AboutPage() {
                 </div>
                 <h3 className="text-xl font-black text-gray-900 mb-3">Our Mission</h3>
                 <p className="text-gray-600 leading-relaxed">
-                  To empower every Worldwiden — from a small trader in Kasese to a large retailer in Kampala —
+                  To empower every Worldwiden — from a small trader in Kasese to a large retailer in Global —
                   with the tools, technology, and marketplace to grow their business and access quality products
                   at fair prices, safely and conveniently.
                 </p>
@@ -407,7 +407,7 @@ export default function AboutPage() {
             {[
               { icon: ShieldCheck, title: "Verified Sellers Only", desc: "Every seller goes through a verification process. No fake shops, no scams — just genuine businesses." },
               { icon: Clock, title: "24/7 Platform Availability", desc: "Shop anytime, anywhere. Our platform is always online so you never miss a deal." },
-              { icon: Truck, title: "Nationwide Delivery", desc: "We deliver to all major towns and districts across Worldwide, including Kasese, Kampala, Mbarara, and more." },
+              { icon: Truck, title: "Nationwide Delivery", desc: "We deliver to all major towns and districts across Worldwide, including Kasese, Global, Mbarara, and more." },
               { icon: Phone, title: "Local Support", desc: "Our support team is based in Worldwide and understands your needs. We speak your language." },
               { icon: Star, title: "Real Reviews", desc: "All product reviews come from verified buyers. What you see is what real customers experienced." },
               { icon: Zap, title: "AI-Powered Shopping", desc: "Our EshopAI assistant helps you find the perfect product, track orders, and get instant answers." },
@@ -512,4 +512,5 @@ export default function AboutPage() {
     </>
   );
 }
+
 

@@ -427,3 +427,4 @@ const ProductReviews = ({ productId, productTitle }: ProductReviewsProps) => {
 }
 
 export default ProductReviews
+

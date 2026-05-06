@@ -389,3 +389,4 @@ const ProductDescriptionModal = ({ productInfo, isOpen, onClose }: ProductDescri
 }
 
 export default ProductDescriptionModal
+

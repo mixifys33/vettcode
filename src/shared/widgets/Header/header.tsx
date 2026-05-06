@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React, { useState, useRef, useEffect } from "react";
 import Link from "next/link";
@@ -177,7 +177,7 @@ const Header = () => {
                   </ul>
                   <div className="px-4 py-2.5 border-t border-gray-100 bg-gray-50">
                     <button onClick={handleSearch} className="text-xs text-purple-600 font-semibold hover:text-purple-800 transition-colors">
-                      See all results for &ldquo;{searchQuery}&rdquo; →
+                      See all results for &ldquo;{searchQuery}&rdquo; ?
                     </button>
                   </div>
                 </>
@@ -251,3 +251,4 @@ const Header = () => {
 };
 
 export default Header;
+

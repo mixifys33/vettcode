@@ -508,3 +508,4 @@ async function sendVerificationEmail(email, otp) {
 };
 
 export default Signup;
+

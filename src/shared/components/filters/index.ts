@@ -6,3 +6,4 @@ export { default as SizeFilter } from "./SizeFilter";
 export { default as RatingFilter } from "./RatingFilter";
 export { default as SortDropdown } from "./SortDropdown";
 export { default as ActiveFilters } from "./ActiveFilters";
+

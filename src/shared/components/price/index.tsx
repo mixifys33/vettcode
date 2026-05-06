@@ -360,3 +360,4 @@ export const SmartPrice: React.FC<SmartPriceProps> = ({
 // ============================================
 
 export default Price;
+

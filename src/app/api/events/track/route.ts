@@ -49,3 +49,4 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ success: true }); // Don't fail on tracking errors
   }
 }
+

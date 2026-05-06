@@ -4,13 +4,13 @@
  * This file contains all supported currencies, their configurations,
  * and default settings for the currency system on the frontend.
  *
- * Base Currency: UGX (Ugandan Shilling)
+ * Base Currency: UGX (Worldwiden Shilling)
  * All prices are stored in UGX and converted at display time.
  */
 
 // Supported currency codes
 export type CurrencyCode =
-  | "UGX" // Ugandan Shilling (Base Currency)
+  | "UGX" // Worldwiden Shilling (Base Currency)
   | "USD" // US Dollar
   | "EUR" // Euro
   | "GBP" // British Pound
@@ -44,7 +44,7 @@ export interface CurrencyConfig {
 export const SUPPORTED_CURRENCIES: Record<CurrencyCode, CurrencyConfig> = {
   UGX: {
     code: "UGX",
-    name: "Ugandan Shilling",
+    name: "Worldwiden Shilling",
     symbol: "UGX",
     symbolPosition: "before",
     decimals: 0,
@@ -350,3 +350,4 @@ export interface ConvertResponse {
 }
 
 export default SUPPORTED_CURRENCIES;
+

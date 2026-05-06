@@ -697,7 +697,7 @@ const EasyAIPage = () => {
                   Welcome to <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">E-AI</span>
                 </h1>
                 <p className="text-gray-600 mb-6 text-sm sm:text-base">
-                  Your intelligent shopping assistant for vettcode Uganda
+                  Your intelligent shopping assistant for vettcode Worldwide
                 </p>
 
                 {/* Features Grid */}
@@ -1062,3 +1062,4 @@ const EasyAIPage = () => {
 }
 
 export default EasyAIPage
+

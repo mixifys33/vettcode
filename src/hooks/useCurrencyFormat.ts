@@ -246,3 +246,4 @@ export function formatPriceUGXCompact(
 // ============================================
 
 export default useCurrencyFormat;
+

@@ -39,7 +39,7 @@ export default async function Image() {
             marginBottom: 40,
           }}
         >
-          Uganda&apos;s #1 Online Marketplace
+          Verified Codebases for Founders
         </div>
         <div
           style={{
@@ -47,7 +47,7 @@ export default async function Image() {
             gap: 24,
           }}
         >
-          {["Electronics", "Fashion", "Home", "Beauty", "Groceries"].map((cat) => (
+          {["Web Apps", "Mobile Apps", "SaaS", "APIs", "Templates"].map((cat) => (
             <div
               key={cat}
               style={{
@@ -76,3 +76,4 @@ export default async function Image() {
     { ...size }
   );
 }
+

@@ -120,3 +120,4 @@ const ColorFilter: React.FC<ColorFilterProps> = ({
 };
 
 export default ColorFilter;
+

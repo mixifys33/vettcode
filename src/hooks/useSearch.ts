@@ -341,3 +341,4 @@ export const useRelatedProducts = (productId: string) => {
 };
 
 export default useSearch;
+

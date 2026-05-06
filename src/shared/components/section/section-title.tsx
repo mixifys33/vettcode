@@ -51,3 +51,4 @@ const SectionTitle: React.FC<SectionTitleProps> = ({
 };
 
 export default SectionTitle;
+

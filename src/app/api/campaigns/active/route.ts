@@ -12,3 +12,4 @@ export async function GET() {
     return NextResponse.json({ success: false, campaigns: [] }, { status: 500 });
   }
 }
+

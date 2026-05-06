@@ -111,3 +111,4 @@ function calculateDiscountedPrice(
 
   return Math.max(0, Math.round(price - discount));
 }
+

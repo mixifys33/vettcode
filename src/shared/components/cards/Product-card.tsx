@@ -327,3 +327,4 @@ const ProductCard = ({ product, isEvent }: { product: any; isEvent?: boolean }) 
 };
 
 export default ProductCard;
+

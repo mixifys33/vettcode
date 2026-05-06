@@ -50,3 +50,4 @@ const HeartIcon: React.FC<HeartIconProps> = ({
 };
 
 export default HeartIcon;
+

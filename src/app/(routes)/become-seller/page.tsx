@@ -32,7 +32,7 @@ interface SiteContent {
 const defaultContent: SiteContent = {
   heroTitle: "Start Selling Online",
   heroSubtitle: "Grow Your Business",
-  heroDescription: "Join thousands of sellers across Uganda. List your products, reach more customers, and manage your business from anywhere.",
+  heroDescription: "Join thousands of sellers across Worldwide. List your products, reach more customers, and manage your business from anywhere.",
   stats: [
     { value: "15,000+", label: "Active Sellers" },
     { value: "UGX 2B+", label: "Monthly Sales" },
@@ -58,7 +58,7 @@ const defaultContent: SiteContent = {
 };
 
 const benefits = [
-  { icon: Globe, title: "Reach More Customers", description: "Your products visible to thousands of buyers across Uganda.", color: "from-blue-500 to-cyan-500" },
+  { icon: Globe, title: "Reach More Customers", description: "Your products visible to thousands of buyers across Worldwide.", color: "from-blue-500 to-cyan-500" },
   { icon: Shield, title: "Secure Payments", description: "Receive payments via Mobile Money, bank transfer, or other local methods.", color: "from-green-500 to-emerald-500" },
   { icon: BarChart3, title: "Sales Analytics", description: "Track your sales and customer trends to make better decisions.", color: "from-purple-500 to-pink-500" },
   { icon: Zap, title: "Easy Setup", description: "Create your shop and list products in minutes. No technical skills needed.", color: "from-orange-500 to-red-500" },
@@ -598,7 +598,7 @@ export default function BecomeSellerPage() {
         
         <div className="container mx-auto px-4 text-center relative z-10">
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-6">Ready to Start Your Journey?</h2>
-          <p className="text-white/70 mb-8 max-w-xl mx-auto text-lg">Create your seller account today and start reaching customers across Uganda.</p>
+          <p className="text-white/70 mb-8 max-w-xl mx-auto text-lg">Create your seller account today and start reaching customers across Worldwide.</p>
           <button 
             onClick={() => setShowApplyModal(true)} 
             className="group px-10 py-5 bg-gradient-to-r from-yellow-400 to-orange-500 text-gray-900 font-bold text-lg rounded-full hover:shadow-2xl hover:shadow-yellow-500/30 transition-all duration-300 inline-flex items-center gap-3 hover:scale-105"
@@ -677,3 +677,4 @@ export default function BecomeSellerPage() {
     </div>
   );
 }
+

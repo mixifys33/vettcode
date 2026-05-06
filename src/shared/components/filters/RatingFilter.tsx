@@ -65,3 +65,4 @@ const RatingFilter: React.FC<RatingFilterProps> = ({
 };
 
 export default RatingFilter;
+

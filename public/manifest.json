@@ -1,7 +1,7 @@
 {
-  "name": "Eshop — Uganda's #1 Marketplace",
-  "short_name": "vettcode ",
-  "description": "Shop smarter, live better. Discover amazing products at unbeatable prices.",
+  "name": "VETTCODE — Verified Codebases for Founders",
+  "short_name": "VETTCODE",
+  "description": "Production-ready applications for founders. Verified, secure, and ready to launch.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#0d3f4d",

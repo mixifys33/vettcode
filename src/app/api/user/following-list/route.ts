@@ -25,3 +25,4 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ success: false, following: [] }, { status: 500 });
   }
 }
+
