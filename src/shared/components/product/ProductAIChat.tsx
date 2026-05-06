@@ -42,6 +42,7 @@ interface SimilarProduct {
   title: string
   slug: string
   price: number
+  currency?: string
   image: string
   rating: number
 }
