@@ -41,6 +41,7 @@ import useDeviceTracking from "@/hooks/useDeviceTracking"
 import useLocationTracking from "@/hooks/useLocationTracking"
 import ProductCard from "@/shared/components/cards/Product-card"
 import ProductAIChat from "@/shared/components/product/ProductAIChat"
+import AuthRequiredModal from "@/shared/components/modals/AuthRequiredModal"
 import { toast } from "sonner"
 
 // Type Definitions
@@ -176,6 +177,8 @@ const ProductDetails = ({
   const [copied, setCopied] = useState(false);
   const [activeTab, setActiveTab] = useState<'overview' | 'badges' | 'features' | 'requirements'>('overview');
   const [showAIChat, setShowAIChat] = useState(false);
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const [authActionType, setAuthActionType] = useState<'download' | 'purchase' | 'access'>('access');
   const [activeTab, setActiveTab] = useState<'overview' | 'features' | 'requirements'>('overview');
 
   // Store
@@ -285,6 +288,13 @@ const ProductDetails = ({
   };
 
   const handleDownloadAccess = () => {
+    // Check if user is logged in
+    if (!user) {
+      setAuthActionType(isFree ? 'download' : 'purchase');
+      setShowAuthModal(true);
+      return;
+    }
+
     if (isFree) {
       toast.success("Redirecting to download...");
       if (liveDemo) {
@@ -972,6 +982,14 @@ const ProductDetails = ({
         }}
         isOpen={showAIChat}
         onClose={() => setShowAIChat(false)}
+      />
+
+      {/* Auth Required Modal */}
+      <AuthRequiredModal
+        isOpen={showAuthModal}
+        onClose={() => setShowAuthModal(false)}
+        actionType={authActionType}
+        appName={appName}
       />
     </div>
   );
