@@ -73,22 +73,22 @@ const ProductAIChat = ({ productInfo, isOpen, onClose, onAddToCart }: ProductAIC
 
   useEffect(() => {
     if (isOpen && messages.length === 0 && productInfo) {
-      const discount = productInfo.regular_price > productInfo.sale_price
-        ? Math.round(((productInfo.regular_price - productInfo.sale_price) / productInfo.regular_price) * 100)
-        : 0;
+      const isFree = productInfo.isFree || productInfo.price === 0 || productInfo.sale_price === 0;
+      const price = productInfo.price || productInfo.sale_price || 0;
+      const currency = productInfo.currency || "USD";
       
       setMessages([{
         id: generateId(),
         role: "assistant",
-        content: `Hi! I'm E-AI, your shopping assistant 🛒
+        content: `Hi! I'm VettCode AI, your application assistant 🤖
 
-I'm here to help you with **${productInfo?.title || "this product"}**
+I'm here to help you with **${productInfo?.title || productInfo?.appName || "this application"}**
 
-${discount > 0 ? `🔥 Great news! This item is **${discount}% OFF** right now!\n` : ''}
-- **Price**: UGX ${productInfo?.sale_price?.toLocaleString() || "N/A"}
-- **Status**: ${productInfo?.stock > 0 ? `✅ In Stock (${productInfo.stock} available)` : '❌ Currently out of stock'}
+${isFree ? `✨ Great news! This application is **FREE** to access!\n` : `💰 **Price**: ${currency} ${price.toLocaleString()}\n`}
+- **Category**: ${productInfo?.appCategory || productInfo?.category || "Application"}
+- **Status**: ✅ Production-Ready & Verified
 
-Ask me anything about features, comparisons, warranty, or buying advice!`,
+Ask me anything about features, tech stack, use cases, security, or implementation advice!`,
         timestamp: new Date()
       }])
     }
@@ -97,8 +97,9 @@ Ask me anything about features, comparisons, warranty, or buying advice!`,
   const suggestedQuestions = [
     { text: "Key features?", icon: "✨" },
     { text: "Worth the price?", icon: "💰" },
-    { text: "Compare options", icon: "⚖️" },
+    { text: "Tech stack?", icon: "⚙️" },
     { text: "Any issues?", icon: "🔍" },
+    { text: "Production ready?", icon: "🚀" },
   ]
 
   const sendMessage = async (messageText?: string) => {
