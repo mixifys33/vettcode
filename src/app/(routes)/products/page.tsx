@@ -2,14 +2,11 @@
 import React, { Suspense, useState, useCallback, useEffect, useMemo } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { Search, SlidersHorizontal, X, Grid3X3, LayoutList, Code2, Sparkles } from "lucide-react";
-import { useProducts, useCategories } from "@/hooks/useProducts";
-import { ProductFilters, ProductSort } from "@/types/product";
+import { useQuery } from "@tanstack/react-query";
+import axiosInstance from "@/utils/axiosInstance";
 import {
   PriceRangeSlider,
   CategoryFilter,
-  BrandFilter,
-  ColorFilter,
-  SizeFilter,
   RatingFilter,
   SortDropdown,
   ActiveFilters,
@@ -20,46 +17,55 @@ import Pagination from "@/shared/components/product/Pagination";
 const DEFAULT_PRICE_RANGE: [number, number] = [0, 5000000];
 const ITEMS_PER_PAGE = 12;
 
-// Fallback data for filters (used when API doesn't return facets)
-const defaultBrands = [
-  { name: "Samsung", count: 45 },
-  { name: "Apple", count: 38 },
-  { name: "HP", count: 32 },
-  { name: "Lenovo", count: 28 },
-  { name: "Dell", count: 25 },
-  { name: "Sony", count: 22 },
-  { name: "LG", count: 18 },
-  { name: "Nike", count: 15 },
-  { name: "Adidas", count: 12 },
+interface ApplicationFilters {
+  q?: string;
+  category?: string;
+  subCategory?: string;
+  technologyStack?: string[];
+  platforms?: string[];
+  price_min?: number;
+  price_max?: number;
+  rating_min?: number;
+  isFree?: boolean;
+  verificationStatus?: string;
+}
+
+interface ApplicationSort {
+  field: "price" | "rating" | "downloads" | "createdAt" | "views";
+  order: "asc" | "desc";
+}
+
+// Fallback data for filters
+const defaultTechStacks = [
+  "React", "Next.js", "Node.js", "Python", "Django", "Flask",
+  "Vue.js", "Angular", "TypeScript", "JavaScript", "MongoDB", "PostgreSQL"
 ];
 
-const defaultColors = [
-  "Black", "White", "Red", "Blue", "Green", "Yellow", 
-  "Orange", "Purple", "Pink", "Gray", "Brown", "Navy", "Gold", "Silver"
+const defaultPlatforms = [
+  "Web", "Mobile", "Desktop", "iOS", "Android", "Cross-platform"
 ];
-
-const defaultSizes = ["XS", "S", "M", "L", "XL", "XXL", "28", "30", "32", "34", "36", "38", "40", "42"];
 
 const ProductsPageContent = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
 
   // Initialize filters from URL
-  const [filters, setFilters] = useState<ProductFilters>(() => ({
+  const [filters, setFilters] = useState<ApplicationFilters>(() => ({
     q: searchParams.get("q") || undefined,
     category: searchParams.get("category") || undefined,
     subCategory: searchParams.get("subCategory") || undefined,
-    brand: searchParams.get("brand") || undefined,
-    colors: searchParams.get("colors")?.split(",").filter(Boolean) || [],
-    sizes: searchParams.get("sizes")?.split(",").filter(Boolean) || [],
+    technologyStack: searchParams.get("technologyStack")?.split(",").filter(Boolean) || [],
+    platforms: searchParams.get("platforms")?.split(",").filter(Boolean) || [],
     price_min: searchParams.get("price_min") ? Number(searchParams.get("price_min")) : undefined,
     price_max: searchParams.get("price_max") ? Number(searchParams.get("price_max")) : undefined,
     rating_min: searchParams.get("rating") ? Number(searchParams.get("rating")) : undefined,
+    isFree: searchParams.get("isFree") === "true" ? true : undefined,
+    verificationStatus: searchParams.get("verified") === "true" ? "verified" : undefined,
   }));
 
-  const [sort, setSort] = useState<ProductSort | undefined>(() => {
-    const sortBy = searchParams.get("sortBy") as ProductSort["field"] | null;
-    const sortOrder = searchParams.get("sortOrder") as ProductSort["order"] | null;
+  const [sort, setSort] = useState<ApplicationSort | undefined>(() => {
+    const sortBy = searchParams.get("sortBy") as ApplicationSort["field"] | null;
+    const sortOrder = searchParams.get("sortOrder") as ApplicationSort["order"] | null;
     if (sortBy && sortOrder) {
       return { field: sortBy, order: sortOrder };
     }
@@ -79,16 +85,50 @@ const ProductsPageContent = () => {
   const [showMobileFilters, setShowMobileFilters] = useState(false);
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
 
-  // Fetch products with React Query
-  const { data, isLoading, isFetching } = useProducts({
-    filters,
-    sort,
-    page,
-    limit: ITEMS_PER_PAGE,
+  // Fetch applications with React Query
+  const { data, isLoading, isFetching } = useQuery({
+    queryKey: ["applications", filters, sort, page],
+    queryFn: async () => {
+      const params = new URLSearchParams();
+      
+      params.append("page", String(page));
+      params.append("limit", String(ITEMS_PER_PAGE));
+      
+      if (filters.q) params.append("q", filters.q);
+      if (filters.category) params.append("category", filters.category);
+      if (filters.subCategory) params.append("subCategory", filters.subCategory);
+      if (filters.technologyStack?.length) params.append("technologyStack", filters.technologyStack.join(","));
+      if (filters.platforms?.length) params.append("platforms", filters.platforms.join(","));
+      if (filters.price_min !== undefined) params.append("price_gte", String(filters.price_min));
+      if (filters.price_max !== undefined) params.append("price_lte", String(filters.price_max));
+      if (filters.rating_min !== undefined) params.append("rating_gte", String(filters.rating_min));
+      if (filters.isFree !== undefined) params.append("isFree", String(filters.isFree));
+      if (filters.verificationStatus) params.append("verificationStatus", filters.verificationStatus);
+      
+      if (sort) {
+        params.append("sortBy", sort.field);
+        params.append("sortOrder", sort.order);
+      }
+      
+      const res = await axiosInstance.get(`/api/applications?${params.toString()}`);
+      return {
+        applications: res.data.applications || [],
+        pagination: res.data.pagination || { total: 0, page: 1, totalPages: 1 },
+        facets: res.data.facets || {}
+      };
+    },
+    staleTime: 1000 * 60 * 2,
   });
 
   // Fetch categories
-  const { data: categoriesData } = useCategories();
+  const { data: categoriesData } = useQuery({
+    queryKey: ["application-categories"],
+    queryFn: async () => {
+      const res = await axiosInstance.get("/api/applications/categories");
+      return res.data;
+    },
+    staleTime: 1000 * 60 * 30,
+  });
 
   const categories = useMemo(() => {
     if (!categoriesData?.categories) return [];
@@ -99,26 +139,19 @@ const ProductsPageContent = () => {
   }, [categoriesData]);
 
   // Use facets from API or fallback to defaults
-  const availableBrands = useMemo(() => {
-    if (data?.facets?.brands && data.facets.brands.length > 0) {
-      return data.facets.brands;
+  const availableTechStacks = useMemo(() => {
+    if (data?.facets?.technologyStack && data.facets.technologyStack.length > 0) {
+      return data.facets.technologyStack;
     }
-    return defaultBrands;
-  }, [data?.facets?.brands]);
+    return defaultTechStacks;
+  }, [data?.facets?.technologyStack]);
 
-  const availableColors = useMemo((): string[] => {
-    if (data?.facets?.colors && data.facets.colors.length > 0) {
-      return data.facets.colors.map((c: any) => typeof c === 'string' ? c : c.name);
+  const availablePlatforms = useMemo((): string[] => {
+    if (data?.facets?.platforms && data.facets.platforms.length > 0) {
+      return data.facets.platforms;
     }
-    return defaultColors;
-  }, [data?.facets?.colors]);
-
-  const availableSizes = useMemo((): string[] => {
-    if (data?.facets?.sizes && data.facets.sizes.length > 0) {
-      return data.facets.sizes.map((s: any) => typeof s === 'string' ? s : s.name);
-    }
-    return defaultSizes;
-  }, [data?.facets?.sizes]);
+    return defaultPlatforms;
+  }, [data?.facets?.platforms]);
 
   const dynamicPriceRange = useMemo((): [number, number] => {
     if (data?.facets?.priceRange) {
@@ -134,12 +167,13 @@ const ProductsPageContent = () => {
     if (filters.q) params.set("q", filters.q);
     if (filters.category) params.set("category", filters.category);
     if (filters.subCategory) params.set("subCategory", filters.subCategory);
-    if (filters.brand) params.set("brand", filters.brand);
-    if (filters.colors && filters.colors.length > 0) params.set("colors", filters.colors.join(","));
-    if (filters.sizes && filters.sizes.length > 0) params.set("sizes", filters.sizes.join(","));
+    if (filters.technologyStack && filters.technologyStack.length > 0) params.set("technologyStack", filters.technologyStack.join(","));
+    if (filters.platforms && filters.platforms.length > 0) params.set("platforms", filters.platforms.join(","));
     if (filters.price_min !== undefined) params.set("price_min", String(filters.price_min));
     if (filters.price_max !== undefined) params.set("price_max", String(filters.price_max));
     if (filters.rating_min !== undefined) params.set("rating", String(filters.rating_min));
+    if (filters.isFree !== undefined) params.set("isFree", String(filters.isFree));
+    if (filters.verificationStatus) params.set("verified", "true");
     if (sort) {
       params.set("sortBy", sort.field);
       params.set("sortOrder", sort.order);
@@ -173,18 +207,13 @@ const ProductsPageContent = () => {
     setPage(1);
   }, []);
 
-  const handleBrandChange = useCallback((brand: string) => {
-    setFilters((prev) => ({ ...prev, brand: brand || undefined }));
+  const handleTechStackChange = useCallback((techStack: string[]) => {
+    setFilters((prev) => ({ ...prev, technologyStack: techStack }));
     setPage(1);
   }, []);
 
-  const handleColorChange = useCallback((colors: string[]) => {
-    setFilters((prev) => ({ ...prev, colors }));
-    setPage(1);
-  }, []);
-
-  const handleSizeChange = useCallback((sizes: string[]) => {
-    setFilters((prev) => ({ ...prev, sizes }));
+  const handlePlatformChange = useCallback((platforms: string[]) => {
+    setFilters((prev) => ({ ...prev, platforms }));
     setPage(1);
   }, []);
 
@@ -203,17 +232,19 @@ const ProductsPageContent = () => {
     setPage(1);
   }, []);
 
-  const handleSortChange = useCallback((newSort: ProductSort | undefined) => {
+  const handleSortChange = useCallback((newSort: ApplicationSort | undefined) => {
     setSort(newSort);
     setPage(1);
   }, []);
 
-  const handleRemoveFilter = useCallback((key: keyof ProductFilters, value?: string) => {
+  const handleRemoveFilter = useCallback((key: keyof ApplicationFilters, value?: string) => {
     setFilters((prev) => {
       const newFilters = { ...prev };
 
-      if (key === "colors" && value) {
-        newFilters.colors = prev.colors?.filter((c) => c !== value);
+      if (key === "technologyStack" && value) {
+        newFilters.technologyStack = prev.technologyStack?.filter((t) => t !== value);
+      } else if (key === "platforms" && value) {
+        newFilters.platforms = prev.platforms?.filter((p) => p !== value);
       } else if (key === "sizes" && value) {
         newFilters.sizes = prev.sizes?.filter((s) => s !== value);
       } else if (key === "price_min") {
@@ -242,12 +273,13 @@ const ProductsPageContent = () => {
       filters.q ||
       filters.category ||
       filters.subCategory ||
-      filters.brand ||
-      (filters.colors && filters.colors.length > 0) ||
-      (filters.sizes && filters.sizes.length > 0) ||
+      (filters.technologyStack && filters.technologyStack.length > 0) ||
+      (filters.platforms && filters.platforms.length > 0) ||
       filters.price_min !== undefined ||
       filters.price_max !== undefined ||
-      filters.rating_min !== undefined
+      filters.rating_min !== undefined ||
+      filters.isFree !== undefined ||
+      filters.verificationStatus !== undefined
     );
   }, [filters]);
 
@@ -276,30 +308,128 @@ const ProductsPageContent = () => {
 
       <hr className="border-slate-200 dark:border-slate-700" />
 
-      {/* Brand Filter */}
-      <BrandFilter
-        brands={availableBrands}
-        selectedBrand={filters.brand || ""}
-        onBrandChange={handleBrandChange}
-      />
+      {/* Technology Stack Filter */}
+      <div>
+        <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100 mb-3">Technology Stack</h3>
+        <div className="space-y-2 max-h-48 overflow-y-auto">
+          {availableTechStacks.map((tech) => (
+            <label key={tech} className="flex items-center gap-2 cursor-pointer group">
+              <input
+                type="checkbox"
+                checked={filters.technologyStack?.includes(tech) || false}
+                onChange={(e) => {
+                  const newTechStack = e.target.checked
+                    ? [...(filters.technologyStack || []), tech]
+                    : filters.technologyStack?.filter((t) => t !== tech) || [];
+                  handleTechStackChange(newTechStack);
+                }}
+                className="w-4 h-4 rounded border-slate-300 text-purple-600 focus:ring-purple-500"
+              />
+              <span className="text-sm text-slate-700 dark:text-slate-300 group-hover:text-purple-600 dark:group-hover:text-purple-400">
+                {tech}
+              </span>
+            </label>
+          ))}
+        </div>
+      </div>
 
       <hr className="border-slate-200 dark:border-slate-700" />
 
-      {/* Color Filter */}
-      <ColorFilter
-        colors={availableColors}
-        selectedColors={filters.colors || []}
-        onColorChange={handleColorChange}
-      />
+      {/* Platform Filter */}
+      <div>
+        <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100 mb-3">Platforms</h3>
+        <div className="space-y-2">
+          {availablePlatforms.map((platform) => (
+            <label key={platform} className="flex items-center gap-2 cursor-pointer group">
+              <input
+                type="checkbox"
+                checked={filters.platforms?.includes(platform) || false}
+                onChange={(e) => {
+                  const newPlatforms = e.target.checked
+                    ? [...(filters.platforms || []), platform]
+                    : filters.platforms?.filter((p) => p !== platform) || [];
+                  handlePlatformChange(newPlatforms);
+                }}
+                className="w-4 h-4 rounded border-slate-300 text-purple-600 focus:ring-purple-500"
+              />
+              <span className="text-sm text-slate-700 dark:text-slate-300 group-hover:text-purple-600 dark:group-hover:text-purple-400">
+                {platform}
+              </span>
+            </label>
+          ))}
+        </div>
+      </div>
 
       <hr className="border-slate-200 dark:border-slate-700" />
 
-      {/* Size Filter */}
-      <SizeFilter
-        sizes={availableSizes}
-        selectedSizes={filters.sizes || []}
-        onSizeChange={handleSizeChange}
-      />
+      {/* Free/Paid Filter */}
+      <div>
+        <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100 mb-3">Pricing</h3>
+        <div className="space-y-2">
+          <label className="flex items-center gap-2 cursor-pointer group">
+            <input
+              type="radio"
+              checked={filters.isFree === undefined}
+              onChange={() => {
+                setFilters((prev) => ({ ...prev, isFree: undefined }));
+                setPage(1);
+              }}
+              className="w-4 h-4 border-slate-300 text-purple-600 focus:ring-purple-500"
+            />
+            <span className="text-sm text-slate-700 dark:text-slate-300 group-hover:text-purple-600 dark:group-hover:text-purple-400">
+              All Applications
+            </span>
+          </label>
+          <label className="flex items-center gap-2 cursor-pointer group">
+            <input
+              type="radio"
+              checked={filters.isFree === true}
+              onChange={() => {
+                setFilters((prev) => ({ ...prev, isFree: true }));
+                setPage(1);
+              }}
+              className="w-4 h-4 border-slate-300 text-purple-600 focus:ring-purple-500"
+            />
+            <span className="text-sm text-slate-700 dark:text-slate-300 group-hover:text-purple-600 dark:group-hover:text-purple-400">
+              Free Only
+            </span>
+          </label>
+          <label className="flex items-center gap-2 cursor-pointer group">
+            <input
+              type="radio"
+              checked={filters.isFree === false}
+              onChange={() => {
+                setFilters((prev) => ({ ...prev, isFree: false }));
+                setPage(1);
+              }}
+              className="w-4 h-4 border-slate-300 text-purple-600 focus:ring-purple-500"
+            />
+            <span className="text-sm text-slate-700 dark:text-slate-300 group-hover:text-purple-600 dark:group-hover:text-purple-400">
+              Paid Only
+            </span>
+          </label>
+        </div>
+      </div>
+
+      <hr className="border-slate-200 dark:border-slate-700" />
+
+      {/* Verification Status */}
+      <div>
+        <label className="flex items-center gap-2 cursor-pointer group">
+          <input
+            type="checkbox"
+            checked={filters.verificationStatus === "verified"}
+            onChange={(e) => {
+              setFilters((prev) => ({ ...prev, verificationStatus: e.target.checked ? "verified" : undefined }));
+              setPage(1);
+            }}
+            className="w-4 h-4 rounded border-slate-300 text-purple-600 focus:ring-purple-500"
+          />
+          <span className="text-sm font-semibold text-slate-700 dark:text-slate-300 group-hover:text-purple-600 dark:group-hover:text-purple-400">
+            Verified Only
+          </span>
+        </label>
+      </div>
 
       <hr className="border-slate-200 dark:border-slate-700" />
 
@@ -444,7 +574,7 @@ const ProductsPageContent = () => {
           <main className="flex-1 min-w-0">
             {/* Loading overlay */}
             <div className={`transition-opacity duration-200 ${isFetching && !isLoading ? "opacity-60" : ""}`}>
-              <ProductGrid products={data?.products || []} isLoading={isLoading} />
+              <ProductGrid products={data?.applications || []} isLoading={isLoading} />
             </div>
 
             {/* Pagination */}
