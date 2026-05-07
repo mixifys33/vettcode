@@ -45,7 +45,7 @@ export async function POST(req: NextRequest) {
       isLoggedIn: !!userId,
     };
 
-    const backendRes = await fetch(`${BACKEND}/api/shop-ai/chat`, {
+    const backendRes = await fetch(`${BACKEND}/api/vettcode-ai/chat`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

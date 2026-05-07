@@ -397,7 +397,7 @@ const EasyAIPage = () => {
         })
 
         const BACKEND = process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'
-        const res = await fetch(`${BACKEND}/api/shop-ai/image-search`, {
+        const res = await fetch(`${BACKEND}/api/vettcode-ai/image-search`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
