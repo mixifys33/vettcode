@@ -110,7 +110,7 @@ const ProductsPageContent = () => {
         params.append("sortOrder", sort.order);
       }
       
-      const res = await axiosInstance.get(`/api/applications?${params.toString()}`);
+      const res = await axiosInstance.get(`/api/products?${params.toString()}`);
       return {
         applications: res.data.applications || [],
         pagination: res.data.pagination || { total: 0, page: 1, totalPages: 1 },
@@ -124,7 +124,7 @@ const ProductsPageContent = () => {
   const { data: categoriesData } = useQuery({
     queryKey: ["application-categories"],
     queryFn: async () => {
-      const res = await axiosInstance.get("/api/applications/categories");
+      const res = await axiosInstance.get("/api/products/categories");
       return res.data;
     },
     staleTime: 1000 * 60 * 30,

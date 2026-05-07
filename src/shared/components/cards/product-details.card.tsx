@@ -86,7 +86,7 @@ const ProductDetailsCard = ({
       }
     } else {
       // Navigate to purchase/checkout page
-      router.push(`/applications/${data?.id || data?._id}`);
+      router.push(`/product/${data?.slug || data?.id || data?._id}`);
     }
   };
 

@@ -183,7 +183,7 @@ export default function AboutPage() {
 
             <div className="flex flex-wrap justify-center gap-4">
               <Link
-                href="/applications"
+                href="/products"
                 className="flex items-center gap-2 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-black px-8 py-3.5 rounded-xl transition-all hover:scale-105 shadow-lg"
               >
                 <Package className="w-5 h-5" />
@@ -400,7 +400,7 @@ export default function AboutPage() {
               </p>
               <div className="flex flex-wrap justify-center gap-4">
                 <Link
-                  href="/applications"
+                  href="/products"
                   className="flex items-center gap-2 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-black px-8 py-3 rounded-xl transition-all hover:scale-105 shadow-lg"
                 >
                   <Package className="w-5 h-5" />

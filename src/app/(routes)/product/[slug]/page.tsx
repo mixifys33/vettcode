@@ -13,7 +13,7 @@ async function fetchProductDetails(slug: string) {
       const timeoutId = setTimeout(() => controller.abort(), 10000);
       
       const response = await fetch(
-        `${baseUrl}/api/applications/${slug}`,
+        `${baseUrl}/api/products/${slug}`,
         { 
           cache: "no-store",
           signal: controller.signal,
@@ -54,7 +54,7 @@ async function fetchSimilarApplications(category: string, currentApplicationId: 
     const timeoutId = setTimeout(() => controller.abort(), 10000);
     
     const response = await fetch(
-      `${baseUrl}/api/applications?category=${encodeURIComponent(category)}&limit=12`,
+      `${baseUrl}/api/products?category=${encodeURIComponent(category)}&limit=12`,
       { 
         cache: "no-store",
         signal: controller.signal,

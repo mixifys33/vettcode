@@ -1,10 +1,22 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const ORDER_SERVICE_URL = process.env.ORDER_SERVICE_URL || "http://localhost:5770";
+const BACKEND_URL = process.env.NEXT_PUBLIC_SERVER_URL || process.env.SERVER_URL || "http://localhost:3000";
 
 export async function POST(request: NextRequest) {
   try {
-    const { orderId, paymentMethod, amount, currency } = await request.json();
+    const body = await request.json();
+    const {
+      orderId,
+      paymentMethod,
+      paymentGateway,
+      amount,
+      currency,
+      customerEmail,
+      customerPhone,
+      customerName,
+      mobileProvider,
+      redirectUrl,
+    } = body;
 
     if (!orderId) {
       return NextResponse.json(
@@ -13,27 +25,48 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Process payment through order-service
-    const response = await fetch(`${ORDER_SERVICE_URL}/api/orders/${orderId}/payment`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        paymentMethod,
-        amount,
-        currency: currency || "UGX",
-      }),
-    });
+    // Handle Flutterwave payments
+    if (paymentGateway === "flutterwave" || paymentMethod?.startsWith("flutterwave_")) {
+      const response = await fetch(`${BACKEND_URL}/api/flutterwave/initialize`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          orderId,
+          paymentMethod,
+          amount,
+          currency: currency || "UGX",
+          customerEmail,
+          customerPhone,
+          customerName,
+          mobileProvider,
+          redirectUrl,
+        }),
+      });
 
-    const result = await response.json();
+      const result = await response.json();
 
-    if (!response.ok) {
-      return NextResponse.json(
-        { success: false, message: result.message || "Payment failed" },
-        { status: response.status }
-      );
+      if (!response.ok) {
+        return NextResponse.json(
+          { success: false, message: result.message || "Payment initialization failed" },
+          { status: response.status }
+        );
+      }
+
+      return NextResponse.json({
+        success: true,
+        paymentLink: result.paymentLink,
+        link: result.paymentLink, // Alias for compatibility
+        txRef: result.txRef,
+        transactionId: result.transactionId,
+        message: result.message,
+      });
     }
 
-    return NextResponse.json({ success: true, data: result });
+    // Handle other payment methods (cash on delivery, etc.)
+    return NextResponse.json({
+      success: true,
+      message: "Payment method processed",
+    });
   } catch (error: any) {
     console.error("Payment processing error:", error);
     return NextResponse.json(

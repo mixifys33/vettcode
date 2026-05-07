@@ -5,7 +5,9 @@ import React, { useState, useEffect, useRef } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import {
   AlignLeft, ChevronDown, ChevronRight, User, Heart, ShoppingCart,
-  Home, Sparkles, Tag, Search, X, Loader2, TrendingUp, Download,
+  Home, Sparkles, Search, X, Loader2, TrendingUp, Download,
+  Smartphone, Monitor, Tablet, Code, Chrome, Plug, Package,
+  Terminal, Gamepad2, ShoppingBag, FileText, LayoutDashboard, Layers,
 } from 'lucide-react';
 import { navItemTypes } from '../../../configs/constants';
 import useUser from '@/hooks/useUser';
@@ -18,6 +20,30 @@ type ProductSuggestion = {
   id: string; title: string; slug: string;
   appCategory?: string; price?: number; isFree?: boolean;
 };
+
+type Category = {
+  name: string;
+  icon: any;
+};
+
+/* ─── Static Categories from Seller Frontend ─────────────── */
+const STATIC_CATEGORIES: Category[] = [
+  { name: 'Web Application', icon: Monitor },
+  { name: 'Mobile App (React Native)', icon: Smartphone },
+  { name: 'Mobile App (Native iOS)', icon: Tablet },
+  { name: 'Mobile App (Native Android)', icon: Smartphone },
+  { name: 'Desktop Application', icon: Monitor },
+  { name: 'API/Backend Service', icon: Code },
+  { name: 'Chrome Extension', icon: Chrome },
+  { name: 'WordPress Plugin', icon: Plug },
+  { name: 'NPM Package/Library', icon: Package },
+  { name: 'CLI Tool', icon: Terminal },
+  { name: 'Game', icon: Gamepad2 },
+  { name: 'E-commerce Solution', icon: ShoppingBag },
+  { name: 'CMS/Blog Platform', icon: FileText },
+  { name: 'Dashboard/Admin Panel', icon: LayoutDashboard },
+  { name: 'Other', icon: Layers },
+];
 
 const getUserInitials = (name?: string) => {
   if (!name) return 'U';
@@ -35,7 +61,6 @@ const HeaderBottom = () => {
   const { user, isLoading } = useUser();
   const wishlist = useStore((s: any) => s.wishlist);
   const cart = useStore((s: any) => s.cart);
-  const categories = useStore((s: any) => s.categories);
   const { formatPrice } = useCurrencyFormat();
 
   /* scroll state */
@@ -43,7 +68,6 @@ const HeaderBottom = () => {
 
   /* categories dropdown */
   const [showCats, setShowCats] = useState(false);
-  const [hoveredCat, setHoveredCat] = useState<string | null>(null);
   const catRef = useRef<HTMLDivElement>(null);
 
   /* search (sticky collapsed) */
@@ -94,7 +118,7 @@ const HeaderBottom = () => {
   const fetchSuggestions = async (q: string) => {
     setLoadingSugg(true);
     try {
-      const { data } = await axiosInstance.get('/api/applications', { params: { q, limit: 7 } });
+      const { data } = await axiosInstance.get('/api/products', { params: { q, limit: 7 } });
       setSuggestions(data?.applications ?? []);
     } catch { setSuggestions([]); }
     finally { setLoadingSugg(false); }
@@ -158,44 +182,21 @@ const HeaderBottom = () => {
   /* ── categories dropdown panel ── */
   const CatDropdown = () => (
     <div className="absolute left-0 top-full mt-1 w-64 bg-white rounded-xl shadow-2xl border border-gray-100 overflow-hidden z-50 animate-slide-down">
-      {categories.length === 0 ? (
-        <div className="px-4 py-6 text-sm text-gray-400 text-center">Loading categories…</div>
-      ) : (
-        <div className="py-2">
-          {categories.map((cat) => (
-            <div key={cat.name}
-              className="relative group/cat"
-              onMouseEnter={() => setHoveredCat(cat.name)}
-              onMouseLeave={() => setHoveredCat(null)}>
-              <Link
-                href={`/products?category=${encodeURIComponent(cat.name)}`}
-                onClick={() => setShowCats(false)}
-                className="flex items-center justify-between gap-2 px-4 py-2.5 hover:bg-teal-50 text-gray-700 hover:text-teal-700 text-sm font-medium transition-colors">
-                <span className="flex items-center gap-2.5">
-                  <Tag className="w-3.5 h-3.5 text-gray-400 group-hover/cat:text-teal-500 transition-colors" />
-                  {cat.name}
-                </span>
-                {cat.subs.length > 0 && <ChevronRight className="w-3.5 h-3.5 text-gray-400" />}
-              </Link>
-
-              {/* sub-category flyout */}
-              {cat.subs.length > 0 && hoveredCat === cat.name && (
-                <div className="absolute left-full top-0 ml-1 w-52 bg-white rounded-xl shadow-2xl border border-gray-100 py-2 z-50 animate-slide-down">
-                  {cat.subs.map((sub) => (
-                    <Link
-                      key={sub}
-                      href={`/products?category=${encodeURIComponent(cat.name)}&subCategory=${encodeURIComponent(sub)}`}
-                      onClick={() => setShowCats(false)}
-                      className="block px-4 py-2 text-sm text-gray-600 hover:bg-teal-50 hover:text-teal-700 transition-colors">
-                      {sub}
-                    </Link>
-                  ))}
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
-      )}
+      <div className="py-2 max-h-96 overflow-y-auto">
+        {STATIC_CATEGORIES.map((cat) => {
+          const IconComponent = cat.icon;
+          return (
+            <Link
+              key={cat.name}
+              href={`/products?category=${encodeURIComponent(cat.name)}`}
+              onClick={() => setShowCats(false)}
+              className="flex items-center gap-3 px-4 py-2.5 hover:bg-teal-50 text-gray-700 hover:text-teal-700 text-sm font-medium transition-colors group">
+              <IconComponent className="w-4 h-4 text-gray-400 group-hover:text-teal-500 transition-colors flex-shrink-0" />
+              <span className="truncate">{cat.name}</span>
+            </Link>
+          );
+        })}
+      </div>
     </div>
   );
 

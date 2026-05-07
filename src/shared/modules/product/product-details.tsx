@@ -323,7 +323,7 @@ const ProductDetails = ({
           <nav className="flex items-center gap-2 text-sm text-gray-400 overflow-x-auto whitespace-nowrap">
             <Link href="/" className="hover:text-purple-400 transition">Home</Link>
             <ChevronRight className="w-4 h-4 flex-shrink-0" />
-            <Link href="/applications" className="hover:text-purple-400 transition">Applications</Link>
+            <Link href="/products" className="hover:text-purple-400 transition">Applications</Link>
             <ChevronRight className="w-4 h-4 flex-shrink-0" />
             {appCategory && (
               <>

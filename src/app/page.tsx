@@ -14,22 +14,9 @@ import Link from "next/link";
 import ScaleLoader from "@/shared/components/loading/ScaleLoader";
 import {
   Store, ArrowRight, TrendingUp, Sparkles, ShoppingCart,
-  Heart, X, Zap, Tag, Shield, Truck, RotateCcw, Star,
-  ShoppingBag, Package, Flame, Smartphone, Shirt, Home,
-  Sparkle, Dumbbell, BookOpen, Puzzle, ShoppingBasket,
-  type LucideIcon
+  Heart, X, Zap, Shield, Truck, RotateCcw, Star,
+  ShoppingBag, Package, Flame,
 } from "lucide-react";
-
-const CATEGORIES: { label: string; icon: LucideIcon; href: string; color: string }[] = [
-  { label: "Web Apps",      icon: Smartphone,     href: "/applications?category=web-apps", color: "from-blue-500 to-indigo-600" },
-  { label: "Mobile Apps",   icon: Shirt,          href: "/applications?category=mobile-apps", color: "from-pink-500 to-rose-600" },
-  { label: "SaaS",          icon: Home,           href: "/applications?category=saas", color: "from-emerald-500 to-teal-600" },
-  { label: "APIs",          icon: Sparkle,        href: "/applications?category=apis", color: "from-purple-500 to-violet-600" },
-  { label: "Templates",     icon: Dumbbell,       href: "/applications?category=templates", color: "from-orange-500 to-amber-600" },
-  { label: "Dashboards",    icon: BookOpen,       href: "/applications?category=dashboards", color: "from-cyan-500 to-sky-600" },
-  { label: "E-Commerce",    icon: Puzzle,         href: "/applications?category=ecommerce", color: "from-yellow-500 to-amber-500" },
-  { label: "Tools",         icon: ShoppingBasket, href: "/applications?category=tools", color: "from-green-500 to-emerald-600" },
-];
 
 const TRUST_FEATURES = [
   { icon: Shield, title: "Verified Code", desc: "100% vetted & secure", color: "text-purple-600", bg: "bg-purple-50" },
@@ -85,7 +72,7 @@ export default function Page() {
   const { data: applications, isLoading, isError } = useQuery({
     queryKey: ["applications"],
     queryFn: async () => {
-      const res = await axiosInstance.get("/api/applications?page=1&limit=10");
+      const res = await axiosInstance.get("/api/products?page=1&limit=10");
       return res.data.applications;
     },
     staleTime: 1000 * 60 * 3,
@@ -94,7 +81,7 @@ export default function Page() {
   const { data: latestApplications } = useQuery({
     queryKey: ["latest-applications"],
     queryFn: async () => {
-      const res = await axiosInstance.get("/api/applications?page=1&limit=10&sortBy=createdAt&sortOrder=desc");
+      const res = await axiosInstance.get("/api/products?page=1&limit=10&sortBy=createdAt&sortOrder=desc");
       return res.data.applications;
     },
     staleTime: 1000 * 60 * 2,
@@ -103,7 +90,7 @@ export default function Page() {
   const { data: trendingApplications } = useQuery({
     queryKey: ["trending-applications"],
     queryFn: async () => {
-      const res = await axiosInstance.get("/api/applications?page=1&limit=10&sortBy=downloads&sortOrder=desc");
+      const res = await axiosInstance.get("/api/products?page=1&limit=10&sortBy=downloads&sortOrder=desc");
       return res.data.applications;
     },
     staleTime: 1000 * 60 * 5,
@@ -206,28 +193,7 @@ export default function Page() {
       <EventsSection minEventsToShow={5} />
       <OffersSection minOffersToShow={5} />
 
-      {/* Category pills */}
-      <section className="w-full px-4 sm:px-6 lg:px-8 py-8">
-        <div className="max-w-7xl mx-auto bg-slate-800/50 backdrop-blur-sm rounded-3xl p-6 border border-slate-700/50">
-          <div className="flex items-center justify-between mb-5">
-            <SectionTitle title="Browse by Category" icon={<Tag className="w-4 h-4" />} />
-          </div>
-          <div className="grid grid-cols-4 sm:grid-cols-8 gap-3">
-            {CATEGORIES.map((cat, i) => (
-              <Link key={cat.label} href={cat.href}
-                className="group flex flex-col items-center gap-2 animate-fade-in-up"
-                style={{ animationDelay: `${i * 0.05}s` }}>
-                <div className={`w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-br ${cat.color} flex items-center justify-center shadow-md group-hover:shadow-xl group-hover:scale-110 transition-all duration-300`}>
-                  <cat.icon className="w-7 h-7 sm:w-8 sm:h-8 text-white" />
-                </div>
-                <span className="text-[10px] sm:text-xs font-semibold text-gray-300 group-hover:text-purple-400 text-center transition-colors leading-tight">{cat.label}</span>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
 
-      <hr className="section-divider mx-4 sm:mx-8 opacity-20" />
 
       {/* Suggested Applications */}
       <section className="w-full px-4 sm:px-6 lg:px-8 py-10">
@@ -237,7 +203,7 @@ export default function Page() {
               title="Featured Applications"
               subtitle="Handpicked production-ready codebases"
               actionLabel="View All"
-              actionHref="/applications"
+              actionHref="/products"
               icon={<Sparkles className="w-4 h-4" />}
             />
           </div>
@@ -303,7 +269,7 @@ export default function Page() {
                 title="Trending Now 🔥"
                 subtitle="Most popular applications this week"
                 actionLabel="View All"
-                actionHref="/applications?sort=trending"
+                actionHref="/products?sort=trending"
                 icon={<Flame className="w-4 h-4" />}
               />
             </div>
@@ -325,7 +291,7 @@ export default function Page() {
                 title="Latest Arrivals ✨"
                 subtitle="Fresh applications just added"
                 actionLabel="View All"
-                actionHref="/applications?sort=latest"
+                actionHref="/products?sort=latest"
                 icon={<Zap className="w-4 h-4" />}
               />
             </div>
