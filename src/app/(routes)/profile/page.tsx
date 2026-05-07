@@ -1179,6 +1179,7 @@ const ProfilePageContent = () => {
   const queryClient = useQueryClient();
   const { user, isLoading } = useUser();
   const cart = useStore((state: any) => state.cart);
+  const wishlist = useStore((state: any) => state.wishlist);
 
   // Unique seller IDs from current cart items
   const cartSellerIds = React.useMemo(() =>
