@@ -163,8 +163,6 @@ const HeaderBottom = () => {
       setSuggestions(filteredSuggestions);
     }
   }, [filteredSuggestions, searchQuery]);
-    else { setSuggestions([]); setShowDrop(false); }
-  };
 
   const handleSearch = () => {
     const q = searchQuery.trim();
