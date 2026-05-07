@@ -6,8 +6,8 @@ import { ShoppingBag, Home, Search, ArrowLeft, RefreshCw, Tag, Headphones } from
 
 const QUICK_LINKS = [
   { href: "/", label: "Home", icon: Home, desc: "Back to the main page" },
-  { href: "/products", label: "Browse Products", icon: ShoppingBag, desc: "Explore all products" },
-  { href: "/offers", label: "Offers & Deals", icon: Tag, desc: "See today's best deals" },
+  { href: "/products", label: "Browse Applications", icon: ShoppingBag, desc: "Explore all applications" },
+  { href: "/offers", label: "Featured Apps", icon: Tag, desc: "See featured applications" },
   { href: "/contact", label: "Contact Support", icon: Headphones, desc: "We're here to help" },
 ];
 
@@ -38,18 +38,18 @@ export default function NotFound() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#0a2e38] via-[#115061] to-[#0d3f4d] flex items-center justify-center px-4 py-16 relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-indigo-900 flex items-center justify-center px-4 py-16 relative overflow-hidden">
 
       {/* Background particles */}
-      <Particle style={{ width: 300, height: 300, background: "#facc15", top: "-80px", left: "-80px", filter: "blur(80px)" }} />
-      <Particle style={{ width: 250, height: 250, background: "#2dd4bf", bottom: "-60px", right: "-60px", filter: "blur(80px)" }} />
-      <Particle style={{ width: 150, height: 150, background: "#60a5fa", top: "40%", left: "10%", filter: "blur(60px)" }} />
+      <Particle style={{ width: 300, height: 300, background: "#a855f7", top: "-80px", left: "-80px", filter: "blur(80px)" }} />
+      <Particle style={{ width: 250, height: 250, background: "#6366f1", bottom: "-60px", right: "-60px", filter: "blur(80px)" }} />
+      <Particle style={{ width: 150, height: 150, background: "#8b5cf6", top: "40%", left: "10%", filter: "blur(60px)" }} />
 
       {/* Floating shapes */}
-      <div className="absolute top-16 right-16 w-5 h-5 bg-yellow-400 rounded-full opacity-50 animate-bounce" style={{ animationDuration: "3s" }} />
-      <div className="absolute bottom-24 left-20 w-3 h-3 bg-teal-300 rounded-full opacity-50 animate-bounce" style={{ animationDuration: "4s", animationDelay: "1s" }} />
+      <div className="absolute top-16 right-16 w-5 h-5 bg-purple-400 rounded-full opacity-50 animate-bounce" style={{ animationDuration: "3s" }} />
+      <div className="absolute bottom-24 left-20 w-3 h-3 bg-indigo-400 rounded-full opacity-50 animate-bounce" style={{ animationDuration: "4s", animationDelay: "1s" }} />
       <div className="absolute top-1/3 right-1/4 w-2 h-2 bg-white rounded-full opacity-30 animate-bounce" style={{ animationDuration: "5s", animationDelay: "2s" }} />
-      <div className="absolute bottom-1/3 right-12 w-4 h-4 bg-orange-400 rounded-full opacity-40 animate-bounce" style={{ animationDuration: "3.5s", animationDelay: "0.5s" }} />
+      <div className="absolute bottom-1/3 right-12 w-4 h-4 bg-purple-500 rounded-full opacity-40 animate-bounce" style={{ animationDuration: "3.5s", animationDelay: "0.5s" }} />
 
       {/* Main card */}
       <div
@@ -61,22 +61,22 @@ export default function NotFound() {
             <span
               className="text-[10rem] sm:text-[12rem] font-black leading-none select-none"
               style={{
-                background: "linear-gradient(135deg, #facc15, #fb923c, #facc15)",
+                background: "linear-gradient(135deg, #a855f7, #6366f1, #a855f7)",
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
                 backgroundSize: "200% auto",
                 animation: "gradient 3s ease infinite",
-                filter: "drop-shadow(0 0 40px rgba(250,204,21,0.3))",
+                filter: "drop-shadow(0 0 40px rgba(168,85,247,0.3))",
               }}
             >
               404
             </span>
-            {/* Shopping bag icon floating over the 4 */}
+            {/* Code icon floating over the 4 */}
             <div
               className="absolute -top-4 -right-4 w-14 h-14 bg-white/10 backdrop-blur-sm rounded-2xl flex items-center justify-center border border-white/20 shadow-xl"
               style={{ animation: "float 3s ease-in-out infinite" }}
             >
-              <ShoppingBag className="w-7 h-7 text-yellow-400" />
+              <ShoppingBag className="w-7 h-7 text-purple-400" />
             </div>
           </div>
         </div>
@@ -86,10 +86,10 @@ export default function NotFound() {
           className={`text-center mb-8 transition-all duration-700 delay-150 ${mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
         >
           <h1 className="text-2xl sm:text-3xl font-bold text-white mb-3">
-            Oops! This page went shopping 
+            Oops! Page Not Found
           </h1>
           <p className="text-white/70 text-base sm:text-lg max-w-md mx-auto leading-relaxed">
-            The page you're looking for doesn't exist or was moved to another section. But don't worry — there's plenty more to explore or contact support at (+256761819885) for help.
+            The page you're looking for doesn't exist or was moved to another section. But don't worry — there are plenty of verified applications to explore or contact support for help.
           </p>
         </div>
 
@@ -104,13 +104,13 @@ export default function NotFound() {
                 type="text"
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
-                placeholder={`Search products${dots}`}
-                className="w-full pl-12 pr-4 py-4 bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-yellow-400/50 focus:border-yellow-400/50 transition-all text-sm"
+                placeholder={`Search applications${dots}`}
+                className="w-full pl-12 pr-4 py-4 bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-purple-400/50 focus:border-purple-400/50 transition-all text-sm"
               />
             </div>
             <button
               type="submit"
-              className="px-6 py-4 bg-gradient-to-r from-yellow-400 to-orange-500 text-gray-900 font-bold rounded-2xl hover:shadow-lg hover:shadow-yellow-500/30 hover:scale-105 transition-all duration-200 text-sm whitespace-nowrap"
+              className="px-6 py-4 bg-gradient-to-r from-purple-500 to-indigo-600 text-white font-bold rounded-2xl hover:shadow-lg hover:shadow-purple-500/30 hover:scale-105 transition-all duration-200 text-sm whitespace-nowrap"
             >
               Search
             </button>
@@ -127,8 +127,8 @@ export default function NotFound() {
               href={link.href}
               className="group flex items-center gap-3 p-4 bg-white/10 backdrop-blur-sm border border-white/10 rounded-2xl hover:bg-white/20 hover:border-white/25 transition-all duration-200 hover:-translate-y-0.5"
             >
-              <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center group-hover:bg-yellow-400/20 transition-colors flex-shrink-0">
-                <link.icon className="w-5 h-5 text-white/70 group-hover:text-yellow-400 transition-colors" />
+              <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center group-hover:bg-purple-400/20 transition-colors flex-shrink-0">
+                <link.icon className="w-5 h-5 text-white/70 group-hover:text-purple-400 transition-colors" />
               </div>
               <div className="min-w-0">
                 <div className="text-white font-semibold text-sm">{link.label}</div>
@@ -158,7 +158,7 @@ export default function NotFound() {
           </button>
           <Link
             href="/"
-            className="flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-yellow-400 to-orange-500 text-gray-900 font-semibold rounded-full hover:shadow-lg hover:shadow-yellow-500/30 hover:scale-105 transition-all duration-200 text-sm"
+            className="flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-500 to-indigo-600 text-white font-semibold rounded-full hover:shadow-lg hover:shadow-purple-500/30 hover:scale-105 transition-all duration-200 text-sm"
           >
             <Home className="w-4 h-4" />
             Take Me Home
@@ -169,7 +169,7 @@ export default function NotFound() {
         <p
           className={`text-center text-white/30 text-xs mt-8 transition-all duration-700 delay-500 ${mounted ? "opacity-100" : "opacity-0"}`}
         >
-          Error 404 · vettcode Worldwide
+          Error 404 · VettCode Application Marketplace
         </p>
       </div>
 
