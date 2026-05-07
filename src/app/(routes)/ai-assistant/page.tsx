@@ -28,7 +28,20 @@ import {
   Headphones,
   ImageIcon,
   Camera,
-  Loader2
+  Loader2,
+  Database,
+  Brain,
+  Zap,
+  CheckCircle,
+  Code,
+  Filter,
+  BarChart,
+  Shield,
+  Cpu,
+  FileSearch,
+  Layers,
+  GitBranch,
+  Target
 } from "lucide-react"
 import useUser from "@/hooks/useUser"
 import { useStore } from "@/store"
@@ -88,6 +101,7 @@ const EasyAIPage = () => {
   const [activeSessionId, setActiveSessionId] = useState<string | null>(null)
   const [input, setInput] = useState("")
   const [isLoading, setIsLoading] = useState(false)
+  const [loadingStep, setLoadingStep] = useState(0)
   const [sidebarOpen, setSidebarOpen] = useState(true)
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false)
   const [actionNotification, setActionNotification] = useState<string | null>(null)
@@ -98,6 +112,42 @@ const EasyAIPage = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLTextAreaElement>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
+
+  // AI Loading Steps - Progressive thinking animation
+  const loadingSteps = [
+    { icon: <FileSearch className="w-4 h-4" />, text: "Reading your query", color: "text-blue-400" },
+    { icon: <Brain className="w-4 h-4" />, text: "Understanding intent", color: "text-purple-400" },
+    { icon: <Database className="w-4 h-4" />, text: "Connecting to database", color: "text-cyan-400" },
+    { icon: <Search className="w-4 h-4" />, text: "Searching applications", color: "text-green-400" },
+    { icon: <Filter className="w-4 h-4" />, text: "Filtering results", color: "text-yellow-400" },
+    { icon: <BarChart className="w-4 h-4" />, text: "Analyzing relevance", color: "text-pink-400" },
+    { icon: <Code className="w-4 h-4" />, text: "Checking tech stacks", color: "text-indigo-400" },
+    { icon: <Shield className="w-4 h-4" />, text: "Verifying quality", color: "text-emerald-400" },
+    { icon: <Layers className="w-4 h-4" />, text: "Comparing features", color: "text-orange-400" },
+    { icon: <Target className="w-4 h-4" />, text: "Matching preferences", color: "text-rose-400" },
+    { icon: <GitBranch className="w-4 h-4" />, text: "Evaluating options", color: "text-teal-400" },
+    { icon: <Cpu className="w-4 h-4" />, text: "Processing data", color: "text-violet-400" },
+    { icon: <Zap className="w-4 h-4" />, text: "Optimizing response", color: "text-amber-400" },
+    { icon: <Brain className="w-4 h-4" />, text: "Generating insights", color: "text-fuchsia-400" },
+    { icon: <CheckCircle className="w-4 h-4" />, text: "Finalizing answer", color: "text-lime-400" }
+  ]
+
+  // Cycle through loading steps
+  useEffect(() => {
+    if (isLoading) {
+      setLoadingStep(0)
+      const interval = setInterval(() => {
+        setLoadingStep((prev) => {
+          if (prev < loadingSteps.length - 1) {
+            return prev + 1
+          }
+          return 0 // Loop back to start if still loading
+        })
+      }, 800) // Change step every 800ms
+
+      return () => clearInterval(interval)
+    }
+  }, [isLoading])
 
   // Load sessions from localStorage
   useEffect(() => {
@@ -974,16 +1024,41 @@ const EasyAIPage = () => {
               {isLoading && (
                 <div className="flex gap-2 sm:gap-3 justify-start">
                   <div className="w-8 h-8 sm:w-9 sm:h-9 bg-gradient-to-br from-purple-500 via-indigo-500 to-blue-500 rounded-xl flex items-center justify-center shadow-lg">
-                    <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+                    <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-white animate-pulse" />
                   </div>
-                  <div className="bg-slate-800/80 backdrop-blur-sm border border-slate-700/50 rounded-2xl rounded-bl-sm px-4 py-3 shadow-lg">
-                    <div className="flex items-center gap-2">
-                      <div className="flex gap-1">
-                        <span className="w-2 h-2 bg-purple-500 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-                        <span className="w-2 h-2 bg-purple-500 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-                        <span className="w-2 h-2 bg-purple-500 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                  <div className="bg-slate-800/80 backdrop-blur-sm border border-slate-700/50 rounded-2xl rounded-bl-sm px-4 py-3 shadow-lg min-w-[280px]">
+                    <div className="flex items-center gap-3">
+                      {/* Animated Icon */}
+                      <div className={`${loadingSteps[loadingStep].color} animate-bounce`}>
+                        {loadingSteps[loadingStep].icon}
                       </div>
-                      <span className="text-sm text-slate-300">Thinking...</span>
+                      
+                      {/* Step Text */}
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm text-white font-medium animate-pulse">
+                            {loadingSteps[loadingStep].text}
+                          </span>
+                          <div className="flex gap-1">
+                            <span className="w-1 h-1 bg-purple-500 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                            <span className="w-1 h-1 bg-purple-500 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+                            <span className="w-1 h-1 bg-purple-500 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                          </div>
+                        </div>
+                        
+                        {/* Progress Bar */}
+                        <div className="mt-2 h-1 bg-slate-700 rounded-full overflow-hidden">
+                          <div 
+                            className="h-full bg-gradient-to-r from-purple-500 via-indigo-500 to-blue-500 transition-all duration-800 ease-out"
+                            style={{ width: `${((loadingStep + 1) / loadingSteps.length) * 100}%` }}
+                          />
+                        </div>
+                        
+                        {/* Step Counter */}
+                        <div className="mt-1 text-xs text-slate-500">
+                          Step {loadingStep + 1} of {loadingSteps.length}
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
