@@ -219,11 +219,21 @@ const CartPage = () => {
 
       console.log("Order response:", orderResponse.data);
 
-      const orderId = orderResponse.data.orderId || orderResponse.data.order?._id || orderResponse.data._id;
+      // Check multiple possible response formats
+      const orderId = orderResponse.data.orderId || 
+                     orderResponse.data.order?._id || 
+                     orderResponse.data._id ||
+                     orderResponse.data.data?._id;
+
+      console.log("Extracted orderId:", orderId);
 
       if (!orderId) {
-        throw new Error("Failed to create order - no orderId returned");
+        console.error("Full response:", JSON.stringify(orderResponse.data));
+        throw new Error("Failed to create order - no orderId returned. Response: " + JSON.stringify(orderResponse.data));
       }
+
+      // Clear cart after successful order creation
+      clearCart();
 
       // Redirect to checkout with orderId
       router.push(`/checkout?orderId=${orderId}`);
