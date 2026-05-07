@@ -72,7 +72,7 @@ export default function Page() {
   const { data: applications, isLoading, isError } = useQuery({
     queryKey: ["applications"],
     queryFn: async () => {
-      const res = await axiosInstance.get("/api/products?page=1&limit=10");
+      const res = await axiosInstance.get("/api/applications?page=1&limit=10");
       return res.data.applications;
     },
     staleTime: 1000 * 60 * 3,
@@ -81,7 +81,7 @@ export default function Page() {
   const { data: latestApplications } = useQuery({
     queryKey: ["latest-applications"],
     queryFn: async () => {
-      const res = await axiosInstance.get("/api/products?page=1&limit=10&sortBy=createdAt&sortOrder=desc");
+      const res = await axiosInstance.get("/api/applications?page=1&limit=10&sortBy=createdAt&sortOrder=desc");
       return res.data.applications;
     },
     staleTime: 1000 * 60 * 2,
@@ -90,7 +90,7 @@ export default function Page() {
   const { data: trendingApplications } = useQuery({
     queryKey: ["trending-applications"],
     queryFn: async () => {
-      const res = await axiosInstance.get("/api/products?page=1&limit=10&sortBy=downloads&sortOrder=desc");
+      const res = await axiosInstance.get("/api/applications?page=1&limit=10&sortBy=downloads&sortOrder=desc");
       return res.data.applications;
     },
     staleTime: 1000 * 60 * 5,

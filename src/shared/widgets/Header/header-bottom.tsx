@@ -118,7 +118,7 @@ const HeaderBottom = () => {
   const fetchSuggestions = async (q: string) => {
     setLoadingSugg(true);
     try {
-      const { data } = await axiosInstance.get('/api/products', { params: { q, limit: 7 } });
+      const { data } = await axiosInstance.get('/api/applications', { params: { q, limit: 7 } });
       setSuggestions(data?.applications ?? []);
     } catch { setSuggestions([]); }
     finally { setLoadingSugg(false); }
