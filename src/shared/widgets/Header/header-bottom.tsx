@@ -17,7 +17,7 @@ import { useCurrencyFormat } from '@/hooks/useCurrencyFormat';
 /* ─── types ─────────────────────────────────────────────── */
 type ProductSuggestion = {
   id: string; title: string; slug: string;
-  category?: string; sale_price?: number; regular_price?: number;
+  appCategory?: string; price?: number; isFree?: boolean;
 };
 type CategoryData = {
   categories?: Array<{ name: string; subCategories?: Array<{ name: string }> }>;
@@ -115,8 +115,8 @@ const HeaderBottom = () => {
   const fetchSuggestions = async (q: string) => {
     setLoadingSugg(true);
     try {
-      const { data } = await axiosInstance.get('/api/products', { params: { q, limit: 7 } });
-      setSuggestions(data?.products ?? []);
+      const { data } = await axiosInstance.get('/api/applications', { params: { q, limit: 7 } });
+      setSuggestions(data?.applications ?? []);
     } catch { setSuggestions([]); }
     finally { setLoadingSugg(false); }
   };
@@ -137,7 +137,7 @@ const HeaderBottom = () => {
 
   const handleSelect = (slug: string, title: string) => {
     setSearchQuery(title); setShowDrop(false); setSearchOpen(false);
-    router.push(`/product/${slug}`);
+    router.push(`/application/${slug}`);
   };
 
   /* ── shared icon strip (profile / wishlist / cart) ── */
@@ -242,11 +242,11 @@ const HeaderBottom = () => {
                     <div className="w-1.5 h-1.5 rounded-full bg-teal-400 flex-shrink-0" />
                     <div className="min-w-0">
                       <p className="text-sm font-semibold text-gray-900 truncate">{item.title}</p>
-                      {item.category && <p className="text-xs text-gray-400 capitalize">{item.category}</p>}
+                      {item.appCategory && <p className="text-xs text-gray-400 capitalize">{item.appCategory}</p>}
                     </div>
                   </div>
                   <span className="text-sm font-bold text-teal-700 flex-shrink-0 bg-teal-50 px-2 py-0.5 rounded-lg">
-                    {formatPrice(item.sale_price ?? item.regular_price)}
+                    {item.isFree ? 'FREE' : formatPrice(item.price)}
                   </span>
                 </button>
               </li>
