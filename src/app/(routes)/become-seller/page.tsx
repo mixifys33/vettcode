@@ -551,40 +551,6 @@ export default function BecomeSellerPage() {
                 ))}
               </div>
             </div>
-          </div>ex items-center gap-3 mb-4">
-                          <img 
-                            src={t.image} 
-                            alt={t.name} 
-                            className="w-12 h-12 rounded-full object-cover ring-2 ring-white shadow-md" 
-                            onError={(e) => { (e.target as HTMLImageElement).src = `https://ui-avatars.com/api/?name=${encodeURIComponent(t.name)}&background=115061&color=fff`; }} 
-                          />
-                          <div>
-                            <div className="font-bold text-gray-900">{t.name}</div>
-                            <div className="text-gray-500 text-sm">{t.role}</div>
-                          </div>
-                        </div>
-                        <div className="pt-4 border-t border-gray-100">
-                          <div className="flex items-center gap-2 text-green-600 font-semibold">
-                            <DollarSign className="w-5 h-5" />
-                            <span>{t.earnings}</span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-              {/* Dots indicator */}
-              <div className="flex justify-center gap-2 mt-6">
-                {content.testimonials.map((_, i) => (
-                  <button
-                    key={i}
-                    onClick={() => setActiveTestimonial(i)}
-                    className={`w-2.5 h-2.5 rounded-full transition-all ${activeTestimonial === i ? 'bg-[#115061] w-8' : 'bg-gray-300'}`}
-                  />
-                ))}
-              </div>
-            </div>
           </div>
         </div>
       </section>
