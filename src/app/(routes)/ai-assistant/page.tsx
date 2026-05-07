@@ -71,6 +71,8 @@ interface ProductRecommendation {
   stock?: number
   brand?: string
   category?: string
+  currency?: string
+  isFree?: boolean
 }
 
 interface AIAction {
@@ -936,7 +938,11 @@ const EasyAIPage = () => {
                         {message.productRecommendations.slice(0, 6).map(product => {
                           const inCart = cart.some((i: any) => i.id === product.id)
                           const inWishlist = wishlist.some((i: any) => i.id === product.id)
-                          const outOfStock = product.stock !== undefined && product.stock === 0
+                          // Applications are digital - always available
+                          const isFree = product.isFree || product.price === 0
+                          const currency = product.currency || 'USD'
+                          const currencySymbol = currency === 'USD' ? '$' : currency === 'EUR' ? '€' : currency === 'GBP' ? '£' : currency + ' '
+                          
                           return (
                             <div key={product.id} className="flex-shrink-0 w-36 bg-slate-800/80 backdrop-blur-sm border border-slate-700/50 rounded-xl overflow-hidden hover:border-purple-500/50 hover:shadow-lg transition flex flex-col">
                               {/* Image */}
@@ -949,13 +955,8 @@ const EasyAIPage = () => {
                                   </div>
                                 )}
                                 {/* Badges */}
-                                {outOfStock && (
-                                  <span className="absolute inset-0 bg-black/40 flex items-center justify-center">
-                                    <span className="text-white text-[10px] font-bold bg-black/60 px-1.5 py-0.5 rounded">Out of Stock</span>
-                                  </span>
-                                )}
-                                {!outOfStock && product.stock !== undefined && product.stock < 5 && product.stock > 0 && (
-                                  <span className="absolute top-1 left-1 bg-orange-500 text-white text-[10px] px-1.5 py-0.5 rounded font-medium">Low stock</span>
+                                {isFree && (
+                                  <span className="absolute top-1 left-1 bg-green-500 text-white text-[10px] px-1.5 py-0.5 rounded font-medium">FREE</span>
                                 )}
                                 {inCart && (
                                   <span className="absolute top-1 right-1 bg-purple-600 text-white text-[10px] px-1.5 py-0.5 rounded font-medium">In Cart</span>
@@ -975,7 +976,7 @@ const EasyAIPage = () => {
                                 {product.brand && <p className="text-[10px] text-slate-500 truncate">{product.brand}</p>}
                                 <div className="flex items-center justify-between mt-1">
                                   <p className="text-xs text-purple-400 font-bold">
-                                    UGX {product.price >= 1000 ? `${(product.price / 1000).toFixed(0)}k` : product.price}
+                                    {isFree ? 'FREE' : `${currencySymbol}${product.price >= 1000 ? `${(product.price / 1000).toFixed(1)}k` : product.price}`}
                                   </p>
                                   {product.rating > 0 && (
                                     <span className="flex items-center gap-0.5 text-[10px] text-slate-400">
@@ -989,15 +990,14 @@ const EasyAIPage = () => {
                               {/* Cart button */}
                               <button
                                 onClick={() => handleAddToCart(product)}
-                                disabled={outOfStock}
-                                className={`w-full py-1.5 text-xs font-semibold flex items-center justify-center gap-1 transition active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed ${
+                                className={`w-full py-1.5 text-xs font-semibold flex items-center justify-center gap-1 transition active:scale-95 ${
                                   inCart
                                     ? 'bg-purple-600 text-white hover:bg-red-500'
                                     : 'bg-slate-700/50 text-slate-200 hover:bg-purple-600 hover:text-white'
                                 }`}
                               >
                                 <ShoppingCart className="w-3 h-3" />
-                                {inCart ? 'Remove' : outOfStock ? 'Unavailable' : 'Add to Cart'}
+                                {inCart ? 'Remove' : isFree ? 'Get Free' : 'Add to Cart'}
                               </button>
                             </div>
                           )
