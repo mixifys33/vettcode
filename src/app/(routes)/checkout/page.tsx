@@ -88,20 +88,27 @@ function CheckoutContent() {
     setPaymentError("");
     
     try {
-      const res = await axiosInstance.post("/api/payment/process", {
-        orderId,
-        paymentMethod,
-        paymentGateway: "flutterwave",
-        amount: orderDetails.total || orderDetails.subtotal,
-        currency: orderDetails.currency || "UGX",
-        customerEmail: user?.email || orderDetails.shippingAddress?.email,
-        customerPhone: mobileNumber || orderDetails.shippingAddress?.phone,
-        customerName: user?.name || orderDetails.shippingAddress?.fullName,
-        mobileProvider: paymentMethod === "flutterwave_mobilemoney" ? mobileProvider : undefined,
-        redirectUrl: `${window.location.origin}/orders/${orderId}?payment=success`,
+      // Call Next.js API route (not backend directly)
+      const res = await fetch("/api/payment/process", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          orderId,
+          paymentMethod,
+          paymentGateway: "flutterwave",
+          amount: orderDetails.total || orderDetails.subtotal,
+          currency: orderDetails.currency || "UGX",
+          customerEmail: user?.email || orderDetails.shippingAddress?.email,
+          customerPhone: mobileNumber || orderDetails.shippingAddress?.phone,
+          customerName: user?.name || orderDetails.shippingAddress?.fullName,
+          mobileProvider: paymentMethod === "flutterwave_mobilemoney" ? mobileProvider : undefined,
+          redirectUrl: `${window.location.origin}/orders/${orderId}?payment=success`,
+        }),
       });
 
-      const data = res.data;
+      const data = await res.json();
 
       if (data.success) {
         // If Flutterwave returns a payment link, redirect to it
