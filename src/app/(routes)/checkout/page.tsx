@@ -166,8 +166,10 @@ function CheckoutContent() {
     }
   };
 
-  const formatPrice = (amount: number) => {
-    return `UGX ${(amount || 0).toLocaleString()}`;
+  const formatPrice = (amount: number, currency?: string) => {
+    // Get currency from parameter, or from orderDetails, default to USD
+    const curr = currency || orderDetails?.items?.[0]?.currency || orderDetails?.currency || "USD";
+    return `${curr} ${(amount || 0).toLocaleString()}`;
   };
 
   // Payment Success Screen
@@ -249,6 +251,9 @@ function CheckoutContent() {
 
   const isCashOnDelivery = orderDetails.paymentMethod === "cash_on_delivery" || paymentMethod === "cash_on_delivery";
   const total = orderDetails.total || (orderDetails.subtotal + (orderDetails.shippingCost || 0) - (orderDetails.totalDiscount || 0));
+  
+  // Get currency from order items, fallback to USD
+  const orderCurrency = orderDetails.items?.[0]?.currency || orderDetails.currency || "USD";
 
   return (
     <div className="min-h-screen bg-gray-50 py-8 md:py-12 pb-24 md:pb-12">
