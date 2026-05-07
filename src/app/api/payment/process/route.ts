@@ -2,6 +2,15 @@ import { NextRequest, NextResponse } from "next/server";
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_SERVER_URL || process.env.SERVER_URL || "http://localhost:3000";
 
+// Add GET handler for testing
+export async function GET() {
+  return NextResponse.json({ 
+    success: true, 
+    message: "Payment API endpoint is working. Use POST to process payments.",
+    backendUrl: BACKEND_URL
+  });
+}
+
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
