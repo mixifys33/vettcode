@@ -174,28 +174,47 @@ const CartPage = () => {
     try {
       // Transform cart items for application orders
       const orderItems = cart.map((item: any) => ({
-        applicationId: item.id,
-        applicationName: item.appName || item.title || "Application",
-        applicationImage: item?.image || item?.screenshots?.[0]?.url || "",
-        shopId: item.shopId || item.sellerId,
+        productId: item.id,
+        name: item.appName || item.title || "Application",
         price: getItemDiscountedPrice(item),
-        discount: totalDiscount / cart.length,
-        isFree: item.isFree || item.price === 0,
-        licenseType: item.licenseType || "Standard",
+        quantity: 1,
+        image: item?.image || item?.screenshots?.[0]?.url || "",
       }));
 
-      // Store order data for the payment page
-      sessionStorage.setItem("pendingOrderData", JSON.stringify({
-        orderItems,
+      // Create order in backend
+      const orderResponse = await axiosInstance.post("/api/orders", {
+        userId: user.id,
+        items: orderItems,
+        subtotal: subtotal,
         total: finalTotal,
-        appliedCoupons,
-        orderType: "application_license"
-      }));
+        totalDiscount: totalDiscount,
+        paymentMethod: "", // Will be selected on checkout page
+        paymentStatus: "pending",
+        status: "pending",
+        customerInfo: {
+          fullName: user.name || "",
+          phone: user.phone || "",
+          email: user.email || "",
+        },
+        buyerInfo: {
+          userId: user.id,
+          name: user.name || "",
+          email: user.email || "",
+          phone: user.phone || "",
+        },
+      });
 
-      router.push("/payment");
+      const orderId = orderResponse.data.orderId || orderResponse.data.order?._id;
+
+      if (!orderId) {
+        throw new Error("Failed to create order");
+      }
+
+      // Redirect to checkout with orderId
+      router.push(`/checkout?orderId=${orderId}`);
     } catch (error: any) {
       console.error("Checkout error", error);
-      setCouponError(error?.message || "Checkout failed. Please try again.");
+      setCouponError(error?.response?.data?.message || error?.message || "Checkout failed. Please try again.");
     } finally {
       setLoading(false);
     }
