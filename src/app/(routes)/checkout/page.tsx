@@ -41,25 +41,32 @@ function CheckoutContent() {
     try {
       const res = await axiosInstance.get(`/api/orders/${orderId}`);
       const data = res.data;
-      if (data.success || data.data) {
-        const order = data.data || data.order || data;
-        setOrderDetails(order);
-        
-        // Set payment method from order if available
-        if (order.paymentMethod) {
-          setPaymentMethod(order.paymentMethod);
-        }
-        
-        // Pre-fill mobile number if available
-        if (user?.phone) {
-          setMobileNumber(user.phone);
-        } else if (order.shippingAddress?.phone) {
-          setMobileNumber(order.shippingAddress.phone);
-        }
+      
+      console.log("Fetched order data:", data);
+      
+      // Handle different response formats
+      const order = data.order || data.data || data;
+      
+      if (!order || !order._id) {
+        throw new Error("Invalid order data received");
       }
-    } catch (error) {
+      
+      setOrderDetails(order);
+      
+      // Set payment method from order if available
+      if (order.paymentMethod) {
+        setPaymentMethod(order.paymentMethod);
+      }
+      
+      // Pre-fill mobile number if available
+      if (user?.phone) {
+        setMobileNumber(user.phone);
+      } else if (order.shippingAddress?.phone) {
+        setMobileNumber(order.shippingAddress.phone);
+      }
+    } catch (error: any) {
       console.error("Failed to fetch order", error);
-      setPaymentError("Failed to load order details");
+      setPaymentError(error?.response?.data?.error || error?.message || "Failed to load order details");
     } finally {
       setOrderLoading(false);
     }
