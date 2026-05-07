@@ -143,7 +143,7 @@ const EasyAIPage = () => {
           }
           return 0 // Loop back to start if still loading
         })
-      }, 800) // Change step every 800ms
+      }, 3900) // Each step shows for 3.9 seconds
 
       return () => clearInterval(interval)
     }
@@ -856,13 +856,7 @@ const EasyAIPage = () => {
               {activeSession.messages.map((message) => (
                 <div key={message.id}>
                   <div className={`flex gap-2 sm:gap-3 ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                    {message.role === 'assistant' && (
-                      <div className="w-8 h-8 sm:w-9 sm:h-9 bg-gradient-to-br from-purple-500 via-indigo-500 to-blue-500 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg">
-                        <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
-                      </div>
-                    )}
-
-                    <div className={`max-w-[85%] sm:max-w-[80%] ${message.role === 'user' ? 'order-first' : ''}`}>
+                    <div className={`max-w-[85%] sm:max-w-[80%]`}>
                       <div className={`rounded-2xl px-3 sm:px-4 py-2.5 sm:py-3 ${
                         message.role === 'user'
                           ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-br-sm shadow-lg'
@@ -929,12 +923,6 @@ const EasyAIPage = () => {
                         )}
                       </div>
                     </div>
-
-                    {message.role === 'user' && (
-                      <div className="w-8 h-8 sm:w-9 sm:h-9 bg-gradient-to-br from-pink-500 to-purple-500 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg">
-                        <User className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
-                      </div>
-                    )}
                   </div>
 
                   {/* Product Recommendations */}
@@ -1023,42 +1011,24 @@ const EasyAIPage = () => {
               {/* Loading */}
               {isLoading && (
                 <div className="flex gap-2 sm:gap-3 justify-start">
-                  <div className="w-8 h-8 sm:w-9 sm:h-9 bg-gradient-to-br from-purple-500 via-indigo-500 to-blue-500 rounded-xl flex items-center justify-center shadow-lg">
-                    <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-white animate-pulse" />
-                  </div>
-                  <div className="bg-slate-800/80 backdrop-blur-sm border border-slate-700/50 rounded-2xl rounded-bl-sm px-4 py-3 shadow-lg min-w-[280px]">
+                  <div className="bg-slate-800/80 backdrop-blur-sm border border-slate-700/50 rounded-2xl rounded-bl-sm px-4 py-3 shadow-lg">
                     <div className="flex items-center gap-3">
-                      {/* Animated Icon */}
-                      <div className={`${loadingSteps[loadingStep].color} animate-bounce`}>
-                        {loadingSteps[loadingStep].icon}
+                      {/* Animated Icon with Pulse Effect */}
+                      <div className={`${loadingSteps[loadingStep].color} relative`}>
+                        {/* Pulsing ring animation */}
+                        <div className="absolute inset-0 rounded-full animate-ping opacity-75">
+                          {loadingSteps[loadingStep].icon}
+                        </div>
+                        {/* Main icon with spin */}
+                        <div className="relative animate-spin">
+                          {loadingSteps[loadingStep].icon}
+                        </div>
                       </div>
                       
-                      {/* Step Text */}
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2">
-                          <span className="text-sm text-white font-medium animate-pulse">
-                            {loadingSteps[loadingStep].text}
-                          </span>
-                          <div className="flex gap-1">
-                            <span className="w-1 h-1 bg-purple-500 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-                            <span className="w-1 h-1 bg-purple-500 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-                            <span className="w-1 h-1 bg-purple-500 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
-                          </div>
-                        </div>
-                        
-                        {/* Progress Bar */}
-                        <div className="mt-2 h-1 bg-slate-700 rounded-full overflow-hidden">
-                          <div 
-                            className="h-full bg-gradient-to-r from-purple-500 via-indigo-500 to-blue-500 transition-all duration-800 ease-out"
-                            style={{ width: `${((loadingStep + 1) / loadingSteps.length) * 100}%` }}
-                          />
-                        </div>
-                        
-                        {/* Step Counter */}
-                        <div className="mt-1 text-xs text-slate-500">
-                          Step {loadingStep + 1} of {loadingSteps.length}
-                        </div>
-                      </div>
+                      {/* Step Text with fade animation */}
+                      <span className="text-sm text-white font-medium animate-pulse">
+                        {loadingSteps[loadingStep].text}
+                      </span>
                     </div>
                   </div>
                 </div>
