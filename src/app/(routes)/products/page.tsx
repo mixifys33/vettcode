@@ -35,14 +35,28 @@ interface ApplicationSort {
   order: "asc" | "desc";
 }
 
-// Fallback data for filters
+// Extended tech stacks
 const defaultTechStacks = [
-  "React", "Next.js", "Node.js", "Python", "Django", "Flask",
-  "Vue.js", "Angular", "TypeScript", "JavaScript", "MongoDB", "PostgreSQL"
+  "React", "Next.js", "Vue.js", "Angular", "Svelte", "Nuxt.js",
+  "Node.js", "Express.js", "Fastify", "Koa.js",
+  "Python", "Django", "Flask", "FastAPI",
+  "PHP", "Laravel", "Symfony", "CodeIgniter",
+  "Java", "Spring Boot", "Hibernate",
+  "C#", ".NET Core", "ASP.NET",
+  "Ruby", "Ruby on Rails",
+  "Go", "Gin", "Echo",
+  "Rust", "Actix", "Rocket",
+  "MongoDB", "PostgreSQL", "MySQL", "SQLite", "Redis",
+  "Docker", "Kubernetes", "AWS", "Google Cloud", "Azure",
+  "React Native", "Flutter", "Ionic", "Xamarin",
+  "Electron", "Tauri", "Qt",
+  "TypeScript", "JavaScript", "HTML5", "CSS3", "SASS/SCSS",
+  "GraphQL", "REST API", "WebSocket", "gRPC"
 ];
 
 const defaultPlatforms = [
-  "Web", "Mobile", "Desktop", "iOS", "Android", "Cross-platform"
+  "Web", "Mobile", "Desktop", "iOS", "Android", "Cross-platform",
+  "Windows", "macOS", "Linux", "Browser Extension", "PWA"
 ];
 
 const ProductsPageContent = () => {
@@ -59,7 +73,7 @@ const ProductsPageContent = () => {
     price_min: searchParams.get("price_min") ? Number(searchParams.get("price_min")) : undefined,
     price_max: searchParams.get("price_max") ? Number(searchParams.get("price_max")) : undefined,
     rating_min: searchParams.get("rating") ? Number(searchParams.get("rating")) : undefined,
-    isFree: searchParams.get("isFree") === "true" ? true : undefined,
+    isFree: searchParams.get("isFree") === "true" ? true : searchParams.get("isFree") === "false" ? false : undefined,
     verificationStatus: searchParams.get("verified") === "true" ? "verified" : undefined,
   }));
 
@@ -85,39 +99,15 @@ const ProductsPageContent = () => {
   const [showMobileFilters, setShowMobileFilters] = useState(false);
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
 
-  // Fetch applications with React Query
-  const { data, isLoading, isFetching } = useQuery({
-    queryKey: ["applications", filters, sort, page],
+  // Fetch ALL applications once and cache (reduces DB queries)
+  const { data: allApplicationsData, isLoading } = useQuery({
+    queryKey: ["all-applications"],
     queryFn: async () => {
-      const params = new URLSearchParams();
-      
-      params.append("page", String(page));
-      params.append("limit", String(ITEMS_PER_PAGE));
-      
-      if (filters.q) params.append("q", filters.q);
-      if (filters.category) params.append("category", filters.category);
-      if (filters.subCategory) params.append("subCategory", filters.subCategory);
-      if (filters.technologyStack?.length) params.append("technologyStack", filters.technologyStack.join(","));
-      if (filters.platforms?.length) params.append("platforms", filters.platforms.join(","));
-      if (filters.price_min !== undefined) params.append("price_gte", String(filters.price_min));
-      if (filters.price_max !== undefined) params.append("price_lte", String(filters.price_max));
-      if (filters.rating_min !== undefined) params.append("rating_gte", String(filters.rating_min));
-      if (filters.isFree !== undefined) params.append("isFree", String(filters.isFree));
-      if (filters.verificationStatus) params.append("verificationStatus", filters.verificationStatus);
-      
-      if (sort) {
-        params.append("sortBy", sort.field);
-        params.append("sortOrder", sort.order);
-      }
-      
-      const res = await axiosInstance.get(`/api/applications?${params.toString()}`);
-      return {
-        applications: res.data.applications || [],
-        pagination: res.data.pagination || { total: 0, page: 1, totalPages: 1 },
-        facets: res.data.facets || {}
-      };
+      const res = await axiosInstance.get("/api/applications?page=1&limit=1000");
+      return res.data.applications || [];
     },
-    staleTime: 1000 * 60 * 2,
+    staleTime: 1000 * 60 * 5, // Cache for 5 minutes
+    gcTime: 1000 * 60 * 10, // Keep in cache for 10 minutes
   });
 
   // Fetch categories
@@ -132,33 +122,175 @@ const ProductsPageContent = () => {
 
   const categories = useMemo(() => {
     if (!categoriesData?.categories) return [];
-    return categoriesData.categories.map((cat: string) => ({
-      name: cat,
-      subCategories: categoriesData.subCategories?.[cat]?.map((sub: string) => ({ name: sub })) || [],
+    return categoriesData.categories.map((cat: any) => ({
+      name: cat.name,
+      subCategories: cat.subCategories?.map((sub: string) => ({ name: sub })) || [],
     }));
   }, [categoriesData]);
 
-  // Use facets from API or fallback to defaults
-  const availableTechStacks = useMemo(() => {
-    if (data?.facets?.technologyStack && data.facets.technologyStack.length > 0) {
-      return data.facets.technologyStack;
-    }
-    return defaultTechStacks;
-  }, [data?.facets?.technologyStack]);
+  // CLIENT-SIDE FILTERING (reduces DB load)
+  const filteredAndSortedApplications = useMemo(() => {
+    if (!allApplicationsData) return [];
 
-  const availablePlatforms = useMemo((): string[] => {
-    if (data?.facets?.platforms && data.facets.platforms.length > 0) {
-      return data.facets.platforms;
+    let filtered = [...allApplicationsData];
+
+    // Search filter
+    if (filters.q) {
+      const query = filters.q.toLowerCase();
+      filtered = filtered.filter((app: any) =>
+        app.appName?.toLowerCase().includes(query) ||
+        app.shortDescription?.toLowerCase().includes(query) ||
+        app.detailedDescription?.toLowerCase().includes(query) ||
+        app.tags?.toLowerCase().includes(query) ||
+        app.appCategory?.toLowerCase().includes(query)
+      );
     }
-    return defaultPlatforms;
-  }, [data?.facets?.platforms]);
+
+    // Category filter
+    if (filters.category) {
+      filtered = filtered.filter((app: any) => app.appCategory === filters.category);
+    }
+
+    // SubCategory filter
+    if (filters.subCategory) {
+      filtered = filtered.filter((app: any) => app.subCategory === filters.subCategory);
+    }
+
+    // Technology Stack filter
+    if (filters.technologyStack && filters.technologyStack.length > 0) {
+      filtered = filtered.filter((app: any) => {
+        const appTech = app.technologyStack || [];
+        return filters.technologyStack!.some((tech) =>
+          appTech.some((t: string) => t.toLowerCase().includes(tech.toLowerCase()))
+        );
+      });
+    }
+
+    // Platforms filter
+    if (filters.platforms && filters.platforms.length > 0) {
+      filtered = filtered.filter((app: any) => {
+        const appPlatforms = app.supportedPlatforms || [];
+        return filters.platforms!.some((platform) =>
+          appPlatforms.some((p: string) => p.toLowerCase().includes(platform.toLowerCase()))
+        );
+      });
+    }
+
+    // Price range filter
+    if (filters.price_min !== undefined || filters.price_max !== undefined) {
+      filtered = filtered.filter((app: any) => {
+        const price = app.price || 0;
+        const min = filters.price_min ?? 0;
+        const max = filters.price_max ?? Infinity;
+        return price >= min && price <= max;
+      });
+    }
+
+    // Free/Paid filter
+    if (filters.isFree !== undefined) {
+      filtered = filtered.filter((app: any) => {
+        const isFree = app.isFree || app.price === 0;
+        return filters.isFree ? isFree : !isFree;
+      });
+    }
+
+    // Rating filter
+    if (filters.rating_min !== undefined) {
+      filtered = filtered.filter((app: any) => {
+        const rating = app.rating || app.ratings || 0;
+        return rating >= filters.rating_min!;
+      });
+    }
+
+    // Verification status filter
+    if (filters.verificationStatus) {
+      filtered = filtered.filter((app: any) => app.verificationStatus === filters.verificationStatus);
+    }
+
+    // Sorting
+    if (sort) {
+      filtered.sort((a: any, b: any) => {
+        let aVal, bVal;
+
+        switch (sort.field) {
+          case "price":
+            aVal = a.price || 0;
+            bVal = b.price || 0;
+            break;
+          case "rating":
+            aVal = a.rating || a.ratings || 0;
+            bVal = b.rating || b.ratings || 0;
+            break;
+          case "downloads":
+            aVal = a.downloads || 0;
+            bVal = b.downloads || 0;
+            break;
+          case "views":
+            aVal = a.views || 0;
+            bVal = b.views || 0;
+            break;
+          case "createdAt":
+          default:
+            aVal = new Date(a.createdAt || 0).getTime();
+            bVal = new Date(b.createdAt || 0).getTime();
+            break;
+        }
+
+        return sort.order === "asc" ? aVal - bVal : bVal - aVal;
+      });
+    } else {
+      // Default sort by createdAt desc
+      filtered.sort((a: any, b: any) => {
+        const aTime = new Date(a.createdAt || 0).getTime();
+        const bTime = new Date(b.createdAt || 0).getTime();
+        return bTime - aTime;
+      });
+    }
+
+    return filtered;
+  }, [allApplicationsData, filters, sort]);
+
+  // Pagination
+  const paginatedApplications = useMemo(() => {
+    const start = (page - 1) * ITEMS_PER_PAGE;
+    const end = start + ITEMS_PER_PAGE;
+    return filteredAndSortedApplications.slice(start, end);
+  }, [filteredAndSortedApplications, page]);
+
+  const totalPages = Math.ceil(filteredAndSortedApplications.length / ITEMS_PER_PAGE);
+
+  // Extract unique tech stacks and platforms from actual data
+  const availableTechStacks = useMemo(() => {
+    if (!allApplicationsData) return defaultTechStacks;
+    const techSet = new Set<string>();
+    allApplicationsData.forEach((app: any) => {
+      if (app.technologyStack && Array.isArray(app.technologyStack)) {
+        app.technologyStack.forEach((tech: string) => techSet.add(tech));
+      }
+    });
+    const fromData = Array.from(techSet).sort();
+    // Merge with defaults and remove duplicates
+    return Array.from(new Set([...fromData, ...defaultTechStacks])).sort();
+  }, [allApplicationsData]);
+
+  const availablePlatforms = useMemo(() => {
+    if (!allApplicationsData) return defaultPlatforms;
+    const platformSet = new Set<string>();
+    allApplicationsData.forEach((app: any) => {
+      if (app.supportedPlatforms && Array.isArray(app.supportedPlatforms)) {
+        app.supportedPlatforms.forEach((platform: string) => platformSet.add(platform));
+      }
+    });
+    const fromData = Array.from(platformSet).sort();
+    return Array.from(new Set([...fromData, ...defaultPlatforms])).sort();
+  }, [allApplicationsData]);
 
   const dynamicPriceRange = useMemo((): [number, number] => {
-    if (data?.facets?.priceRange) {
-      return [data.facets.priceRange.min || 0, data.facets.priceRange.max || DEFAULT_PRICE_RANGE[1]];
-    }
-    return DEFAULT_PRICE_RANGE;
-  }, [data?.facets?.priceRange]);
+    if (!allApplicationsData || allApplicationsData.length === 0) return DEFAULT_PRICE_RANGE;
+    const prices = allApplicationsData.map((app: any) => app.price || 0).filter((p: number) => p > 0);
+    if (prices.length === 0) return DEFAULT_PRICE_RANGE;
+    return [Math.min(...prices), Math.max(...prices)];
+  }, [allApplicationsData]);
 
   // Update URL when filters change
   useEffect(() => {
@@ -221,11 +353,11 @@ const ProductsPageContent = () => {
     setPriceRange(value);
     setFilters((prev) => ({
       ...prev,
-      price_min: value[0] > DEFAULT_PRICE_RANGE[0] ? value[0] : undefined,
-      price_max: value[1] < DEFAULT_PRICE_RANGE[1] ? value[1] : undefined,
+      price_min: value[0] > dynamicPriceRange[0] ? value[0] : undefined,
+      price_max: value[1] < dynamicPriceRange[1] ? value[1] : undefined,
     }));
     setPage(1);
-  }, []);
+  }, [dynamicPriceRange]);
 
   const handleRatingChange = useCallback((rating: number | undefined) => {
     setFilters((prev) => ({ ...prev, rating_min: rating }));
@@ -248,7 +380,7 @@ const ProductsPageContent = () => {
       } else if (key === "price_min") {
         newFilters.price_min = undefined;
         newFilters.price_max = undefined;
-        setPriceRange(DEFAULT_PRICE_RANGE);
+        setPriceRange(dynamicPriceRange);
       } else {
         (newFilters as any)[key] = undefined;
       }
@@ -256,15 +388,15 @@ const ProductsPageContent = () => {
       return newFilters;
     });
     setPage(1);
-  }, []);
+  }, [dynamicPriceRange]);
 
   const handleClearAllFilters = useCallback(() => {
     setFilters({});
     setSearchQuery("");
-    setPriceRange(DEFAULT_PRICE_RANGE);
+    setPriceRange(dynamicPriceRange);
     setSort(undefined);
     setPage(1);
-  }, []);
+  }, [dynamicPriceRange]);
 
   const hasActiveFilters = useMemo(() => {
     return (
@@ -494,11 +626,11 @@ const ProductsPageContent = () => {
           <div className="flex items-center justify-between mt-4">
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-2">
-                {data?.pagination?.total ? (
+                {filteredAndSortedApplications.length > 0 ? (
                   <>
                     <Sparkles className="w-4 h-4 text-purple-500" />
                     <p className="text-sm text-slate-600 dark:text-slate-400">
-                      <span className="font-semibold text-slate-900 dark:text-slate-100">{data.pagination.total}</span> applications found
+                      <span className="font-semibold text-slate-900 dark:text-slate-100">{filteredAndSortedApplications.length}</span> applications found
                     </p>
                   </>
                 ) : isLoading ? (
@@ -570,16 +702,13 @@ const ProductsPageContent = () => {
 
           {/* Application Grid */}
           <main className="flex-1 min-w-0">
-            {/* Loading overlay */}
-            <div className={`transition-opacity duration-200 ${isFetching && !isLoading ? "opacity-60" : ""}`}>
-              <ProductGrid products={data?.applications || []} isLoading={isLoading} />
-            </div>
+            <ProductGrid products={paginatedApplications} isLoading={isLoading} />
 
             {/* Pagination */}
-            {data?.pagination && data.pagination.totalPages > 1 && (
+            {totalPages > 1 && (
               <Pagination
                 currentPage={page}
-                totalPages={data.pagination.totalPages}
+                totalPages={totalPages}
                 onPageChange={setPage}
               />
             )}

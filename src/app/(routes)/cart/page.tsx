@@ -171,8 +171,10 @@ const CartPage = () => {
     }
 
     setLoading(true);
+    setCouponError("");
+    
     try {
-      // Transform cart items for application orders
+      // Transform cart items for order
       const orderItems = cart.map((item: any) => ({
         productId: item.id,
         name: item.appName || item.title || "Application",
@@ -188,13 +190,16 @@ const CartPage = () => {
         subtotal: subtotal,
         total: finalTotal,
         totalDiscount: totalDiscount,
-        paymentMethod: "", // Will be selected on checkout page
+        deliveryFee: 0,
+        paymentMethod: "",
         paymentStatus: "pending",
         status: "pending",
         customerInfo: {
           fullName: user.name || "",
           phone: user.phone || "",
           email: user.email || "",
+          address: "",
+          city: "",
         },
         buyerInfo: {
           userId: user.id,
@@ -204,17 +209,21 @@ const CartPage = () => {
         },
       });
 
-      const orderId = orderResponse.data.orderId || orderResponse.data.order?._id;
+      console.log("Order response:", orderResponse.data);
+
+      const orderId = orderResponse.data.orderId || orderResponse.data.order?._id || orderResponse.data._id;
 
       if (!orderId) {
-        throw new Error("Failed to create order");
+        throw new Error("Failed to create order - no orderId returned");
       }
 
       // Redirect to checkout with orderId
       router.push(`/checkout?orderId=${orderId}`);
     } catch (error: any) {
-      console.error("Checkout error", error);
-      setCouponError(error?.response?.data?.message || error?.message || "Checkout failed. Please try again.");
+      console.error("Checkout error:", error);
+      const errorMessage = error?.response?.data?.error || error?.response?.data?.message || error?.message || "Checkout failed. Please try again.";
+      setCouponError(errorMessage);
+      alert(`Checkout failed: ${errorMessage}`);
     } finally {
       setLoading(false);
     }
