@@ -30,47 +30,47 @@ interface SiteContent {
 }
 
 const defaultContent: SiteContent = {
-  heroTitle: "Start Selling Online",
-  heroSubtitle: "Grow Your Business",
-  heroDescription: "Join thousands of sellers across Worldwide. List your products, reach more customers, and manage your business from anywhere.",
+  heroTitle: "Sell Your Applications",
+  heroSubtitle: "Join the Developer Marketplace",
+  heroDescription: "Join thousands of developers worldwide. List your applications, reach more customers, and monetize your code from anywhere.",
   stats: [
-    { value: "15,000+", label: "Active Sellers" },
-    { value: "UGX 2B+", label: "Monthly Sales" },
-    { value: "500K+", label: "Monthly Customers" },
-    { value: "4.7/5", label: "Seller Rating" },
+    { value: "5,000+", label: "Active Developers" },
+    { value: "$2M+", label: "Monthly Revenue" },
+    { value: "50K+", label: "Monthly Downloads" },
+    { value: "4.9/5", label: "Developer Rating" },
   ],
   testimonials: [
-    { name: "Amina Nakato", role: "Clothing & Fashion", image: "https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=100&h=100&fit=crop&crop=face", quote: "I started selling kitenge dresses from home. The platform is easy to use and customers find my products easily.", earnings: "UGX 2-4M/month" },
-    { name: "David Ochieng", role: "Electronics & Phones", image: "https://images.unsplash.com/photo-1506277886164-e25aa3f4ef7f?w=100&h=100&fit=crop&crop=face", quote: "Managing inventory and orders is straightforward. The analytics help me know what products to stock.", earnings: "UGX 5-8M/month" },
-    { name: "Fatuma Auma", role: "Beauty & Cosmetics", image: "https://images.unsplash.com/photo-1589156280159-27698a70f29e?w=100&h=100&fit=crop&crop=face", quote: "I sell natural hair products. The mobile money integration makes receiving payments very convenient.", earnings: "UGX 1.5-3M/month" },
-    { name: "Joseph Mukasa", role: "Home & Kitchen", image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face", quote: "Started with kitchen utensils, now I sell various home items. Good support when I have questions.", earnings: "UGX 3-5M/month" },
+    { name: "Alex Chen", role: "Full-Stack Developer", image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face", quote: "I started selling React dashboards as a side project. VettCode made it easy to reach customers and handle licensing.", earnings: "$3-5K/month" },
+    { name: "Sarah Martinez", role: "Mobile App Developer", image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop&crop=face", quote: "The platform handles payments and distribution perfectly. I focus on building great apps, they handle the rest.", earnings: "$8-12K/month" },
+    { name: "James Wilson", role: "API Developer", image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop&crop=face", quote: "Selling my SaaS starter kits on VettCode has been incredible. The verification system builds trust with buyers.", earnings: "$5-8K/month" },
+    { name: "Priya Patel", role: "UI/UX Developer", image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop&crop=face", quote: "I sell design systems and component libraries. The instant download system works flawlessly.", earnings: "$4-7K/month" },
   ],
   faqs: [
-    { question: "How much does it cost to start?", answer: "Registration is free. We charge a small commission (8-12%) only when you make a sale. No monthly fees." },
-    { question: "How do I receive payments?", answer: "We support Mobile Money (MTN, Airtel), bank transfers, and other local payment methods. Payments processed within 2-3 business days." },
-    { question: "What products can I sell?", answer: "Most legal products including fashion, electronics, beauty, food items, handmade goods, and more." },
-    { question: "Do I need a business registration?", answer: "No, individuals can sell. Registered businesses get verified badges for increased trust." },
-    { question: "How does shipping work?", answer: "Handle delivery yourself or use our partner delivery services. We provide tracking for all orders." },
+    { question: "How much does it cost to start?", answer: "Registration is free. We charge a small commission (10-15%) only when you make a sale. No monthly fees or upfront costs." },
+    { question: "How do I receive payments?", answer: "We support PayPal, Stripe, and direct bank transfers. Payments are processed within 2-3 business days after delivery confirmation." },
+    { question: "What can I sell?", answer: "Web applications, mobile apps, SaaS platforms, APIs, templates, themes, plugins, libraries, and other code-based products." },
+    { question: "Do I need to be a registered business?", answer: "No, individual developers can sell. Registered businesses get verified badges for increased credibility." },
+    { question: "How does distribution work?", answer: "We provide instant download links, GitHub access, or email delivery. You control how your code is distributed." },
   ],
   demoVideoUrl: "",
-  trustMessages: ["Secure payment processing", "Funds held until delivery confirmed", "Seller verification system", "Dispute resolution support"],
-  warningMessages: ["Counterfeit products result in suspension", "Fraudulent activities lead to fund forfeiture", "Repeat violations result in permanent bans", "Illegal activities reported to authorities"],
+  trustMessages: ["Secure payment processing", "Funds held until delivery confirmed", "Code verification system", "Dispute resolution support"],
+  warningMessages: ["Stolen code results in immediate suspension", "Fraudulent activities lead to fund forfeiture", "Repeat violations result in permanent bans", "Illegal activities reported to authorities"],
 };
 
 const benefits = [
-  { icon: Globe, title: "Reach More Customers", description: "Your products visible to thousands of buyers across Worldwide.", color: "from-blue-500 to-cyan-500" },
-  { icon: Shield, title: "Secure Payments", description: "Receive payments via Mobile Money, bank transfer, or other local methods.", color: "from-green-500 to-emerald-500" },
-  { icon: BarChart3, title: "Sales Analytics", description: "Track your sales and customer trends to make better decisions.", color: "from-purple-500 to-pink-500" },
-  { icon: Zap, title: "Easy Setup", description: "Create your shop and list products in minutes. No technical skills needed.", color: "from-orange-500 to-red-500" },
-  { icon: HeadphonesIcon, title: "Seller Support", description: "Get help when you need it from our support team.", color: "from-indigo-500 to-purple-500" },
-  { icon: Rocket, title: "Marketing Tools", description: "Run promotions and participate in sales events.", color: "from-teal-500 to-green-500" },
+  { icon: Globe, title: "Global Reach", description: "Your applications visible to developers and businesses worldwide.", color: "from-purple-500 to-indigo-500" },
+  { icon: Shield, title: "Secure Payments", description: "Receive payments via PayPal, Stripe, or direct bank transfer globally.", color: "from-green-500 to-emerald-500" },
+  { icon: BarChart3, title: "Sales Analytics", description: "Track downloads, revenue, and customer trends with detailed insights.", color: "from-blue-500 to-cyan-500" },
+  { icon: Zap, title: "Instant Distribution", description: "Automated delivery via download links, GitHub access, or email.", color: "from-orange-500 to-red-500" },
+  { icon: HeadphonesIcon, title: "Developer Support", description: "Get help from our technical support team when you need it.", color: "from-pink-500 to-rose-500" },
+  { icon: Rocket, title: "Marketing Tools", description: "Feature your apps, run promotions, and boost visibility.", color: "from-teal-500 to-green-500" },
 ];
 
 const steps = [
-  { step: 1, title: "Apply to Sell", description: "Fill out a short application. Takes 2 minutes.", icon: Users },
-  { step: 2, title: "Get Reviewed", description: "Our team reviews your application within 24–48 hours.", icon: ShieldCheck },
-  { step: 3, title: "Set Up Shop", description: "Once approved, add your shop details and products.", icon: Store },
-  { step: 4, title: "Start Selling", description: "Go live and start receiving orders.", icon: Truck },
+  { step: 1, title: "Apply as Developer", description: "Fill out a short application. Takes 2 minutes.", icon: Users },
+  { step: 2, title: "Code Review", description: "Our team reviews your application within 24–48 hours.", icon: ShieldCheck },
+  { step: 3, title: "List Your Apps", description: "Once approved, upload your applications and set pricing.", icon: Store },
+  { step: 4, title: "Start Earning", description: "Go live and start receiving orders and revenue.", icon: Truck },
 ];
 
 const API_BASE = (process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:3000") + "/api";
@@ -137,95 +137,95 @@ function ApplyModal({ onClose, sellerUiUrl }: { onClose: () => void; sellerUiUrl
 
   return (
     <div className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
-      <div className="bg-white rounded-2xl w-full max-w-md shadow-2xl relative">
-        <button onClick={onClose} className="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
+      <div className="bg-gradient-to-br from-gray-900 to-gray-800 border border-gray-700 rounded-2xl w-full max-w-md shadow-2xl relative">
+        <button onClick={onClose} className="absolute top-4 right-4 text-gray-400 hover:text-gray-200">
           <X className="w-5 h-5" />
         </button>
 
         {step === 'form' && (
           <div className="p-8">
             <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#115061] to-[#1a7a8a] flex items-center justify-center">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center">
                 <Store className="w-5 h-5 text-white" />
               </div>
               <div>
-                <h2 className="text-xl font-bold text-gray-900">Apply to Sell</h2>
-                <p className="text-sm text-gray-500">Reviewed within 24–48 hours</p>
+                <h2 className="text-xl font-bold text-white">Apply as Developer</h2>
+                <p className="text-sm text-gray-400">Reviewed within 24–48 hours</p>
               </div>
             </div>
 
             <div className="space-y-4">
               <input
-                className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#115061]/30"
+                className="w-full border border-gray-600 bg-gray-800 text-white rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500/50 placeholder-gray-500"
                 placeholder="Full name"
                 value={form.name}
                 onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
               />
               <input
-                className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#115061]/30"
+                className="w-full border border-gray-600 bg-gray-800 text-white rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500/50 placeholder-gray-500"
                 placeholder="Email address"
                 type="email"
                 value={form.email}
                 onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
               />
               <input
-                className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#115061]/30"
+                className="w-full border border-gray-600 bg-gray-800 text-white rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500/50 placeholder-gray-500"
                 placeholder="Phone number (e.g. +256...)"
                 value={form.phoneNumber}
                 onChange={e => setForm(f => ({ ...f, phoneNumber: e.target.value }))}
               />
               <input
-                className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#115061]/30"
+                className="w-full border border-gray-600 bg-gray-800 text-white rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500/50 placeholder-gray-500"
                 placeholder="Password (min 8 chars, uppercase, number, symbol)"
                 type="password"
                 value={form.password}
                 onChange={e => setForm(f => ({ ...f, password: e.target.value }))}
               />
               <textarea
-                className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#115061]/30 resize-none"
-                placeholder="Tell us about your business — what you sell, where you're based (optional)"
+                className="w-full border border-gray-600 bg-gray-800 text-white rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500/50 resize-none placeholder-gray-500"
+                placeholder="Tell us about your development experience and what you plan to sell (optional)"
                 rows={3}
                 value={form.applicationNote}
                 onChange={e => setForm(f => ({ ...f, applicationNote: e.target.value }))}
               />
             </div>
 
-            {error && <p className="text-red-500 text-sm mt-3">{error}</p>}
+            {error && <p className="text-red-400 text-sm mt-3">{error}</p>}
 
             <button
               onClick={handleRegister}
               disabled={loading}
-              className="w-full mt-5 py-3 bg-gradient-to-r from-[#115061] to-[#1a7a8a] text-white font-semibold rounded-xl hover:opacity-90 transition disabled:opacity-60 flex items-center justify-center gap-2"
+              className="w-full mt-5 py-3 bg-gradient-to-r from-purple-500 to-indigo-600 text-white font-semibold rounded-xl hover:opacity-90 transition disabled:opacity-60 flex items-center justify-center gap-2"
             >
               {loading ? <span className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" /> : null}
               Submit Application
             </button>
 
             <p className="text-xs text-gray-400 text-center mt-4">
-              Already applied? <a href={`${sellerUiUrl}/login`} className="text-[#115061] underline">Log in here</a>
+              Already applied? <a href={`${sellerUiUrl}/login`} className="text-purple-400 underline">Log in here</a>
             </p>
           </div>
         )}
 
         {step === 'otp' && (
           <div className="p-8 text-center">
-            <div className="w-16 h-16 rounded-full bg-blue-50 flex items-center justify-center mx-auto mb-4">
-              <ShieldCheck className="w-8 h-8 text-[#115061]" />
+            <div className="w-16 h-16 rounded-full bg-purple-500/20 flex items-center justify-center mx-auto mb-4">
+              <ShieldCheck className="w-8 h-8 text-purple-400" />
             </div>
-            <h2 className="text-xl font-bold text-gray-900 mb-2">Verify your email</h2>
-            <p className="text-gray-500 text-sm mb-6">We sent a 4-digit code to <span className="font-medium text-gray-700">{form.email}</span></p>
+            <h2 className="text-xl font-bold text-white mb-2">Verify your email</h2>
+            <p className="text-gray-400 text-sm mb-6">We sent a 4-digit code to <span className="font-medium text-gray-300">{form.email}</span></p>
             <input
-              className="w-full border border-gray-200 rounded-xl px-4 py-3 text-center text-2xl tracking-[0.5em] font-bold focus:outline-none focus:ring-2 focus:ring-[#115061]/30"
+              className="w-full border border-gray-600 bg-gray-800 text-white rounded-xl px-4 py-3 text-center text-2xl tracking-[0.5em] font-bold focus:outline-none focus:ring-2 focus:ring-purple-500/50"
               placeholder="0000"
               maxLength={4}
               value={otp}
               onChange={e => setOtp(e.target.value.replace(/\D/g, ''))}
             />
-            {error && <p className="text-red-500 text-sm mt-3">{error}</p>}
+            {error && <p className="text-red-400 text-sm mt-3">{error}</p>}
             <button
               onClick={handleVerify}
               disabled={loading}
-              className="w-full mt-5 py-3 bg-gradient-to-r from-[#115061] to-[#1a7a8a] text-white font-semibold rounded-xl hover:opacity-90 transition disabled:opacity-60 flex items-center justify-center gap-2"
+              className="w-full mt-5 py-3 bg-gradient-to-r from-purple-500 to-indigo-600 text-white font-semibold rounded-xl hover:opacity-90 transition disabled:opacity-60 flex items-center justify-center gap-2"
             >
               {loading ? <span className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" /> : null}
               Verify Code
@@ -235,23 +235,23 @@ function ApplyModal({ onClose, sellerUiUrl }: { onClose: () => void; sellerUiUrl
 
         {step === 'done' && (
           <div className="p-8 text-center">
-            <div className="w-16 h-16 rounded-full bg-yellow-50 flex items-center justify-center mx-auto mb-4">
-              <Clock className="w-8 h-8 text-yellow-500" />
+            <div className="w-16 h-16 rounded-full bg-yellow-500/20 flex items-center justify-center mx-auto mb-4">
+              <Clock className="w-8 h-8 text-yellow-400" />
             </div>
-            <h2 className="text-xl font-bold text-gray-900 mb-2">Application Submitted!</h2>
-            <p className="text-gray-500 text-sm mb-4">
-              Thanks <span className="font-medium text-gray-700">{form.name}</span>. Your application is under review.
-              We'll notify you at <span className="font-medium text-gray-700">{form.email}</span> once it's approved — usually within 24–48 hours.
+            <h2 className="text-xl font-bold text-white mb-2">Application Submitted!</h2>
+            <p className="text-gray-400 text-sm mb-4">
+              Thanks <span className="font-medium text-gray-300">{form.name}</span>. Your application is under review.
+              We'll notify you at <span className="font-medium text-gray-300">{form.email}</span> once it's approved — usually within 24–48 hours.
             </p>
-            <div className="bg-yellow-50 border border-yellow-100 rounded-xl p-4 text-left text-sm text-yellow-800 mb-6">
+            <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-xl p-4 text-left text-sm text-yellow-300 mb-6">
               <p className="font-semibold mb-1">What happens next?</p>
-              <ul className="space-y-1 list-disc list-inside text-yellow-700">
+              <ul className="space-y-1 list-disc list-inside text-yellow-400">
                 <li>Our team reviews your application</li>
                 <li>You get an email when approved</li>
-                <li>Then you can log in and set up your shop</li>
+                <li>Then you can log in and list your applications</li>
               </ul>
             </div>
-            <button onClick={onClose} className="w-full py-3 bg-gray-100 text-gray-700 font-semibold rounded-xl hover:bg-gray-200 transition">
+            <button onClick={onClose} className="w-full py-3 bg-gray-700 text-gray-200 font-semibold rounded-xl hover:bg-gray-600 transition">
               Close
             </button>
           </div>
@@ -291,17 +291,17 @@ export default function BecomeSellerPage() {
   };
 
   return (
-    <div className="min-h-screen bg-white overflow-hidden">
+    <div className="min-h-screen bg-gray-900 overflow-hidden">
       {/* Hero Section with animated background */}
-      <section className="relative min-h-[85vh] flex items-center bg-gradient-to-br from-[#0a2e38] via-[#115061] to-[#0d3f4d] overflow-hidden">
+      <section className="relative min-h-[85vh] flex items-center bg-gradient-to-br from-gray-900 via-purple-900 to-indigo-900 overflow-hidden">
         {/* Animated background elements */}
         <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute top-20 left-10 w-72 h-72 bg-yellow-400 rounded-full filter blur-[100px] opacity-20 animate-pulse" />
-          <div className="absolute bottom-20 right-10 w-72 h-72 bg-teal-400 rounded-full filter blur-[100px] opacity-15 animate-pulse" style={{ animationDelay: '1s' }} />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-blue-400 rounded-full filter blur-[120px] opacity-10 animate-pulse" style={{ animationDelay: '2s' }} />
-          {/* Floating shapes */}
-          <div className="absolute top-1/4 right-1/4 w-4 h-4 bg-yellow-400 rounded-full opacity-60 animate-bounce" style={{ animationDuration: '3s' }} />
-          <div className="absolute bottom-1/3 left-1/4 w-3 h-3 bg-teal-400 rounded-full opacity-60 animate-bounce" style={{ animationDuration: '4s', animationDelay: '1s' }} />
+          <div className="absolute top-20 left-10 w-72 h-72 bg-purple-500 rounded-full filter blur-[100px] opacity-20 animate-pulse" />
+          <div className="absolute bottom-20 right-10 w-72 h-72 bg-indigo-500 rounded-full filter blur-[100px] opacity-15 animate-pulse" style={{ animationDelay: '1s' }} />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-blue-500 rounded-full filter blur-[120px] opacity-10 animate-pulse" style={{ animationDelay: '2s' }} />
+          {/* Floating code symbols */}
+          <div className="absolute top-1/4 right-1/4 w-4 h-4 bg-purple-400 rounded-full opacity-60 animate-bounce" style={{ animationDuration: '3s' }} />
+          <div className="absolute bottom-1/3 left-1/4 w-3 h-3 bg-indigo-400 rounded-full opacity-60 animate-bounce" style={{ animationDuration: '4s', animationDelay: '1s' }} />
           <div className="absolute top-1/3 left-1/3 w-2 h-2 bg-white rounded-full opacity-40 animate-bounce" style={{ animationDuration: '5s', animationDelay: '2s' }} />
         </div>
         
@@ -310,12 +310,12 @@ export default function BecomeSellerPage() {
             {/* Badge */}
             <div className={`inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full border border-white/20 mb-6 transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-4"}`}>
               <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
-              <span className="text-white/90 text-sm font-medium">Join 15,000+ sellers already growing</span>
+              <span className="text-white/90 text-sm font-medium">Join 5,000+ developers already earning</span>
             </div>
             
             <h1 className={`text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-6 transition-all duration-700 delay-100 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}>
               {content.heroTitle}
-              <span className="block mt-2 bg-gradient-to-r from-yellow-300 via-orange-400 to-yellow-300 bg-clip-text text-transparent bg-[length:200%_auto] animate-gradient">{content.heroSubtitle}</span>
+              <span className="block mt-2 bg-gradient-to-r from-purple-400 via-indigo-400 to-purple-400 bg-clip-text text-transparent bg-[length:200%_auto] animate-gradient">{content.heroSubtitle}</span>
             </h1>
             
             <p className={`text-lg md:text-xl text-white/80 max-w-2xl mx-auto mb-10 transition-all duration-700 delay-200 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}>
@@ -325,10 +325,10 @@ export default function BecomeSellerPage() {
             <div className={`flex flex-col sm:flex-row gap-4 justify-center mb-12 transition-all duration-700 delay-300 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}>
               <button 
                 onClick={() => setShowApplyModal(true)} 
-                className="group px-8 py-4 bg-gradient-to-r from-yellow-400 to-orange-500 text-gray-900 font-semibold rounded-full hover:shadow-2xl hover:shadow-yellow-500/30 transition-all duration-300 flex items-center justify-center gap-2 hover:scale-105"
+                className="group px-8 py-4 bg-gradient-to-r from-purple-500 to-indigo-600 text-white font-semibold rounded-full hover:shadow-2xl hover:shadow-purple-500/30 transition-all duration-300 flex items-center justify-center gap-2 hover:scale-105"
               >
                 <Store className="w-5 h-5" />
-                Apply to Sell - Free
+                Apply as Developer - Free
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </button>
               <button 
@@ -363,36 +363,36 @@ export default function BecomeSellerPage() {
       </section>
 
       {/* Trust & Rules Section */}
-      <section className="py-12 bg-gradient-to-r from-green-50 via-white to-red-50">
+      <section className="py-12 bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900">
         <div className="container mx-auto px-4">
           <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-6">
-            <div className="bg-white rounded-2xl p-6 shadow-lg shadow-green-100/50 border border-green-100 hover:shadow-xl transition-shadow">
+            <div className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl p-6 shadow-lg shadow-green-500/20 border border-green-500/30 hover:shadow-xl hover:border-green-500/50 transition-all">
               <div className="flex items-center gap-3 mb-4">
                 <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center">
                   <ShieldCheck className="w-6 h-6 text-white" />
                 </div>
-                <h3 className="text-xl font-bold text-gray-900">Seller Protection</h3>
+                <h3 className="text-xl font-bold text-white">Developer Protection</h3>
               </div>
               <ul className="space-y-3">
                 {content.trustMessages.map((msg, i) => (
-                  <li key={i} className="flex items-center gap-3 text-gray-600">
-                    <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
+                  <li key={i} className="flex items-center gap-3 text-gray-300">
+                    <CheckCircle className="w-5 h-5 text-green-400 flex-shrink-0" />
                     <span>{msg}</span>
                   </li>
                 ))}
               </ul>
             </div>
-            <div className="bg-white rounded-2xl p-6 shadow-lg shadow-red-100/50 border border-red-100 hover:shadow-xl transition-shadow">
+            <div className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl p-6 shadow-lg shadow-red-500/20 border border-red-500/30 hover:shadow-xl hover:border-red-500/50 transition-all">
               <div className="flex items-center gap-3 mb-4">
                 <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-red-500 to-orange-600 flex items-center justify-center">
                   <AlertTriangle className="w-6 h-6 text-white" />
                 </div>
-                <h3 className="text-xl font-bold text-gray-900">Platform Rules</h3>
+                <h3 className="text-xl font-bold text-white">Platform Rules</h3>
               </div>
               <ul className="space-y-3">
                 {content.warningMessages.map((msg, i) => (
-                  <li key={i} className="flex items-center gap-3 text-gray-600">
-                    <Ban className="w-5 h-5 text-red-500 flex-shrink-0" />
+                  <li key={i} className="flex items-center gap-3 text-gray-300">
+                    <Ban className="w-5 h-5 text-red-400 flex-shrink-0" />
                     <span>{msg}</span>
                   </li>
                 ))}
@@ -403,25 +403,25 @@ export default function BecomeSellerPage() {
       </section>
 
       {/* Benefits Section */}
-      <section className="py-20 bg-white">
+      <section className="py-20 bg-gradient-to-b from-gray-900 to-gray-800">
         <div className="container mx-auto px-4">
           <div className="text-center mb-14">
-            <span className="inline-block px-4 py-1.5 bg-blue-100 text-blue-700 rounded-full text-sm font-medium mb-4">Why Choose Us</span>
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Everything You Need to Succeed</h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">Tools and support to help you run and grow your business</p>
+            <span className="inline-block px-4 py-1.5 bg-purple-500/20 text-purple-300 rounded-full text-sm font-medium mb-4 border border-purple-500/30">Why Choose VettCode</span>
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Everything You Need to Succeed</h2>
+            <p className="text-gray-400 max-w-2xl mx-auto">Tools and support to help you monetize your code and grow your developer business</p>
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
             {benefits.map((b, i) => (
               <div 
                 key={i} 
-                className="group p-6 bg-gray-50 rounded-2xl hover:bg-white hover:shadow-xl transition-all duration-300 border border-transparent hover:border-gray-100"
+                className="group p-6 bg-gray-800/50 rounded-2xl hover:bg-gray-800 hover:shadow-xl hover:shadow-purple-500/10 transition-all duration-300 border border-gray-700 hover:border-purple-500/50"
                 style={{ animationDelay: `${i * 100}ms` }}
               >
                 <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${b.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300`}>
                   <b.icon className="w-7 h-7 text-white" />
                 </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-2">{b.title}</h3>
-                <p className="text-gray-600">{b.description}</p>
+                <h3 className="text-xl font-bold text-white mb-2">{b.title}</h3>
+                <p className="text-gray-400">{b.description}</p>
               </div>
             ))}
           </div>
@@ -429,29 +429,29 @@ export default function BecomeSellerPage() {
       </section>
 
       {/* How It Works Section */}
-      <section className="py-20 bg-gradient-to-b from-gray-50 to-white">
+      <section className="py-20 bg-gradient-to-b from-gray-800 to-gray-900">
         <div className="container mx-auto px-4">
           <div className="text-center mb-14">
-            <span className="inline-block px-4 py-1.5 bg-purple-100 text-purple-700 rounded-full text-sm font-medium mb-4">Getting Started</span>
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Start Selling in 4 Easy Steps</h2>
-            <p className="text-gray-600">Get your shop up and running in minutes</p>
+            <span className="inline-block px-4 py-1.5 bg-indigo-500/20 text-indigo-300 rounded-full text-sm font-medium mb-4 border border-indigo-500/30">Getting Started</span>
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Start Selling in 4 Easy Steps</h2>
+            <p className="text-gray-400">Get your developer profile up and running in minutes</p>
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl mx-auto">
             {steps.map((s, i) => (
               <div key={i} className="relative group">
                 {/* Connector line */}
                 {i < steps.length - 1 && (
-                  <div className="hidden lg:block absolute top-10 left-[60%] w-full h-0.5 bg-gradient-to-r from-[#115061] to-transparent" />
+                  <div className="hidden lg:block absolute top-10 left-[60%] w-full h-0.5 bg-gradient-to-r from-purple-500 to-transparent" />
                 )}
-                <div className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 text-center relative z-10 group-hover:-translate-y-2">
-                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#115061] to-[#1a7a8a] text-white font-bold text-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                <div className="bg-gray-800/50 border border-gray-700 rounded-2xl p-6 shadow-lg hover:shadow-xl hover:shadow-purple-500/10 hover:border-purple-500/50 transition-all duration-300 text-center relative z-10 group-hover:-translate-y-2">
+                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-purple-500 to-indigo-600 text-white font-bold text-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
                     {s.step}
                   </div>
-                  <div className="w-14 h-14 rounded-2xl bg-[#115061]/10 flex items-center justify-center mx-auto mb-4">
-                    <s.icon className="w-7 h-7 text-[#115061]" />
+                  <div className="w-14 h-14 rounded-2xl bg-purple-500/10 flex items-center justify-center mx-auto mb-4">
+                    <s.icon className="w-7 h-7 text-purple-400" />
                   </div>
-                  <h3 className="text-lg font-bold text-gray-900 mb-2">{s.title}</h3>
-                  <p className="text-gray-500 text-sm">{s.description}</p>
+                  <h3 className="text-lg font-bold text-white mb-2">{s.title}</h3>
+                  <p className="text-gray-400 text-sm">{s.description}</p>
                 </div>
               </div>
             ))}
@@ -460,38 +460,38 @@ export default function BecomeSellerPage() {
       </section>
 
       {/* Success Stories Section */}
-      <section className="py-20 bg-white overflow-hidden">
+      <section className="py-20 bg-gradient-to-b from-gray-900 to-gray-800 overflow-hidden">
         <div className="container mx-auto px-4">
           <div className="text-center mb-14">
-            <span className="inline-block px-4 py-1.5 bg-yellow-100 text-yellow-700 rounded-full text-sm font-medium mb-4">Success Stories</span>
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Hear From Our Sellers</h2>
-            <p className="text-gray-600">Real stories from sellers growing their businesses</p>
+            <span className="inline-block px-4 py-1.5 bg-yellow-500/20 text-yellow-300 rounded-full text-sm font-medium mb-4 border border-yellow-500/30">Success Stories</span>
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Hear From Our Developers</h2>
+            <p className="text-gray-400">Real stories from developers monetizing their code</p>
           </div>
           
           {/* Desktop: Grid view */}
           <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
             {content.testimonials.map((t, i) => (
-              <div key={i} className="group bg-gradient-to-b from-gray-50 to-white rounded-2xl p-6 border border-gray-100 hover:shadow-xl hover:border-gray-200 transition-all duration-300">
+              <div key={i} className="group bg-gradient-to-b from-gray-800 to-gray-900 rounded-2xl p-6 border border-gray-700 hover:shadow-xl hover:shadow-purple-500/10 hover:border-purple-500/50 transition-all duration-300">
                 <div className="flex items-center gap-1 mb-4">
                   {[...Array(5)].map((_, j) => (
                     <Star key={j} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
                   ))}
                 </div>
-                <p className="text-gray-700 mb-6 leading-relaxed italic">"{t.quote}"</p>
+                <p className="text-gray-300 mb-6 leading-relaxed italic">"{t.quote}"</p>
                 <div className="flex items-center gap-3 mb-4">
                   <img 
                     src={t.image} 
                     alt={t.name} 
-                    className="w-12 h-12 rounded-full object-cover ring-2 ring-white shadow-md" 
-                    onError={(e) => { (e.target as HTMLImageElement).src = `https://ui-avatars.com/api/?name=${encodeURIComponent(t.name)}&background=115061&color=fff`; }} 
+                    className="w-12 h-12 rounded-full object-cover ring-2 ring-purple-500 shadow-md" 
+                    onError={(e) => { (e.target as HTMLImageElement).src = `https://ui-avatars.com/api/?name=${encodeURIComponent(t.name)}&background=8b5cf6&color=fff`; }} 
                   />
                   <div>
-                    <div className="font-bold text-gray-900">{t.name}</div>
-                    <div className="text-gray-500 text-sm">{t.role}</div>
+                    <div className="font-bold text-white">{t.name}</div>
+                    <div className="text-gray-400 text-sm">{t.role}</div>
                   </div>
                 </div>
-                <div className="pt-4 border-t border-gray-100">
-                  <div className="flex items-center gap-2 text-green-600 font-semibold">
+                <div className="pt-4 border-t border-gray-700">
+                  <div className="flex items-center gap-2 text-green-400 font-semibold">
                     <DollarSign className="w-5 h-5" />
                     <span>{t.earnings}</span>
                   </div>
@@ -510,14 +510,48 @@ export default function BecomeSellerPage() {
                 >
                   {content.testimonials.map((t, i) => (
                     <div key={i} className="w-full flex-shrink-0 px-2">
-                      <div className="bg-gradient-to-b from-gray-50 to-white rounded-2xl p-6 border border-gray-100 shadow-lg">
+                      <div className="bg-gradient-to-b from-gray-800 to-gray-900 rounded-2xl p-6 border border-gray-700 shadow-lg">
                         <div className="flex items-center gap-1 mb-4">
                           {[...Array(5)].map((_, j) => (
                             <Star key={j} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
                           ))}
                         </div>
-                        <p className="text-gray-700 mb-6 leading-relaxed italic">"{t.quote}"</p>
+                        <p className="text-gray-300 mb-6 leading-relaxed italic">"{t.quote}"</p>
                         <div className="flex items-center gap-3 mb-4">
+                          <img 
+                            src={t.image} 
+                            alt={t.name} 
+                            className="w-12 h-12 rounded-full object-cover ring-2 ring-purple-500 shadow-md" 
+                            onError={(e) => { (e.target as HTMLImageElement).src = `https://ui-avatars.com/api/?name=${encodeURIComponent(t.name)}&background=8b5cf6&color=fff`; }} 
+                          />
+                          <div>
+                            <div className="font-bold text-white">{t.name}</div>
+                            <div className="text-gray-400 text-sm">{t.role}</div>
+                          </div>
+                        </div>
+                        <div className="pt-4 border-t border-gray-700">
+                          <div className="flex items-center gap-2 text-green-400 font-semibold">
+                            <DollarSign className="w-5 h-5" />
+                            <span>{t.earnings}</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              {/* Dots indicator */}
+              <div className="flex justify-center gap-2 mt-6">
+                {content.testimonials.map((_, i) => (
+                  <button
+                    key={i}
+                    onClick={() => setActiveTestimonial(i)}
+                    className={`w-2.5 h-2.5 rounded-full transition-all ${activeTestimonial === i ? 'bg-purple-500 w-8' : 'bg-gray-600'}`}
+                  />
+                ))}
+              </div>
+            </div>
+          </div>ex items-center gap-3 mb-4">
                           <img 
                             src={t.image} 
                             alt={t.name} 
@@ -556,29 +590,29 @@ export default function BecomeSellerPage() {
       </section>
 
       {/* FAQ Section */}
-      <section className="py-20 bg-gray-50">
+      <section className="py-20 bg-gradient-to-b from-gray-900 to-gray-800">
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto">
             <div className="text-center mb-14">
-              <span className="inline-block px-4 py-1.5 bg-green-100 text-green-700 rounded-full text-sm font-medium mb-4">FAQ</span>
-              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Common Questions</h2>
-              <p className="text-gray-600">Everything you need to know before getting started</p>
+              <span className="inline-block px-4 py-1.5 bg-green-500/20 text-green-300 rounded-full text-sm font-medium mb-4 border border-green-500/30">FAQ</span>
+              <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Common Questions</h2>
+              <p className="text-gray-400">Everything you need to know before getting started</p>
             </div>
             <div className="space-y-4">
               {content.faqs.map((faq, i) => (
-                <div key={i} className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+                <div key={i} className="bg-gray-800/50 border border-gray-700 rounded-2xl overflow-hidden shadow-sm hover:shadow-md hover:shadow-purple-500/10 hover:border-purple-500/50 transition-all">
                   <button 
                     onClick={() => setOpenFaq(openFaq === i ? null : i)} 
-                    className="w-full px-6 py-5 flex items-center justify-between text-left hover:bg-gray-50 transition-colors"
+                    className="w-full px-6 py-5 flex items-center justify-between text-left hover:bg-gray-800 transition-colors"
                   >
-                    <span className="font-semibold text-gray-900 pr-4">{faq.question}</span>
-                    <div className={`w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center flex-shrink-0 transition-colors ${openFaq === i ? 'bg-[#115061]' : ''}`}>
-                      <ChevronDown className={`w-5 h-5 transition-all duration-300 ${openFaq === i ? "rotate-180 text-white" : "text-gray-500"}`} />
+                    <span className="font-semibold text-white pr-4">{faq.question}</span>
+                    <div className={`w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center flex-shrink-0 transition-colors ${openFaq === i ? 'bg-purple-500' : ''}`}>
+                      <ChevronDown className={`w-5 h-5 transition-all duration-300 ${openFaq === i ? "rotate-180 text-white" : "text-gray-400"}`} />
                     </div>
                   </button>
                   <div className={`overflow-hidden transition-all duration-300 ${openFaq === i ? "max-h-40" : "max-h-0"}`}>
                     <div className="px-6 pb-5">
-                      <p className="text-gray-600 leading-relaxed">{faq.answer}</p>
+                      <p className="text-gray-300 leading-relaxed">{faq.answer}</p>
                     </div>
                   </div>
                 </div>
@@ -589,22 +623,22 @@ export default function BecomeSellerPage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-gradient-to-br from-[#0a2e38] via-[#115061] to-[#0d3f4d] relative overflow-hidden">
+      <section className="py-20 bg-gradient-to-br from-gray-900 via-purple-900 to-indigo-900 relative overflow-hidden">
         {/* Background decoration */}
         <div className="absolute inset-0">
-          <div className="absolute top-0 left-1/4 w-64 h-64 bg-yellow-400 rounded-full filter blur-[100px] opacity-15" />
-          <div className="absolute bottom-0 right-1/4 w-64 h-64 bg-teal-400 rounded-full filter blur-[100px] opacity-10" />
+          <div className="absolute top-0 left-1/4 w-64 h-64 bg-purple-500 rounded-full filter blur-[100px] opacity-15" />
+          <div className="absolute bottom-0 right-1/4 w-64 h-64 bg-indigo-500 rounded-full filter blur-[100px] opacity-10" />
         </div>
         
         <div className="container mx-auto px-4 text-center relative z-10">
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-6">Ready to Start Your Journey?</h2>
-          <p className="text-white/70 mb-8 max-w-xl mx-auto text-lg">Create your seller account today and start reaching customers across Worldwide.</p>
+          <p className="text-white/70 mb-8 max-w-xl mx-auto text-lg">Create your developer account today and start monetizing your code worldwide.</p>
           <button 
             onClick={() => setShowApplyModal(true)} 
-            className="group px-10 py-5 bg-gradient-to-r from-yellow-400 to-orange-500 text-gray-900 font-bold text-lg rounded-full hover:shadow-2xl hover:shadow-yellow-500/30 transition-all duration-300 inline-flex items-center gap-3 hover:scale-105"
+            className="group px-10 py-5 bg-gradient-to-r from-purple-500 to-indigo-600 text-white font-bold text-lg rounded-full hover:shadow-2xl hover:shadow-purple-500/30 transition-all duration-300 inline-flex items-center gap-3 hover:scale-105"
           >
             <Store className="w-6 h-6" />
-            Apply to Become a Seller
+            Apply to Become a Developer
             <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
           </button>
           <div className="flex items-center justify-center gap-6 mt-8 flex-wrap">
