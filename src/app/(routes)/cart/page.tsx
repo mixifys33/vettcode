@@ -194,6 +194,14 @@ const CartPage = () => {
         paymentMethod: "",
         paymentStatus: "pending",
         status: "pending",
+        shippingAddress: {
+          fullName: user.name || "",
+          phone: user.phone || "",
+          email: user.email || "",
+          street: "",
+          city: "",
+          region: "",
+        },
         customerInfo: {
           fullName: user.name || "",
           phone: user.phone || "",
