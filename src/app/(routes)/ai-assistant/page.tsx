@@ -530,12 +530,12 @@ const EasyAIPage = () => {
   }
 
   const suggestedPrompts = [
-    { icon: <Search className="w-4 h-4" />, text: "Find React dashboard templates" },
-    { icon: <TrendingUp className="w-4 h-4" />, text: "What's trending in web apps?" },
-    { icon: <Package className="w-4 h-4" />, text: "Compare SaaS platforms", href: "/compare" },
-    { icon: <Tag className="w-4 h-4" />, text: "Best deals on APIs today" },
-    { icon: <Heart className="w-4 h-4" />, text: "E-commerce starter kits" },
-    { icon: <Headphones className="w-4 h-4" />, text: "Help with my purchase" },
+    { icon: <Search className="w-4 h-4" />, text: "Find React dashboard templates under $100" },
+    { icon: <TrendingUp className="w-4 h-4" />, text: "Show trending mobile apps this week" },
+    { icon: <Package className="w-4 h-4" />, text: "Compare top 3 e-commerce solutions", href: "/compare" },
+    { icon: <Tag className="w-4 h-4" />, text: "Show me free open-source applications" },
+    { icon: <Heart className="w-4 h-4" />, text: "Best SaaS starter kits with authentication" },
+    { icon: <Headphones className="w-4 h-4" />, text: user ? "Show my purchase and download history" : "How do I buy and download applications?" },
   ]
 
   const formatTime = (date: Date) => {
@@ -768,7 +768,7 @@ const EasyAIPage = () => {
                       color: "text-purple-400",
                       hoverBorder: "hover:border-purple-500/50",
                       bgHover: "hover:bg-purple-500/10",
-                      prompt: "Help me search for an application. What are you looking for?",
+                      prompt: "I'm looking for applications. What type of app are you searching for? (e.g., React dashboard, mobile app, API service)",
                     },
                     {
                       icon: <Package className="w-5 h-5" />,
@@ -784,7 +784,7 @@ const EasyAIPage = () => {
                       color: "text-pink-400",
                       hoverBorder: "hover:border-pink-500/50",
                       bgHover: "hover:bg-pink-500/10",
-                      prompt: "What applications are trending on VettCode right now?",
+                      prompt: "Show me the top trending applications on VettCode right now, including their ratings, downloads, and key features.",
                     },
                     {
                       icon: <Headphones className="w-5 h-5" />,
@@ -792,7 +792,9 @@ const EasyAIPage = () => {
                       color: "text-cyan-400",
                       hoverBorder: "hover:border-cyan-500/50",
                       bgHover: "hover:bg-cyan-500/10",
-                      prompt: "I need help with my purchase or account. Can you assist me?",
+                      prompt: user 
+                        ? "I need help with my VettCode account. Please check my purchase history, downloads, and help me with any issues."
+                        : "I need help with VettCode. Can you guide me on how to browse applications, make purchases, and use the platform?",
                     },
                   ].map((f, i) => (
                     f.href ? (
