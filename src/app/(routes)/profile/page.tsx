@@ -12,7 +12,7 @@ import {
   Loader2, Clock, Truck, CheckCircle, Package, ChevronRight, Edit3, Camera,
   Plus, Trash2, CreditCard, Smartphone, Eye, EyeOff, Monitor, Globe,
   X, Map, Store, Menu, Home, Building, ShoppingCart,
-  Phone, AlertCircle, Check, MapPinned, Crosshair, Search, Users, ExternalLink, RefreshCw
+  Phone, AlertCircle, Check, MapPinned, Crosshair, Search, Users, ExternalLink, RefreshCw, Download
 } from "lucide-react";
 
 type TabType = "profile" | "orders" | "wishlist" | "addresses" | "wallet" | "security" | "notifications" | "following";
@@ -216,23 +216,29 @@ const ProfileTab = ({ user, profileForm, setProfileForm, isEditing, setIsEditing
 // ============ ORDERS TAB ============
 const OrdersTab = ({ orders, loading }: { orders: Order[]; loading: boolean }) => {
   const getStatusColor = (status: string) => {
-    const colors: Record<string, string> = { pending: "bg-yellow-100 text-yellow-700", processing: "bg-blue-100 text-blue-700", shipped: "bg-purple-100 text-purple-700", delivered: "bg-green-100 text-green-700", cancelled: "bg-red-100 text-red-700" };
+    const colors: Record<string, string> = { 
+      pending: "bg-yellow-100 text-yellow-700", 
+      processing: "bg-blue-100 text-blue-700", 
+      completed: "bg-green-100 text-green-700",
+      delivered: "bg-green-100 text-green-700", 
+      cancelled: "bg-red-100 text-red-700" 
+    };
     return colors[status] || "bg-gray-100 text-gray-700";
   };
 
   if (loading) return <div className="flex justify-center py-12"><Loader2 className="w-6 h-6 animate-spin text-blue-600" /></div>;
   if (!orders.length) return (
     <div className="text-center py-8 sm:py-12">
-      <ShoppingBag className="w-12 h-12 sm:w-16 sm:h-16 text-gray-300 mx-auto mb-3" />
-      <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-1">No orders yet</h3>
-      <p className="text-xs sm:text-sm text-gray-500 mb-4">Start shopping to see your orders here</p>
-      <Link href="/products" className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700"><ShoppingBag className="w-4 h-4" />Browse Products</Link>
+      <Package className="w-12 h-12 sm:w-16 sm:h-16 text-gray-300 mx-auto mb-3" />
+      <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-1">No purchases yet</h3>
+      <p className="text-xs sm:text-sm text-gray-500 mb-4">Explore verified applications and start building</p>
+      <Link href="/products" className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700"><Package className="w-4 h-4" />Browse Applications</Link>
     </div>
   );
 
   return (
     <div className="space-y-3">
-      <h3 className="text-sm sm:text-base font-semibold text-gray-900">Your Orders ({orders.length})</h3>
+      <h3 className="text-sm sm:text-base font-semibold text-gray-900">Your Purchases ({orders.length})</h3>
       {orders.map(order => (
         <Link key={order.id} href={`/orders/${order.id}`} className="block p-3 sm:p-4 border rounded-xl hover:border-blue-300 hover:shadow-sm transition">
           <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
@@ -250,7 +256,7 @@ const OrdersTab = ({ orders, loading }: { orders: Order[]; loading: boolean }) =
                 ) : <Package className="w-6 h-6 text-gray-400 absolute inset-0 m-auto" />}
               </div>
               <div className="min-w-0 flex-1">
-                <p className="text-xs sm:text-sm font-medium text-gray-900 truncate">Order #{order.id.slice(-8)}</p>
+                <p className="text-xs sm:text-sm font-medium text-gray-900 truncate">Purchase #{order.id.slice(-8)}</p>
                 <p className="text-[10px] sm:text-xs text-gray-500">{new Date(order.createdAt).toLocaleDateString()}</p>
                 <p className="text-xs sm:text-sm font-semibold text-gray-900 mt-0.5">UGX {order.total?.toLocaleString()}</p>
               </div>
@@ -278,22 +284,23 @@ const WishlistTab = () => {
     <div className="text-center py-8 sm:py-12">
       <Heart className="w-12 h-12 sm:w-16 sm:h-16 text-gray-300 mx-auto mb-3" />
       <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-1">Your wishlist is empty</h3>
-      <p className="text-xs sm:text-sm text-gray-500 mb-4">Save items you love for later</p>
+      <p className="text-xs sm:text-sm text-gray-500 mb-4">Save applications you love for later</p>
       <Link href="/products" className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700">
-        <Heart className="w-4 h-4" />Explore Products
+        <Heart className="w-4 h-4" />Explore Applications
       </Link>
     </div>
   );
 
   return (
     <div className="space-y-3">
-      <h3 className="text-sm sm:text-base font-semibold text-gray-900">Saved Items ({wishlistItems.length})</h3>
+      <h3 className="text-sm sm:text-base font-semibold text-gray-900">Saved Applications ({wishlistItems.length})</h3>
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-3">
         {wishlistItems.map((item: any) => {
           const inCart = cart.some((c: any) => c.id === item.id);
+          const productLink = item.slug ? `/product/${item.slug}` : `/product/${item.id}`;
           return (
             <div key={item.id} className="bg-white border rounded-xl overflow-hidden group flex flex-col">
-              <Link href={`/product/${item.id}`} className="block flex-1">
+              <Link href={productLink} className="block flex-1">
                 <div className="relative aspect-square bg-gray-100">
                   {item.image ? (
                     <Image
@@ -306,21 +313,21 @@ const WishlistTab = () => {
                     />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center">
-                      <ShoppingBag className="w-8 h-8 text-gray-300" />
+                      <Package className="w-8 h-8 text-gray-300" />
                     </div>
                   )}
                 </div>
                 <div className="p-2">
                   <p className="text-xs sm:text-sm font-medium text-gray-900 truncate">{item.title}</p>
                   <p className="text-xs sm:text-sm font-bold text-teal-700">
-                    UGX {(item.price || item.sale_price || 0).toLocaleString('en-UG')}
+                    {item.price === 0 ? 'Free' : `UGX ${item.price.toLocaleString('en-UG')}`}
                   </p>
                 </div>
               </Link>
               <div className="flex border-t">
                 <button
                   onClick={() => {
-                    if (user) addToCart({ id: item.id, title: item.title, price: item.price || item.sale_price || 0, image: item.image, shopId: item.shopId || '' }, user, null, null);
+                    if (user) addToCart({ id: item.id, title: item.title, price: item.price || 0, image: item.image, shopId: item.shopId || '', slug: item.slug }, user, null, null);
                   }}
                   disabled={!user}
                   className={`flex-1 py-1.5 text-xs flex items-center justify-center gap-1 transition ${inCart ? 'bg-teal-50 text-teal-700' : 'hover:bg-teal-50 text-gray-600 hover:text-teal-700'}`}
@@ -817,7 +824,7 @@ const WalletTab = ({ wallet, paymentMethods, loading, orders }: { wallet: Wallet
           <div className="text-center py-8 border-2 border-dashed rounded-xl">
             <ShoppingBag className="w-10 h-10 text-gray-300 mx-auto mb-2" />
             <p className="text-sm text-gray-500">No completed orders yet</p>
-            <p className="text-xs text-gray-400 mt-1">Spending history will appear here once orders are delivered</p>
+            <p className="text-xs text-gray-400 mt-1">Spending history will appear here once purchases are completed</p>
           </div>
         ) : (
           <div className="space-y-2">
@@ -1006,9 +1013,9 @@ const NotificationsTab = ({ preferences, setPreferences }: { preferences: any; s
       { key: "push", label: "Push Notifications", desc: "Browser and app notifications" },
     ]},
     { title: "Preferences", items: [
-      { key: "orderUpdates", label: "Order Updates", desc: "Shipping and delivery notifications" },
+      { key: "orderUpdates", label: "Order Updates", desc: "Download and license notifications" },
       { key: "promotions", label: "Promotions & Deals", desc: "Special offers and discounts" },
-      { key: "newsletter", label: "Newsletter", desc: "Weekly product recommendations" },
+      { key: "newsletter", label: "Newsletter", desc: "Weekly application recommendations" },
     ]},
   ];
 
@@ -1083,7 +1090,7 @@ const FollowingTab = () => {
     <div className="text-center py-8 sm:py-12">
       <Store className="w-12 h-12 sm:w-16 sm:h-16 text-gray-300 mx-auto mb-3" />
       <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-1">Not following any shops</h3>
-      <p className="text-xs sm:text-sm text-gray-500 mb-4">Follow shops to see their updates and new products</p>
+      <p className="text-xs sm:text-sm text-gray-500 mb-4">Follow shops to see their updates and new applications</p>
       <Link href="/shops" className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700">
         <Store className="w-4 h-4" />Browse Shops
       </Link>
@@ -1129,7 +1136,7 @@ const FollowingTab = () => {
               
               <div className="flex items-center gap-3 text-xs text-gray-500 mb-3">
                 <span className="flex items-center gap-1">
-                  <Package className="w-3 h-3" />{shop.productCount} products
+                  <Package className="w-3 h-3" />{shop.productCount} applications
                 </span>
                 <span className="flex items-center gap-1">
                   ⭐ {shop.ratings.toFixed(1)}
@@ -1499,10 +1506,10 @@ const ProfilePageContent = () => {
 
         {/* Stats Row */}
         <div className="flex gap-2 overflow-x-auto pb-2 mb-3 scrollbar-hide -mx-1 px-1">
-          <StatCard title="Orders" count={orders.length} icon={Package} color="blue" />
-          <StatCard title="Processing" count={orders.filter(o => o.status === "processing").length} icon={Clock} color="orange" />
-          <StatCard title="Shipped" count={orders.filter(o => o.status === "shipped").length} icon={Truck} color="purple" />
-          <StatCard title="Delivered" count={orders.filter(o => o.status === "delivered").length} icon={CheckCircle} color="green" />
+          <StatCard title="Purchased" count={orders.length} icon={Package} color="blue" />
+          <StatCard title="Downloads" count={orders.filter(o => o.status === "delivered").length} icon={Download} color="green" />
+          <StatCard title="Wishlist" count={wishlist.length} icon={Heart} color="purple" />
+          <StatCard title="Following" count={0} icon={Users} color="orange" />
         </div>
 
         <div className="flex flex-col lg:flex-row gap-4">
