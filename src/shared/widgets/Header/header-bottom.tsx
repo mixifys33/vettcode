@@ -1,7 +1,7 @@
 'use client';
 import Link from 'next/link';
 import Image from 'next/image';
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import {
   AlignLeft, ChevronDown, ChevronRight, User, Heart, ShoppingCart,
@@ -12,8 +12,9 @@ import {
 import { navItemTypes } from '../../../configs/constants';
 import useUser from '@/hooks/useUser';
 import { useStore } from '@/store';
-import axiosInstance from '@/utils/axiosInstance';
 import { useCurrencyFormat } from '@/hooks/useCurrencyFormat';
+import { useQuery } from '@tanstack/react-query';
+import axiosInstance from '@/utils/axiosInstance';
 
 /* ─── types ─────────────────────────────────────────────── */
 type ProductSuggestion = {
@@ -81,6 +82,17 @@ const HeaderBottom = () => {
 
   const shouldHide = HIDDEN_PATHS.some(p => pathname === p || pathname?.startsWith(`${p}/`));
 
+  // Fetch all applications once and cache (for search suggestions)
+  const { data: allApplications } = useQuery({
+    queryKey: ["all-applications-search"],
+    queryFn: async () => {
+      const res = await axiosInstance.get('/api/applications?page=1&limit=1000');
+      return res.data?.applications ?? [];
+    },
+    staleTime: 1000 * 60 * 5, // Cache for 5 minutes
+    gcTime: 1000 * 60 * 10, // Keep in cache for 10 minutes
+  });
+
   /* scroll listener */
   useEffect(() => {
     const onScroll = () => setIsSticky(window.scrollY > 80);
@@ -114,20 +126,43 @@ const HeaderBottom = () => {
     if (searchOpen) setTimeout(() => inputRef.current?.focus(), 50);
   }, [searchOpen]);
 
-  /* suggestions fetch */
-  const fetchSuggestions = async (q: string) => {
-    setLoadingSugg(true);
-    try {
-      const { data } = await axiosInstance.get('/api/applications', { params: { q, limit: 7 } });
-      setSuggestions(data?.applications ?? []);
-    } catch { setSuggestions([]); }
-    finally { setLoadingSugg(false); }
-  };
+  /* Client-side search filtering */
+  const filteredSuggestions = useMemo(() => {
+    if (!searchQuery.trim() || searchQuery.trim().length < 2 || !allApplications) {
+      return [];
+    }
+
+    const query = searchQuery.toLowerCase().trim();
+    const filtered = allApplications.filter((app: any) =>
+      app.appName?.toLowerCase().includes(query) ||
+      app.shortDescription?.toLowerCase().includes(query) ||
+      app.detailedDescription?.toLowerCase().includes(query) ||
+      app.tags?.toLowerCase().includes(query) ||
+      app.appCategory?.toLowerCase().includes(query)
+    );
+
+    // Return top 7 results
+    return filtered.slice(0, 7);
+  }, [searchQuery, allApplications]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const v = e.target.value;
     setSearchQuery(v);
-    if (v.trim().length >= 2) { setShowDrop(true); void fetchSuggestions(v.trim()); }
+    if (v.trim().length >= 2) {
+      setShowDrop(true);
+      setSuggestions(filteredSuggestions);
+    } else {
+      setSuggestions([]);
+      setShowDrop(false);
+    }
+  };
+
+  // Update suggestions when filtered results change
+  useEffect(() => {
+    if (searchQuery.trim().length >= 2) {
+      setSuggestions(filteredSuggestions);
+    }
+  }, [filteredSuggestions, searchQuery]);
     else { setSuggestions([]); setShowDrop(false); }
   };
 
@@ -140,7 +175,7 @@ const HeaderBottom = () => {
 
   const handleSelect = (slug: string, title: string) => {
     setSearchQuery(title); setShowDrop(false); setSearchOpen(false);
-    router.push(`/application/${slug}`);
+    router.push(`/product/${slug}`);
   };
 
   /* ── shared icon strip (profile / wishlist / cart) ── */
@@ -203,11 +238,7 @@ const HeaderBottom = () => {
   /* ── search suggestions dropdown ── */
   const SearchDropdown = () => (
     <div className="absolute left-0 right-0 top-[calc(100%+6px)] z-50 bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden animate-slide-down">
-      {loadingSugg ? (
-        <div className="flex items-center gap-3 px-4 py-4 text-sm text-gray-500">
-          <Loader2 className="w-4 h-4 animate-spin text-teal-600" /> Searching…
-        </div>
-      ) : suggestions.length > 0 ? (
+      {suggestions.length > 0 ? (
         <>
           <div className="px-4 py-2 bg-gradient-to-r from-teal-50 to-indigo-50 border-b border-gray-100 flex items-center gap-2">
             <TrendingUp className="w-3.5 h-3.5 text-teal-600" />
@@ -215,18 +246,18 @@ const HeaderBottom = () => {
           </div>
           <ul className="max-h-64 overflow-y-auto">
             {suggestions.map((item) => (
-              <li key={item.id}>
-                <button onClick={() => handleSelect(item.slug, item.title)}
+              <li key={item.id || item._id}>
+                <button onClick={() => handleSelect(item.slug || item._id, item.appName || item.title)}
                   className="w-full flex items-center justify-between gap-3 px-4 py-2.5 hover:bg-teal-50 transition-colors text-left group">
                   <div className="flex items-center gap-2.5 min-w-0">
                     <div className="w-1.5 h-1.5 rounded-full bg-teal-400 flex-shrink-0" />
                     <div className="min-w-0">
-                      <p className="text-sm font-semibold text-gray-900 truncate">{item.title}</p>
+                      <p className="text-sm font-semibold text-gray-900 truncate">{item.appName || item.title}</p>
                       {item.appCategory && <p className="text-xs text-gray-400 capitalize">{item.appCategory}</p>}
                     </div>
                   </div>
                   <span className="text-sm font-bold text-teal-700 flex-shrink-0 bg-teal-50 px-2 py-0.5 rounded-lg">
-                    {item.isFree ? 'FREE' : formatPrice(item.price)}
+                    {item.isFree || item.price === 0 ? 'FREE' : formatPrice(item.price)}
                   </span>
                 </button>
               </li>
