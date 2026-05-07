@@ -89,11 +89,17 @@ const HeaderBottom = () => {
   const shouldHide = HIDDEN_PATHS.some(p => pathname === p || pathname?.startsWith(`${p}/`));
 
   // Fetch all applications once and cache (for search suggestions)
-  const { data: allApplications } = useQuery({
+  const { data: allApplications, isLoading: isLoadingApps } = useQuery({
     queryKey: ["all-applications-search"],
     queryFn: async () => {
-      const res = await axiosInstance.get('/api/applications?page=1&limit=1000');
-      return res.data?.applications ?? [];
+      try {
+        const res = await axiosInstance.get('/api/applications?page=1&limit=1000');
+        console.log('📦 Fetched applications for search:', res.data?.applications?.length || 0);
+        return res.data?.applications ?? [];
+      } catch (error) {
+        console.error('❌ Error fetching applications:', error);
+        return [];
+      }
     },
     staleTime: 1000 * 60 * 5, // Cache for 5 minutes
     gcTime: 1000 * 60 * 10, // Keep in cache for 10 minutes

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useMemo } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -13,6 +13,7 @@ import useUser from "@/hooks/useUser";
 import { useStore } from "@/store";
 import axiosInstance from "@/utils/axiosInstance";
 import { useCurrencyFormat } from "@/hooks/useCurrencyFormat";
+import { useQuery } from "@tanstack/react-query";
 
 const formatUserName = (fullName?: string, compact = false): string => {
   if (!fullName) return "User";
@@ -27,8 +28,17 @@ const formatUserName = (fullName?: string, compact = false): string => {
 };
 
 type ProductSuggestion = {
-  id: string; title: string; slug: string;
-  category?: string; sale_price?: number; regular_price?: number;
+  id?: string;
+  _id?: string;
+  title?: string;
+  appName?: string;
+  slug?: string;
+  category?: string;
+  appCategory?: string;
+  sale_price?: number;
+  regular_price?: number;
+  price?: number;
+  isFree?: boolean;
 };
 
 const Header = () => {
@@ -39,10 +49,20 @@ const Header = () => {
   const { formatPrice } = useCurrencyFormat();
   const [searchQuery, setSearchQuery] = useState("");
   const [suggestions, setSuggestions] = useState<ProductSuggestion[]>([]);
-  const [loadingSuggestions, setLoadingSuggestions] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
+
+  // Fetch all applications once and cache (for search suggestions)
+  const { data: allApplications } = useQuery({
+    queryKey: ["all-applications-header"],
+    queryFn: async () => {
+      const res = await axiosInstance.get('/api/applications?page=1&limit=1000');
+      return res.data?.applications ?? [];
+    },
+    staleTime: 1000 * 60 * 5, // Cache for 5 minutes
+    gcTime: 1000 * 60 * 10, // Keep in cache for 10 minutes
+  });
 
   useEffect(() => {
     const onScroll = () => setIsScrolled(window.scrollY > 80);
@@ -59,21 +79,43 @@ const Header = () => {
     return () => document.removeEventListener("mousedown", handler);
   }, []);
 
-  const fetchSuggestions = async (query: string) => {
-    setLoadingSuggestions(true);
-    try {
-      const { data } = await axiosInstance.get("/api/products", { params: { q: query, limit: 7 } });
-      setSuggestions(data?.products ?? []);
-    } catch { setSuggestions([]); }
-    finally { setLoadingSuggestions(false); }
-  };
+  // Client-side search filtering
+  const filteredSuggestions = useMemo(() => {
+    if (!searchQuery.trim() || searchQuery.trim().length < 2 || !allApplications) {
+      return [];
+    }
+
+    const query = searchQuery.toLowerCase().trim();
+    const filtered = allApplications.filter((app: any) =>
+      app.appName?.toLowerCase().includes(query) ||
+      app.shortDescription?.toLowerCase().includes(query) ||
+      app.detailedDescription?.toLowerCase().includes(query) ||
+      app.tags?.toLowerCase().includes(query) ||
+      app.appCategory?.toLowerCase().includes(query)
+    );
+
+    // Return top 7 results
+    return filtered.slice(0, 7);
+  }, [searchQuery, allApplications]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value;
     setSearchQuery(val);
-    if (val.trim().length >= 2) { setShowDropdown(true); void fetchSuggestions(val.trim()); }
-    else { setSuggestions([]); setShowDropdown(false); }
+    if (val.trim().length >= 2) {
+      setShowDropdown(true);
+      setSuggestions(filteredSuggestions);
+    } else {
+      setSuggestions([]);
+      setShowDropdown(false);
+    }
   };
+
+  // Update suggestions when filtered results change
+  useEffect(() => {
+    if (searchQuery.trim().length >= 2) {
+      setSuggestions(filteredSuggestions);
+    }
+  }, [filteredSuggestions, searchQuery]);
 
   const handleSearch = () => {
     const q = searchQuery.trim();
@@ -146,11 +188,7 @@ const Header = () => {
           {/* Dropdown */}
           {showDropdown && (
             <div className="absolute left-0 right-0 top-[calc(100%+8px)] z-50 bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden animate-slide-down">
-              {loadingSuggestions ? (
-                <div className="flex items-center gap-3 px-4 py-4 text-sm text-gray-500">
-                  <Loader2 className="w-4 h-4 animate-spin text-purple-600" /> Searching...
-                </div>
-              ) : suggestions.length > 0 ? (
+              {suggestions.length > 0 ? (
                 <>
                   <div className="px-4 py-2.5 bg-gradient-to-r from-purple-50 to-violet-50 border-b border-gray-100 flex items-center gap-2">
                     <TrendingUp className="w-3.5 h-3.5 text-purple-600" />
@@ -158,18 +196,18 @@ const Header = () => {
                   </div>
                   <ul className="max-h-72 overflow-y-auto">
                     {suggestions.map((item) => (
-                      <li key={item.id}>
-                        <button onClick={() => handleSelect(item.slug, item.title)}
+                      <li key={item.id || item._id}>
+                        <button onClick={() => handleSelect(item.slug || item._id || '', item.appName || item.title || '')}
                           className="w-full flex items-center justify-between gap-3 px-4 py-3 hover:bg-purple-50 transition-colors text-left group">
                           <div className="min-w-0 flex items-center gap-3">
                             <div className="w-1.5 h-1.5 rounded-full bg-purple-400 flex-shrink-0 group-hover:bg-purple-600 transition-colors" />
                             <div>
-                              <p className="text-sm font-semibold text-gray-900 truncate">{item.title}</p>
-                              {item.category && <p className="text-xs text-gray-400 mt-0.5 capitalize">{item.category}</p>}
+                              <p className="text-sm font-semibold text-gray-900 truncate">{item.appName || item.title}</p>
+                              {(item.appCategory || item.category) && <p className="text-xs text-gray-400 mt-0.5 capitalize">{item.appCategory || item.category}</p>}
                             </div>
                           </div>
                           <span className="text-sm font-bold text-purple-700 flex-shrink-0 bg-purple-50 px-2 py-0.5 rounded-lg">
-                            {formatPrice(item.sale_price ?? item.regular_price)}
+                            {item.isFree || item.price === 0 ? 'FREE' : formatPrice(item.price ?? item.sale_price ?? item.regular_price)}
                           </span>
                         </button>
                       </li>
@@ -177,7 +215,7 @@ const Header = () => {
                   </ul>
                   <div className="px-4 py-2.5 border-t border-gray-100 bg-gray-50">
                     <button onClick={handleSearch} className="text-xs text-purple-600 font-semibold hover:text-purple-800 transition-colors">
-                      See all results for &ldquo;{searchQuery}&rdquo; ?
+                      See all results for &ldquo;{searchQuery}&rdquo; →
                     </button>
                   </div>
                 </>
