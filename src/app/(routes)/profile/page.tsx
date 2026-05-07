@@ -148,10 +148,10 @@ const ProfileTab = ({ user, profileForm, setProfileForm, isEditing, setIsEditing
       {/* Avatar */}
       <div className="flex justify-center sm:justify-start">
         <div className="relative">
-          <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-gray-100 overflow-hidden border-4 border-white shadow-lg">
-            {user?.avatar ? <Image src={user.avatar} alt="" fill className="object-cover" unoptimized /> : <div className="w-full h-full flex items-center justify-center text-2xl font-bold text-gray-400">{user?.name?.charAt(0)?.toUpperCase()}</div>}
+          <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-gradient-to-br from-purple-600 to-blue-600 overflow-hidden border-4 border-slate-800 shadow-lg shadow-purple-500/50">
+            {user?.avatar ? <Image src={user.avatar} alt="" fill className="object-cover" unoptimized /> : <div className="w-full h-full flex items-center justify-center text-2xl font-bold text-white">{user?.name?.charAt(0)?.toUpperCase()}</div>}
           </div>
-          <label className="absolute bottom-0 right-0 p-1.5 bg-blue-600 rounded-full cursor-pointer hover:bg-blue-700 transition shadow-lg">
+          <label className="absolute bottom-0 right-0 p-1.5 bg-purple-600 rounded-full cursor-pointer hover:bg-purple-700 transition shadow-lg">
             <Camera className="w-3.5 h-3.5 text-white" />
             <input type="file" accept="image/*" onChange={handleAvatarUpload} className="hidden" />
           </label>
@@ -164,11 +164,11 @@ const ProfileTab = ({ user, profileForm, setProfileForm, isEditing, setIsEditing
       </div>
       {/* Info */}
       <div className="flex-1 text-center sm:text-left">
-        <h2 className="text-lg sm:text-xl font-bold text-gray-900">{user?.name}</h2>
-        <p className="text-xs sm:text-sm text-gray-500">{user?.email}</p>
+        <h2 className="text-lg sm:text-xl font-bold text-white">{user?.name}</h2>
+        <p className="text-xs sm:text-sm text-purple-300">{user?.email}</p>
         <p className="text-xs text-gray-400 mt-1">Member since {new Date(user?.createdAt || Date.now()).toLocaleDateString()}</p>
       </div>
-      <button onClick={() => setIsEditing(!isEditing)} className="self-center sm:self-start px-3 py-1.5 text-xs sm:text-sm font-medium text-blue-600 hover:bg-blue-50 rounded-lg transition flex items-center gap-1">
+      <button onClick={() => setIsEditing(!isEditing)} className="self-center sm:self-start px-3 py-1.5 text-xs sm:text-sm font-medium text-purple-300 hover:bg-purple-500/20 rounded-lg transition flex items-center gap-1">
         <Edit3 className="w-3.5 h-3.5" />{isEditing ? "Cancel" : "Edit"}
       </button>
     </div>
@@ -176,40 +176,40 @@ const ProfileTab = ({ user, profileForm, setProfileForm, isEditing, setIsEditing
     {/* Profile Form */}
     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
       <div>
-        <label className="block text-xs font-medium text-gray-700 mb-1">Full Name</label>
-        <input type="text" value={profileForm.name} onChange={e => setProfileForm({ ...profileForm, name: e.target.value })} disabled={!isEditing} className="w-full px-3 py-2 text-sm border rounded-lg focus:ring-2 focus:ring-blue-500 disabled:bg-gray-50 disabled:text-gray-500" />
+        <label className="block text-xs font-medium text-purple-300 mb-1">Full Name</label>
+        <input type="text" value={profileForm.name} onChange={e => setProfileForm({ ...profileForm, name: e.target.value })} disabled={!isEditing} className="w-full px-3 py-2 text-sm border border-purple-500/30 bg-slate-800/50 text-white rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent disabled:bg-slate-800/30 disabled:text-gray-400" />
       </div>
       <div>
-        <label className="block text-xs font-medium text-gray-700 mb-1">Email</label>
-        <input type="email" value={profileForm.email} disabled className="w-full px-3 py-2 text-sm border rounded-lg bg-gray-50 text-gray-500" />
+        <label className="block text-xs font-medium text-purple-300 mb-1">Email</label>
+        <input type="email" value={profileForm.email} disabled className="w-full px-3 py-2 text-sm border border-purple-500/30 bg-slate-800/30 text-gray-400 rounded-lg" />
       </div>
       <div>
-        <label className="block text-xs font-medium text-gray-700 mb-1">Phone</label>
-        <input type="tel" value={profileForm.phone} onChange={e => setProfileForm({ ...profileForm, phone: e.target.value })} disabled={!isEditing} className="w-full px-3 py-2 text-sm border rounded-lg focus:ring-2 focus:ring-blue-500 disabled:bg-gray-50 disabled:text-gray-500" />
+        <label className="block text-xs font-medium text-purple-300 mb-1">Phone</label>
+        <input type="tel" value={profileForm.phone} onChange={e => setProfileForm({ ...profileForm, phone: e.target.value })} disabled={!isEditing} className="w-full px-3 py-2 text-sm border border-purple-500/30 bg-slate-800/50 text-white rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent disabled:bg-slate-800/30 disabled:text-gray-400" />
       </div>
     </div>
     {isEditing && (
-      <button onClick={handleSaveProfile} disabled={isSaving} className="w-full sm:w-auto px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 disabled:opacity-50 flex items-center justify-center gap-2">
+      <button onClick={handleSaveProfile} disabled={isSaving} className="w-full sm:w-auto px-4 py-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white text-sm font-medium rounded-lg hover:from-purple-700 hover:to-blue-700 disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg shadow-purple-500/50">
         {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Check className="w-4 h-4" />}Save Changes
       </button>
     )}
 
     {/* Password Section */}
-    <div className="pt-4 border-t">
-      <h3 className="text-sm font-semibold text-gray-900 mb-3">Change Password</h3>
+    <div className="pt-4 border-t border-purple-500/20">
+      <h3 className="text-sm font-semibold text-white mb-3">Change Password</h3>
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         {[{ key: "currentPassword", label: "Current", show: showPasswords.current, toggle: () => setShowPasswords({ ...showPasswords, current: !showPasswords.current }) },
           { key: "newPassword", label: "New", show: showPasswords.new, toggle: () => setShowPasswords({ ...showPasswords, new: !showPasswords.new }) },
           { key: "confirmPassword", label: "Confirm", show: showPasswords.confirm, toggle: () => setShowPasswords({ ...showPasswords, confirm: !showPasswords.confirm }) }
         ].map(({ key, label, show, toggle }) => (
           <div key={key} className="relative">
-            <label className="block text-xs font-medium text-gray-700 mb-1">{label}</label>
-            <input type={show ? "text" : "password"} value={passwordForm[key]} onChange={e => setPasswordForm({ ...passwordForm, [key]: e.target.value })} className="w-full px-3 py-2 pr-9 text-sm border rounded-lg focus:ring-2 focus:ring-blue-500" />
-            <button type="button" onClick={toggle} className="absolute right-2 top-7 text-gray-400 hover:text-gray-600">{show ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}</button>
+            <label className="block text-xs font-medium text-purple-300 mb-1">{label}</label>
+            <input type={show ? "text" : "password"} value={passwordForm[key]} onChange={e => setPasswordForm({ ...passwordForm, [key]: e.target.value })} className="w-full px-3 py-2 pr-9 text-sm border border-purple-500/30 bg-slate-800/50 text-white rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent placeholder-gray-500" />
+            <button type="button" onClick={toggle} className="absolute right-2 top-7 text-gray-400 hover:text-purple-300">{show ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}</button>
           </div>
         ))}
       </div>
-      <button onClick={handleChangePassword} disabled={isSaving || !passwordForm.currentPassword || !passwordForm.newPassword} className="mt-3 px-4 py-2 bg-gray-900 text-white text-sm font-medium rounded-lg hover:bg-gray-800 disabled:opacity-50">Update Password</button>
+      <button onClick={handleChangePassword} disabled={isSaving || !passwordForm.currentPassword || !passwordForm.newPassword} className="mt-3 px-4 py-2 bg-slate-800 text-white text-sm font-medium rounded-lg hover:bg-slate-700 disabled:opacity-50 border border-purple-500/30">Update Password</button>
     </div>
   </div>
 );
@@ -219,33 +219,33 @@ const ProfileTab = ({ user, profileForm, setProfileForm, isEditing, setIsEditing
 const OrdersTab = ({ orders, loading }: { orders: Order[]; loading: boolean }) => {
   const getStatusColor = (status: string) => {
     const colors: Record<string, string> = { 
-      pending: "bg-yellow-100 text-yellow-700", 
-      processing: "bg-blue-100 text-blue-700", 
-      completed: "bg-green-100 text-green-700",
-      delivered: "bg-green-100 text-green-700", 
-      cancelled: "bg-red-100 text-red-700" 
+      pending: "bg-yellow-500/20 text-yellow-300 border border-yellow-500/30", 
+      processing: "bg-blue-500/20 text-blue-300 border border-blue-500/30", 
+      completed: "bg-green-500/20 text-green-300 border border-green-500/30",
+      delivered: "bg-green-500/20 text-green-300 border border-green-500/30", 
+      cancelled: "bg-red-500/20 text-red-300 border border-red-500/30" 
     };
-    return colors[status] || "bg-gray-100 text-gray-700";
+    return colors[status] || "bg-gray-500/20 text-gray-300 border border-gray-500/30";
   };
 
-  if (loading) return <div className="flex justify-center py-12"><Loader2 className="w-6 h-6 animate-spin text-blue-600" /></div>;
+  if (loading) return <div className="flex justify-center py-12"><Loader2 className="w-6 h-6 animate-spin text-purple-400" /></div>;
   if (!orders.length) return (
     <div className="text-center py-8 sm:py-12">
-      <Package className="w-12 h-12 sm:w-16 sm:h-16 text-gray-300 mx-auto mb-3" />
-      <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-1">No purchases yet</h3>
-      <p className="text-xs sm:text-sm text-gray-500 mb-4">Explore verified applications and start building</p>
-      <Link href="/products" className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700"><Package className="w-4 h-4" />Browse Applications</Link>
+      <Package className="w-12 h-12 sm:w-16 sm:h-16 text-gray-600 mx-auto mb-3" />
+      <h3 className="text-base sm:text-lg font-semibold text-white mb-1">No purchases yet</h3>
+      <p className="text-xs sm:text-sm text-gray-400 mb-4">Explore verified applications and start building</p>
+      <Link href="/products" className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white text-sm rounded-lg hover:from-purple-700 hover:to-blue-700 shadow-lg shadow-purple-500/50"><Package className="w-4 h-4" />Browse Applications</Link>
     </div>
   );
 
   return (
     <div className="space-y-3">
-      <h3 className="text-sm sm:text-base font-semibold text-gray-900">Your Purchases ({orders.length})</h3>
+      <h3 className="text-sm sm:text-base font-semibold text-white">Your Purchases ({orders.length})</h3>
       {orders.map(order => (
-        <Link key={order.id} href={`/orders/${order.id}`} className="block p-3 sm:p-4 border rounded-xl hover:border-blue-300 hover:shadow-sm transition">
+        <Link key={order.id} href={`/orders/${order.id}`} className="block p-3 sm:p-4 border border-purple-500/20 rounded-xl hover:border-purple-500/40 hover:bg-slate-800/30 transition">
           <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
             <div className="flex items-center gap-2 sm:gap-3 flex-1 min-w-0">
-              <div className="w-12 h-12 sm:w-14 sm:h-14 bg-gray-100 rounded-lg overflow-hidden relative shrink-0">
+              <div className="w-12 h-12 sm:w-14 sm:h-14 bg-slate-800 rounded-lg overflow-hidden relative shrink-0">
                 {order.items?.[0]?.image || order.items?.[0]?.productImage ? (
                   <Image
                     src={order.items[0].image || order.items[0].productImage}
@@ -255,17 +255,17 @@ const OrdersTab = ({ orders, loading }: { orders: Order[]; loading: boolean }) =
                     unoptimized
                     onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
                   />
-                ) : <Package className="w-6 h-6 text-gray-400 absolute inset-0 m-auto" />}
+                ) : <Package className="w-6 h-6 text-gray-600 absolute inset-0 m-auto" />}
               </div>
               <div className="min-w-0 flex-1">
-                <p className="text-xs sm:text-sm font-medium text-gray-900 truncate">Purchase #{order.id.slice(-8)}</p>
-                <p className="text-[10px] sm:text-xs text-gray-500">{new Date(order.createdAt).toLocaleDateString()}</p>
-                <p className="text-xs sm:text-sm font-semibold text-gray-900 mt-0.5">UGX {order.total?.toLocaleString()}</p>
+                <p className="text-xs sm:text-sm font-medium text-white truncate">Purchase #{order.id.slice(-8)}</p>
+                <p className="text-[10px] sm:text-xs text-gray-400">{new Date(order.createdAt).toLocaleDateString()}</p>
+                <p className="text-xs sm:text-sm font-semibold text-purple-300 mt-0.5">UGX {order.total?.toLocaleString()}</p>
               </div>
             </div>
             <div className="flex items-center justify-between sm:justify-end gap-2">
               <span className={`px-2 py-0.5 text-[10px] sm:text-xs font-medium rounded-full ${getStatusColor(order.status)}`}>{order.status}</span>
-              <ChevronRight className="w-4 h-4 text-gray-400" />
+              <ChevronRight className="w-4 h-4 text-gray-600" />
             </div>
           </div>
         </Link>
@@ -284,10 +284,10 @@ const WishlistTab = () => {
 
   if (!wishlistItems.length) return (
     <div className="text-center py-8 sm:py-12">
-      <Heart className="w-12 h-12 sm:w-16 sm:h-16 text-gray-300 mx-auto mb-3" />
-      <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-1">Your wishlist is empty</h3>
-      <p className="text-xs sm:text-sm text-gray-500 mb-4">Save applications you love for later</p>
-      <Link href="/products" className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700">
+      <Heart className="w-12 h-12 sm:w-16 sm:h-16 text-gray-600 mx-auto mb-3" />
+      <h3 className="text-base sm:text-lg font-semibold text-white mb-1">Your wishlist is empty</h3>
+      <p className="text-xs sm:text-sm text-gray-400 mb-4">Save applications you love for later</p>
+      <Link href="/products" className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white text-sm rounded-lg hover:from-purple-700 hover:to-blue-700 shadow-lg shadow-purple-500/50">
         <Heart className="w-4 h-4" />Explore Applications
       </Link>
     </div>
@@ -295,7 +295,7 @@ const WishlistTab = () => {
 
   return (
     <div className="space-y-3">
-      <h3 className="text-sm sm:text-base font-semibold text-gray-900">Saved Applications ({wishlistItems.length})</h3>
+      <h3 className="text-sm sm:text-base font-semibold text-white">Saved Applications ({wishlistItems.length})</h3>
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-3">
         {wishlistItems.map((item: any) => {
           const inCart = cart.some((c: any) => c.id === item.id);
@@ -303,9 +303,9 @@ const WishlistTab = () => {
           const displayImage = item?.image || item?.screenshots?.[0]?.url || item?.screenshots?.[0]?.thumbnailUrl;
           
           return (
-            <div key={item.id} className="bg-white border rounded-xl overflow-hidden group flex flex-col hover:shadow-md transition-shadow">
+            <div key={item.id} className="bg-slate-800/50 border border-purple-500/20 rounded-xl overflow-hidden group flex flex-col hover:shadow-lg hover:shadow-purple-500/20 hover:border-purple-500/40 transition-all">
               <Link href={`/product/${item.id}`} className="block flex-1">
-                <div className="relative aspect-square bg-gray-100">
+                <div className="relative aspect-square bg-slate-900">
                   {displayImage ? (
                     <Image
                       src={displayImage}
@@ -317,33 +317,33 @@ const WishlistTab = () => {
                     />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center">
-                      <Package className="w-8 h-8 text-gray-300" />
+                      <Package className="w-8 h-8 text-gray-600" />
                     </div>
                   )}
                   {/* Badges */}
                   {isFree && (
-                    <span className="absolute top-2 left-2 bg-green-500 text-white text-[10px] font-bold px-2 py-0.5 rounded">
+                    <span className="absolute top-2 left-2 bg-green-500 text-white text-[10px] font-bold px-2 py-0.5 rounded shadow-lg">
                       FREE
                     </span>
                   )}
                   {item.verificationStatus === 'verified' && (
-                    <span className="absolute top-2 right-2 bg-blue-500 text-white text-[10px] font-bold px-2 py-0.5 rounded flex items-center gap-0.5">
+                    <span className="absolute top-2 right-2 bg-blue-500 text-white text-[10px] font-bold px-2 py-0.5 rounded flex items-center gap-0.5 shadow-lg">
                       <CheckCircle className="w-2.5 h-2.5" />
                       Verified
                     </span>
                   )}
                 </div>
                 <div className="p-2">
-                  <p className="text-xs sm:text-sm font-medium text-gray-900 truncate">{item.appName || item.title}</p>
+                  <p className="text-xs sm:text-sm font-medium text-white truncate">{item.appName || item.title}</p>
                   {item.appCategory && (
-                    <p className="text-[10px] text-gray-500 truncate">{item.appCategory}</p>
+                    <p className="text-[10px] text-gray-400 truncate">{item.appCategory}</p>
                   )}
-                  <p className="text-xs sm:text-sm font-bold text-teal-700 mt-1">
+                  <p className="text-xs sm:text-sm font-bold text-purple-300 mt-1">
                     {isFree ? 'FREE' : `UGX ${item.price.toLocaleString('en-UG')}`}
                   </p>
                 </div>
               </Link>
-              <div className="flex border-t">
+              <div className="flex border-t border-purple-500/20">
                 <button
                   onClick={() => {
                     if (user) addToCart({ 
@@ -355,15 +355,15 @@ const WishlistTab = () => {
                     }, user, null, null);
                   }}
                   disabled={!user}
-                  className={`flex-1 py-1.5 text-xs flex items-center justify-center gap-1 transition ${inCart ? 'bg-teal-50 text-teal-700' : 'hover:bg-teal-50 text-gray-600 hover:text-teal-700'}`}
+                  className={`flex-1 py-1.5 text-xs flex items-center justify-center gap-1 transition ${inCart ? 'bg-teal-500/20 text-teal-300' : 'hover:bg-purple-500/20 text-gray-400 hover:text-purple-300'}`}
                 >
                   <ShoppingCart className="w-3 h-3" />
                   {inCart ? 'In Cart' : 'Add'}
                 </button>
-                <div className="w-px bg-gray-100" />
+                <div className="w-px bg-purple-500/20" />
                 <button
                   onClick={() => removeFromWishlistStore(item.id, user, null, null)}
-                  className="flex-1 py-1.5 text-xs text-red-500 hover:bg-red-50 flex items-center justify-center gap-1 transition"
+                  className="flex-1 py-1.5 text-xs text-red-400 hover:bg-red-500/10 flex items-center justify-center gap-1 transition"
                 >
                   <Trash2 className="w-3 h-3" />Remove
                 </button>
