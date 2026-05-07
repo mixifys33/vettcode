@@ -181,6 +181,7 @@ const CartPage = () => {
         price: getItemDiscountedPrice(item),
         quantity: 1,
         image: item?.image || item?.screenshots?.[0]?.url || "",
+        currency: item.currency || "USD", // Preserve currency from cart item
       }));
 
       // Create order in backend

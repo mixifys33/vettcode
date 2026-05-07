@@ -90,6 +90,9 @@ function CheckoutContent() {
     try {
       // Call backend Flutterwave API directly
       const backendUrl = process.env.NEXT_PUBLIC_SERVER_URL || "https://easyshop-d00e.onrender.com";
+      // Get currency from order items (use first item's currency, or default to USD)
+      const itemCurrency = orderDetails.items?.[0]?.currency || orderDetails.currency || "USD";
+      
       const res = await fetch(`${backendUrl}/api/flutterwave/initialize`, {
         method: "POST",
         headers: {
@@ -99,7 +102,7 @@ function CheckoutContent() {
           orderId,
           paymentMethod,
           amount: orderDetails.total || orderDetails.subtotal,
-          currency: orderDetails.currency || "UGX",
+          currency: itemCurrency,
           customerEmail: user?.email || orderDetails.shippingAddress?.email,
           customerPhone: mobileNumber || orderDetails.shippingAddress?.phone,
           customerName: user?.name || orderDetails.shippingAddress?.fullName,
