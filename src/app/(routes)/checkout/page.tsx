@@ -88,8 +88,9 @@ function CheckoutContent() {
     setPaymentError("");
     
     try {
-      // Call Next.js API route (not backend directly)
-      const res = await fetch("/api/payment/process", {
+      // Call backend Flutterwave API directly
+      const backendUrl = process.env.NEXT_PUBLIC_SERVER_URL || "https://easyshop-d00e.onrender.com";
+      const res = await fetch(`${backendUrl}/api/flutterwave/initialize`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -97,7 +98,6 @@ function CheckoutContent() {
         body: JSON.stringify({
           orderId,
           paymentMethod,
-          paymentGateway: "flutterwave",
           amount: orderDetails.total || orderDetails.subtotal,
           currency: orderDetails.currency || "UGX",
           customerEmail: user?.email || orderDetails.shippingAddress?.email,
