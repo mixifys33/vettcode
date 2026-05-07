@@ -10,7 +10,6 @@ import {
 import { navItemTypes } from '../../../configs/constants';
 import useUser from '@/hooks/useUser';
 import { useStore } from '@/store';
-import { useCategories } from '@/hooks/useProducts';
 import axiosInstance from '@/utils/axiosInstance';
 import { useCurrencyFormat } from '@/hooks/useCurrencyFormat';
 
@@ -18,10 +17,6 @@ import { useCurrencyFormat } from '@/hooks/useCurrencyFormat';
 type ProductSuggestion = {
   id: string; title: string; slug: string;
   appCategory?: string; price?: number; isFree?: boolean;
-};
-type CategoryData = {
-  categories?: Array<{ name: string; subCategories?: Array<{ name: string }> }>;
-  subCategories?: Record<string, string[]>;
 };
 
 const getUserInitials = (name?: string) => {
@@ -40,6 +35,7 @@ const HeaderBottom = () => {
   const { user, isLoading } = useUser();
   const wishlist = useStore((s: any) => s.wishlist);
   const cart = useStore((s: any) => s.cart);
+  const categories = useStore((s: any) => s.categories);
   const { formatPrice } = useCurrencyFormat();
 
   /* scroll state */
@@ -60,23 +56,6 @@ const HeaderBottom = () => {
   const inputRef = useRef<HTMLInputElement>(null);
 
   const shouldHide = HIDDEN_PATHS.some(p => pathname === p || pathname?.startsWith(`${p}/`));
-
-  /* fetch categories */
-  const { data: catData } = useCategories() as { data: CategoryData | undefined };
-
-  /* normalise category shape */
-  const categories: Array<{ name: string; subs: string[] }> = React.useMemo(() => {
-    if (!catData) return [];
-    if (Array.isArray(catData.categories)) {
-      return catData.categories.map((c: any) => ({
-        name: typeof c === 'string' ? c : c.name,
-        subs: Array.isArray(c.subCategories)
-          ? c.subCategories.map((s: any) => (typeof s === 'string' ? s : s.name))
-          : (catData.subCategories?.[typeof c === 'string' ? c : c.name] ?? []),
-      }));
-    }
-    return [];
-  }, [catData]);
 
   /* scroll listener */
   useEffect(() => {

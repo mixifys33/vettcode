@@ -22,6 +22,8 @@ interface Store {
     wishlistIds: string[];
     cartSynced: boolean;
     wishlistSynced: boolean;
+    categories: Array<{ name: string; subs: string[] }>;
+    setCategoriesFromApplications: (applications: any[]) => void;
     addToCart: (
         product: Product,
         user: any,
@@ -145,6 +147,34 @@ const useStoreBase = create<Store>()(
             wishlistIds: [],
             cartSynced: false,
             wishlistSynced: false,
+            categories: [],
+            
+            // Extract and cache categories from applications data
+            setCategoriesFromApplications: (applications: any[]) => {
+                if (!applications || applications.length === 0) return;
+                
+                // Extract unique categories and their subcategories
+                const categoryMap = new Map<string, Set<string>>();
+                
+                applications.forEach(app => {
+                    if (app.appCategory) {
+                        if (!categoryMap.has(app.appCategory)) {
+                            categoryMap.set(app.appCategory, new Set());
+                        }
+                        if (app.subCategory) {
+                            categoryMap.get(app.appCategory)?.add(app.subCategory);
+                        }
+                    }
+                });
+                
+                // Convert to array format
+                const categories = Array.from(categoryMap.entries()).map(([name, subsSet]) => ({
+                    name,
+                    subs: Array.from(subsSet)
+                }));
+                
+                set({ categories });
+            },
             
             // Check if product is in wishlist
             isInWishlist: (productId: string) => {
@@ -424,6 +454,8 @@ export const useStore = <T,>(selector: (state: Store) => T): T => {
             wishlistIds: [],
             cartSynced: false,
             wishlistSynced: false,
+            categories: [],
+            setCategoriesFromApplications: () => {},
             addToCart: () => {},
             removeFromCart: () => {},
             updateCartQuantity: () => {},
