@@ -18,8 +18,14 @@ import axiosInstance from '@/utils/axiosInstance';
 
 /* ─── types ─────────────────────────────────────────────── */
 type ProductSuggestion = {
-  id: string; title: string; slug: string;
-  appCategory?: string; price?: number; isFree?: boolean;
+  id?: string;
+  _id?: string;
+  title?: string;
+  appName?: string;
+  slug?: string;
+  appCategory?: string;
+  price?: number;
+  isFree?: boolean;
 };
 
 type Category = {
