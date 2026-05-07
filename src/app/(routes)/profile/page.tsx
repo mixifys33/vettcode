@@ -297,17 +297,19 @@ const WishlistTab = () => {
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-3">
         {wishlistItems.map((item: any) => {
           const inCart = cart.some((c: any) => c.id === item.id);
-          const productLink = item.slug ? `/product/${item.slug}` : `/product/${item.id}`;
+          const isFree = item.isFree || item.price === 0;
+          const displayImage = item?.image || item?.screenshots?.[0]?.url || item?.screenshots?.[0]?.thumbnailUrl;
+          
           return (
-            <div key={item.id} className="bg-white border rounded-xl overflow-hidden group flex flex-col">
-              <Link href={productLink} className="block flex-1">
+            <div key={item.id} className="bg-white border rounded-xl overflow-hidden group flex flex-col hover:shadow-md transition-shadow">
+              <Link href={`/product/${item.id}`} className="block flex-1">
                 <div className="relative aspect-square bg-gray-100">
-                  {item.image ? (
+                  {displayImage ? (
                     <Image
-                      src={item.image}
-                      alt={item.title || ''}
+                      src={displayImage}
+                      alt={item.appName || item.title || ''}
                       fill
-                      className="object-cover group-hover:scale-105 transition"
+                      className="object-cover group-hover:scale-105 transition-transform duration-300"
                       unoptimized
                       onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
                     />
@@ -316,18 +318,39 @@ const WishlistTab = () => {
                       <Package className="w-8 h-8 text-gray-300" />
                     </div>
                   )}
+                  {/* Badges */}
+                  {isFree && (
+                    <span className="absolute top-2 left-2 bg-green-500 text-white text-[10px] font-bold px-2 py-0.5 rounded">
+                      FREE
+                    </span>
+                  )}
+                  {item.verificationStatus === 'verified' && (
+                    <span className="absolute top-2 right-2 bg-blue-500 text-white text-[10px] font-bold px-2 py-0.5 rounded flex items-center gap-0.5">
+                      <CheckCircle className="w-2.5 h-2.5" />
+                      Verified
+                    </span>
+                  )}
                 </div>
                 <div className="p-2">
-                  <p className="text-xs sm:text-sm font-medium text-gray-900 truncate">{item.title}</p>
-                  <p className="text-xs sm:text-sm font-bold text-teal-700">
-                    {item.price === 0 ? 'Free' : `UGX ${item.price.toLocaleString('en-UG')}`}
+                  <p className="text-xs sm:text-sm font-medium text-gray-900 truncate">{item.appName || item.title}</p>
+                  {item.appCategory && (
+                    <p className="text-[10px] text-gray-500 truncate">{item.appCategory}</p>
+                  )}
+                  <p className="text-xs sm:text-sm font-bold text-teal-700 mt-1">
+                    {isFree ? 'FREE' : `UGX ${item.price.toLocaleString('en-UG')}`}
                   </p>
                 </div>
               </Link>
               <div className="flex border-t">
                 <button
                   onClick={() => {
-                    if (user) addToCart({ id: item.id, title: item.title, price: item.price || 0, image: item.image, shopId: item.shopId || '', slug: item.slug }, user, null, null);
+                    if (user) addToCart({ 
+                      id: item.id, 
+                      title: item.appName || item.title, 
+                      price: item.price || 0, 
+                      image: displayImage, 
+                      shopId: item.shopId || '' 
+                    }, user, null, null);
                   }}
                   disabled={!user}
                   className={`flex-1 py-1.5 text-xs flex items-center justify-center gap-1 transition ${inCart ? 'bg-teal-50 text-teal-700' : 'hover:bg-teal-50 text-gray-600 hover:text-teal-700'}`}
@@ -1452,17 +1475,17 @@ const ProfilePageContent = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-20 lg:pb-8">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50 to-blue-50 pb-20 lg:pb-8">
       <div className="max-w-7xl mx-auto px-3 py-3 sm:px-4 sm:py-6">
         {/* Mobile Header */}
         <div className="lg:hidden mb-3">
-          <div className="flex items-center justify-between bg-white p-3 rounded-xl shadow-sm">
+          <div className="flex items-center justify-between bg-white/90 backdrop-blur-sm p-3 rounded-xl shadow-lg border border-slate-200">
             <div className="flex items-center gap-2 min-w-0 flex-1">
-              <div className="w-9 h-9 rounded-full bg-gray-100 overflow-hidden relative shrink-0">
+              <div className="w-9 h-9 rounded-full bg-gradient-to-br from-purple-100 to-blue-100 overflow-hidden relative shrink-0 ring-2 ring-purple-200">
                 {user?.avatar ? (
                   <Image src={user.avatar} alt="" fill className="object-cover" unoptimized />
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center text-sm font-bold text-gray-400">
+                  <div className="w-full h-full flex items-center justify-center text-sm font-bold bg-gradient-to-br from-purple-600 to-blue-600 text-white">
                     {user?.name?.charAt(0)?.toUpperCase()}
                   </div>
                 )}
@@ -1472,21 +1495,21 @@ const ProfilePageContent = () => {
                 <p className="text-[10px] text-gray-500">{navItems.find(n => n.tab === activeTab)?.label}</p>
               </div>
             </div>
-            <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="p-2 hover:bg-gray-100 rounded-lg shrink-0">
-              <Menu className="w-5 h-5" />
+            <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="p-2 hover:bg-purple-50 rounded-lg shrink-0 transition">
+              <Menu className="w-5 h-5 text-purple-600" />
             </button>
           </div>
 
           {/* Mobile Menu Dropdown */}
           {mobileMenuOpen && (
-            <div className="mt-2 bg-white rounded-xl shadow-lg border overflow-hidden animate-in slide-in-from-top-2">
+            <div className="mt-2 bg-white/95 backdrop-blur-sm rounded-xl shadow-xl border border-slate-200 overflow-hidden animate-in slide-in-from-top-2">
               <div className="grid grid-cols-4 gap-1 p-2">
                 {navItems.map(({ label, icon: Icon, tab }) => (
                   <button
                     key={tab}
                     onClick={() => { setActiveTab(tab); setMobileMenuOpen(false); }}
                     className={`flex flex-col items-center gap-1 p-2 rounded-lg text-[10px] font-medium transition ${
-                      activeTab === tab ? "bg-blue-50 text-blue-600" : "text-gray-600 hover:bg-gray-50"
+                      activeTab === tab ? "bg-gradient-to-br from-purple-50 to-blue-50 text-purple-600" : "text-gray-600 hover:bg-gray-50"
                     }`}
                   >
                     <Icon className="w-4 h-4" />
@@ -1495,7 +1518,7 @@ const ProfilePageContent = () => {
                 ))}
                 <button
                   onClick={handleLogout}
-                  className="flex flex-col items-center gap-1 p-2 rounded-lg text-[10px] font-medium text-red-600 hover:bg-red-50"
+                  className="flex flex-col items-center gap-1 p-2 rounded-lg text-[10px] font-medium text-red-600 hover:bg-red-50 transition"
                 >
                   <LogOut className="w-4 h-4" />
                   <span>Logout</span>
@@ -1516,13 +1539,13 @@ const ProfilePageContent = () => {
         <div className="flex flex-col lg:flex-row gap-4">
           {/* Desktop Sidebar */}
           <div className="hidden lg:block lg:w-56 shrink-0">
-            <div className="bg-white p-4 rounded-xl shadow-sm sticky top-4">
-              <div className="flex items-center gap-3 pb-4 mb-4 border-b">
-                <div className="w-10 h-10 rounded-full bg-gray-100 overflow-hidden relative">
+            <div className="bg-white/90 backdrop-blur-sm p-4 rounded-xl shadow-lg border border-slate-200 sticky top-4">
+              <div className="flex items-center gap-3 pb-4 mb-4 border-b border-slate-200">
+                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-100 to-blue-100 overflow-hidden relative ring-2 ring-purple-200">
                   {user?.avatar ? (
                     <Image src={user.avatar} alt="" fill className="object-cover" unoptimized />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center font-bold text-gray-400">
+                    <div className="w-full h-full flex items-center justify-center font-bold bg-gradient-to-br from-purple-600 to-blue-600 text-white">
                       {user?.name?.charAt(0)?.toUpperCase()}
                     </div>
                   )}
@@ -1538,7 +1561,7 @@ const ProfilePageContent = () => {
                     key={tab}
                     onClick={() => setActiveTab(tab)}
                     className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition ${
-                      activeTab === tab ? "bg-blue-50 text-blue-600" : "text-gray-700 hover:bg-gray-50"
+                      activeTab === tab ? "bg-gradient-to-r from-purple-50 to-blue-50 text-purple-600 shadow-sm" : "text-gray-700 hover:bg-gray-50"
                     }`}
                   >
                     <Icon className="w-4 h-4" />
@@ -1546,10 +1569,10 @@ const ProfilePageContent = () => {
                     {activeTab === tab && <ChevronRight className="w-4 h-4 ml-auto" />}
                   </button>
                 ))}
-                <hr className="my-2" />
+                <hr className="my-2 border-slate-200" />
                 <button
                   onClick={handleLogout}
-                  className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-red-600 hover:bg-red-50"
+                  className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-red-600 hover:bg-red-50 transition"
                 >
                   <LogOut className="w-4 h-4" />
                   Logout
@@ -1560,7 +1583,7 @@ const ProfilePageContent = () => {
 
           {/* Main Content */}
           <div className="flex-1 min-w-0">
-            <div className="bg-white p-3 sm:p-5 rounded-xl shadow-sm">
+            <div className="bg-white/90 backdrop-blur-sm p-3 sm:p-5 rounded-xl shadow-lg border border-slate-200">
               {activeTab === "profile" && (
                 <ProfileTab
                   user={user}
