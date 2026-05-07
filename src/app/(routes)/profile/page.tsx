@@ -123,17 +123,19 @@ const DISTRICTS = ["Global", "Wakiso", "Mukono", "Jinja", "Mbarara", "Gulu", "Li
 // ============ STAT CARD COMPONENT ============
 const StatCard = ({ title, count, icon: Icon, color = "blue" }: { title: string; count: number; icon: React.ElementType; color?: string }) => {
   const colors: Record<string, string> = {
-    blue: "bg-blue-50 text-blue-600",
-    orange: "bg-orange-50 text-orange-600",
-    green: "bg-green-50 text-green-600",
-    purple: "bg-purple-50 text-purple-600",
+    blue: "from-blue-600 to-blue-500 shadow-blue-500/50",
+    orange: "from-orange-600 to-orange-500 shadow-orange-500/50",
+    green: "from-green-600 to-green-500 shadow-green-500/50",
+    purple: "from-purple-600 to-purple-500 shadow-purple-500/50",
   };
   return (
-    <div className="bg-white p-2.5 sm:p-3 rounded-xl shadow-sm border flex items-center gap-2 min-w-[100px] sm:min-w-[120px] flex-shrink-0">
-      <div className={`p-1.5 sm:p-2 rounded-lg shrink-0 ${colors[color]}`}><Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4" /></div>
+    <div className={`bg-gradient-to-br ${colors[color]} p-2.5 sm:p-3 rounded-xl shadow-lg border border-white/10 flex items-center gap-2 min-w-[100px] sm:min-w-[120px] flex-shrink-0`}>
+      <div className="p-1.5 sm:p-2 rounded-lg shrink-0 bg-white/20 backdrop-blur-sm">
+        <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white" />
+      </div>
       <div className="min-w-0">
-        <p className="text-sm sm:text-base font-bold text-gray-800">{count}</p>
-        <p className="text-[9px] sm:text-[10px] text-gray-500 truncate">{title}</p>
+        <p className="text-sm sm:text-base font-bold text-white">{count}</p>
+        <p className="text-[9px] sm:text-[10px] text-white/80 truncate">{title}</p>
       </div>
     </div>
   );
@@ -1475,41 +1477,71 @@ const ProfilePageContent = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50 to-blue-50 pb-20 lg:pb-8">
-      <div className="max-w-7xl mx-auto px-3 py-3 sm:px-4 sm:py-6">
+    <div className="min-h-screen bg-[#0a0e27] relative overflow-hidden pb-20 lg:pb-8">
+      {/* Animated Code Background */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        {/* Grid Pattern */}
+        <div className="absolute inset-0 bg-[linear-gradient(rgba(139,92,246,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(139,92,246,0.03)_1px,transparent_1px)] bg-[size:50px_50px]" />
+        
+        {/* Floating Code Snippets */}
+        <div className="absolute top-10 left-10 text-purple-500/20 font-mono text-xs animate-float">
+          <pre>{`const app = () => {\n  return <VettCode />;\n}`}</pre>
+        </div>
+        <div className="absolute top-32 right-20 text-blue-500/20 font-mono text-xs animate-float-delayed">
+          <pre>{`function verify() {\n  return true;\n}`}</pre>
+        </div>
+        <div className="absolute bottom-40 left-1/4 text-teal-500/20 font-mono text-xs animate-float-slow">
+          <pre>{`import { secure } from 'vettcode'`}</pre>
+        </div>
+        <div className="absolute top-1/2 right-10 text-indigo-500/20 font-mono text-xs animate-float">
+          <pre>{`export default App;`}</pre>
+        </div>
+        <div className="absolute bottom-20 right-1/3 text-purple-500/20 font-mono text-xs animate-float-delayed">
+          <pre>{`// Production Ready`}</pre>
+        </div>
+        
+        {/* Gradient Orbs */}
+        <div className="absolute top-0 left-0 w-96 h-96 bg-purple-600/10 rounded-full blur-3xl animate-pulse-slow" />
+        <div className="absolute bottom-0 right-0 w-96 h-96 bg-blue-600/10 rounded-full blur-3xl animate-pulse-slower" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-teal-600/10 rounded-full blur-3xl animate-pulse-slow" />
+      </div>
+
+      <div className="max-w-7xl mx-auto px-3 py-3 sm:px-4 sm:py-6 relative z-10">
         {/* Mobile Header */}
         <div className="lg:hidden mb-3">
-          <div className="flex items-center justify-between bg-white/90 backdrop-blur-sm p-3 rounded-xl shadow-lg border border-slate-200">
+          <div className="flex items-center justify-between bg-slate-900/80 backdrop-blur-xl p-3 rounded-xl shadow-2xl border border-purple-500/20">
             <div className="flex items-center gap-2 min-w-0 flex-1">
-              <div className="w-9 h-9 rounded-full bg-gradient-to-br from-purple-100 to-blue-100 overflow-hidden relative shrink-0 ring-2 ring-purple-200">
+              <div className="w-9 h-9 rounded-full bg-gradient-to-br from-purple-600 to-blue-600 overflow-hidden relative shrink-0 ring-2 ring-purple-400/50 shadow-lg shadow-purple-500/50">
                 {user?.avatar ? (
                   <Image src={user.avatar} alt="" fill className="object-cover" unoptimized />
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center text-sm font-bold bg-gradient-to-br from-purple-600 to-blue-600 text-white">
+                  <div className="w-full h-full flex items-center justify-center text-sm font-bold text-white">
                     {user?.name?.charAt(0)?.toUpperCase()}
                   </div>
                 )}
               </div>
               <div className="min-w-0">
-                <p className="font-semibold text-sm truncate">{user?.name}</p>
-                <p className="text-[10px] text-gray-500">{navItems.find(n => n.tab === activeTab)?.label}</p>
+                <p className="font-semibold text-sm truncate text-white">{user?.name}</p>
+                <p className="text-[10px] text-purple-300">{navItems.find(n => n.tab === activeTab)?.label}</p>
               </div>
             </div>
-            <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="p-2 hover:bg-purple-50 rounded-lg shrink-0 transition">
-              <Menu className="w-5 h-5 text-purple-600" />
+            <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="p-2 hover:bg-purple-500/20 rounded-lg shrink-0 transition">
+              <Menu className="w-5 h-5 text-purple-400" />
             </button>
           </div>
 
           {/* Mobile Menu Dropdown */}
           {mobileMenuOpen && (
-            <div className="mt-2 bg-white/95 backdrop-blur-sm rounded-xl shadow-xl border border-slate-200 overflow-hidden animate-in slide-in-from-top-2">
+            <div className="mt-2 bg-slate-900/95 backdrop-blur-xl rounded-xl shadow-2xl border border-purple-500/20 overflow-hidden animate-in slide-in-from-top-2">
               <div className="grid grid-cols-4 gap-1 p-2">
                 {navItems.map(({ label, icon: Icon, tab }) => (
                   <button
                     key={tab}
                     onClick={() => { setActiveTab(tab); setMobileMenuOpen(false); }}
                     className={`flex flex-col items-center gap-1 p-2 rounded-lg text-[10px] font-medium transition ${
-                      activeTab === tab ? "bg-gradient-to-br from-purple-50 to-blue-50 text-purple-600" : "text-gray-600 hover:bg-gray-50"
+                      activeTab === tab 
+                        ? "bg-gradient-to-br from-purple-600/30 to-blue-600/30 text-purple-300 shadow-lg shadow-purple-500/20" 
+                        : "text-gray-400 hover:bg-slate-800/50 hover:text-purple-300"
                     }`}
                   >
                     <Icon className="w-4 h-4" />
@@ -1518,7 +1550,7 @@ const ProfilePageContent = () => {
                 ))}
                 <button
                   onClick={handleLogout}
-                  className="flex flex-col items-center gap-1 p-2 rounded-lg text-[10px] font-medium text-red-600 hover:bg-red-50 transition"
+                  className="flex flex-col items-center gap-1 p-2 rounded-lg text-[10px] font-medium text-red-400 hover:bg-red-500/10 transition"
                 >
                   <LogOut className="w-4 h-4" />
                   <span>Logout</span>
@@ -1539,20 +1571,20 @@ const ProfilePageContent = () => {
         <div className="flex flex-col lg:flex-row gap-4">
           {/* Desktop Sidebar */}
           <div className="hidden lg:block lg:w-56 shrink-0">
-            <div className="bg-white/90 backdrop-blur-sm p-4 rounded-xl shadow-lg border border-slate-200 sticky top-4">
-              <div className="flex items-center gap-3 pb-4 mb-4 border-b border-slate-200">
-                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-100 to-blue-100 overflow-hidden relative ring-2 ring-purple-200">
+            <div className="bg-slate-900/80 backdrop-blur-xl p-4 rounded-xl shadow-2xl border border-purple-500/20 sticky top-4">
+              <div className="flex items-center gap-3 pb-4 mb-4 border-b border-purple-500/20">
+                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-600 to-blue-600 overflow-hidden relative ring-2 ring-purple-400/50 shadow-lg shadow-purple-500/50">
                   {user?.avatar ? (
                     <Image src={user.avatar} alt="" fill className="object-cover" unoptimized />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center font-bold bg-gradient-to-br from-purple-600 to-blue-600 text-white">
+                    <div className="w-full h-full flex items-center justify-center font-bold text-white">
                       {user?.name?.charAt(0)?.toUpperCase()}
                     </div>
                   )}
                 </div>
                 <div className="min-w-0">
-                  <p className="font-semibold text-sm truncate">{user?.name}</p>
-                  <p className="text-xs text-gray-500 truncate">{user?.email}</p>
+                  <p className="font-semibold text-sm truncate text-white">{user?.name}</p>
+                  <p className="text-xs text-purple-300 truncate">{user?.email}</p>
                 </div>
               </div>
               <nav className="space-y-1">
@@ -1561,7 +1593,9 @@ const ProfilePageContent = () => {
                     key={tab}
                     onClick={() => setActiveTab(tab)}
                     className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition ${
-                      activeTab === tab ? "bg-gradient-to-r from-purple-50 to-blue-50 text-purple-600 shadow-sm" : "text-gray-700 hover:bg-gray-50"
+                      activeTab === tab 
+                        ? "bg-gradient-to-r from-purple-600/30 to-blue-600/30 text-purple-300 shadow-lg shadow-purple-500/20" 
+                        : "text-gray-400 hover:bg-slate-800/50 hover:text-purple-300"
                     }`}
                   >
                     <Icon className="w-4 h-4" />
@@ -1569,10 +1603,10 @@ const ProfilePageContent = () => {
                     {activeTab === tab && <ChevronRight className="w-4 h-4 ml-auto" />}
                   </button>
                 ))}
-                <hr className="my-2 border-slate-200" />
+                <hr className="my-2 border-purple-500/20" />
                 <button
                   onClick={handleLogout}
-                  className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-red-600 hover:bg-red-50 transition"
+                  className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-red-400 hover:bg-red-500/10 transition"
                 >
                   <LogOut className="w-4 h-4" />
                   Logout
@@ -1583,7 +1617,7 @@ const ProfilePageContent = () => {
 
           {/* Main Content */}
           <div className="flex-1 min-w-0">
-            <div className="bg-white/90 backdrop-blur-sm p-3 sm:p-5 rounded-xl shadow-lg border border-slate-200">
+            <div className="bg-slate-900/80 backdrop-blur-xl p-3 sm:p-5 rounded-xl shadow-2xl border border-purple-500/20">
               {activeTab === "profile" && (
                 <ProfileTab
                   user={user}
@@ -1632,6 +1666,45 @@ const ProfilePageContent = () => {
           onSave={() => { fetchAddresses(); setShowAddressModal(false); }}
         />
       )}
+      
+      {/* Custom Animations */}
+      <style jsx>{`
+        @keyframes float {
+          0%, 100% { transform: translateY(0px); }
+          50% { transform: translateY(-20px); }
+        }
+        @keyframes float-delayed {
+          0%, 100% { transform: translateY(0px); }
+          50% { transform: translateY(-15px); }
+        }
+        @keyframes float-slow {
+          0%, 100% { transform: translateY(0px); }
+          50% { transform: translateY(-10px); }
+        }
+        @keyframes pulse-slow {
+          0%, 100% { opacity: 0.3; }
+          50% { opacity: 0.6; }
+        }
+        @keyframes pulse-slower {
+          0%, 100% { opacity: 0.2; }
+          50% { opacity: 0.5; }
+        }
+        .animate-float {
+          animation: float 6s ease-in-out infinite;
+        }
+        .animate-float-delayed {
+          animation: float-delayed 8s ease-in-out infinite;
+        }
+        .animate-float-slow {
+          animation: float-slow 10s ease-in-out infinite;
+        }
+        .animate-pulse-slow {
+          animation: pulse-slow 8s ease-in-out infinite;
+        }
+        .animate-pulse-slower {
+          animation: pulse-slower 12s ease-in-out infinite;
+        }
+      `}</style>
     </div>
   );
 };
