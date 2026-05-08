@@ -60,7 +60,10 @@ const OrderDetailPage = () => {
       const paymentStatus = urlParams.get('status');
       const txRef = urlParams.get('tx_ref');
       
-      if (paymentStatus === 'cancelled' || paymentStatus === 'failed') {
+      if (paymentStatus === 'successful' && txRef) {
+        // Payment was successful - verify and update
+        verifyPaymentStatus(txRef);
+      } else if (paymentStatus === 'cancelled' || paymentStatus === 'failed') {
         // Payment was cancelled or failed - update order status
         updateOrderStatusOnCancel();
       } else if (txRef) {
@@ -88,8 +91,13 @@ const OrderDetailPage = () => {
       const res = await fetch(`${backendUrl}/api/flutterwave/verify-ref/${txRef}`);
       const data = await res.json();
       
-      if (data.success && data.verified) {
-        fetchOrder(); // Refresh to show updated payment status
+      console.log('Payment verification result:', data);
+      
+      if (data.success) {
+        // Wait a moment for backend to update, then refresh
+        setTimeout(() => {
+          fetchOrder();
+        }, 1000);
       }
     } catch (e) {
       console.error('Failed to verify payment:', e);
