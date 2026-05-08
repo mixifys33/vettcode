@@ -127,22 +127,37 @@ const OrderDetailPage = () => {
     try {
       const distributionData: Record<string, any> = {};
       
+      console.log('[Distribution] Fetching for items:', items);
+      
       for (const item of items) {
+        console.log('[Distribution] Processing item:', item);
+        console.log('[Distribution] Item productId:', item.productId);
+        
         if (item.productId) {
           try {
-            const res = await axiosInstance.get(`/api/applications/${item.productId}/distribution`);
+            const url = `/api/applications/${item.productId}/distribution`;
+            console.log('[Distribution] Fetching from:', url);
+            
+            const res = await axiosInstance.get(url);
+            console.log('[Distribution] Response:', res.data);
+            
             if (res.data.success) {
               distributionData[item.productId] = res.data.distribution;
+              console.log('[Distribution] Saved distribution for', item.productId, ':', res.data.distribution);
             }
           } catch (err) {
-            console.error(`Failed to fetch distribution for ${item.productId}:`, err);
+            console.error(`[Distribution] Failed to fetch for ${item.productId}:`, err);
+            console.error('[Distribution] Error details:', err.response?.data);
           }
+        } else {
+          console.warn('[Distribution] Item has no productId:', item);
         }
       }
       
+      console.log('[Distribution] Final distributionData:', distributionData);
       setDistributionInfo(distributionData);
     } catch (e) {
-      console.error("Failed to fetch distribution info:", e);
+      console.error("[Distribution] Failed to fetch distribution info:", e);
     }
   };
 

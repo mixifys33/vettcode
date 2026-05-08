@@ -85,7 +85,7 @@ const ShopCard = ({ shop, viewMode }: { shop: Shop; viewMode: "grid" | "list" })
             </div>
             {shop.bio && <p className="text-sm text-slate-400 mt-2 line-clamp-2">{shop.bio}</p>}
             <div className="flex items-center gap-4 mt-3 text-xs text-slate-400">
-              <div className="flex items-center gap-1.5 bg-slate-700/50 px-2 py-1 rounded-full">
+              <span className="flex items-center gap-1.5 bg-slate-700/50 px-2 py-1 rounded-full">
                 <MapPin className="w-3.5 h-3.5" />{shop.address || "Global"}
               </span>
               <span className="flex items-center gap-1.5 bg-purple-500/20 px-2 py-1 rounded-full text-purple-300">
