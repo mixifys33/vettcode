@@ -6,14 +6,21 @@ interface CompareProduct {
   id: string;
   slug: string;
   title: string;
+  appName?: string; // For applications
   image: string;
   price: number;
   salePrice?: number;
+  isFree?: boolean; // For free applications
   category: string;
+  appCategory?: string; // For applications
   brand?: string;
   ratings: number;
   stock: number;
   shopName: string;
+  verificationStatus?: string; // For verified applications
+  downloadCount?: number; // For applications
+  technologyStack?: string[]; // For applications
+  platforms?: string[]; // For applications
   specifications?: Record<string, string>;
   colors?: string[];
   sizes?: string[];

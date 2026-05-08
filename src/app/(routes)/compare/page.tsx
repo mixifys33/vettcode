@@ -23,14 +23,30 @@ export default function ComparePage() {
   const handleAddToCart = (product: any) => {
     const inCart = cart.some((i: any) => i.id === product.id);
     if (inCart) { toast.info("Already in cart"); return; }
-    addToCart({ id: product.id, title: product.title, price: product.salePrice || product.price, image: product.image, shopId: "" }, user, null, null);
-    toast.success(`Added "${product.title}" to cart`);
+    const displayTitle = product.appName || product.title;
+    const displayPrice = product.isFree ? 0 : (product.salePrice || product.price);
+    addToCart({ 
+      id: product.id, 
+      title: displayTitle, 
+      price: displayPrice, 
+      image: product.image, 
+      shopId: "" 
+    }, user, null, null);
+    toast.success(`Added "${displayTitle}" to cart`);
   };
 
   const handleWishlist = (product: any) => {
     const inWishlist = wishlist.some((i: any) => i.id === product.id);
     if (inWishlist) { toast.info("Already in wishlist"); return; }
-    addToWishlist({ id: product.id, title: product.title, price: product.salePrice || product.price, image: product.image, shopId: "" }, user, null, null);
+    const displayTitle = product.appName || product.title;
+    const displayPrice = product.isFree ? 0 : (product.salePrice || product.price);
+    addToWishlist({ 
+      id: product.id, 
+      title: displayTitle, 
+      price: displayPrice, 
+      image: product.image, 
+      shopId: "" 
+    }, user, null, null);
     toast.success("Saved to wishlist");
   };
 
@@ -162,13 +178,13 @@ export default function ComparePage() {
                           <div className="relative w-32 h-32 mx-auto mb-3 rounded-xl overflow-hidden bg-slate-900 border border-purple-500/20">
                             <Image
                               src={product.image || "/placeholder.png"}
-                              alt={product.title}
+                              alt={product.appName || product.title}
                               fill
                               className="object-contain hover:scale-105 transition-transform"
                             />
                           </div>
                           <h3 className="font-medium text-white text-sm line-clamp-2 hover:text-purple-300 transition-colors">
-                            {product.title}
+                            {product.appName || product.title}
                           </h3>
                         </Link>
                       </div>
@@ -239,7 +255,7 @@ export default function ComparePage() {
                     <td key={product.id} className="p-4 text-center">
                       <span className="inline-flex items-center gap-1 text-gray-300">
                         <Code2 className="w-3 h-3 text-purple-400" />
-                        {product.category}
+                        {product.appCategory || product.category}
                       </span>
                     </td>
                   ))}
@@ -277,6 +293,74 @@ export default function ComparePage() {
                         </span>
                       ) : (
                         <span className="text-gray-500">-</span>
+                      )}
+                    </td>
+                  ))}
+                </tr>
+
+                {/* Technology Stack */}
+                <tr className="border-b border-purple-500/20">
+                  <td className="p-4 font-medium text-purple-300">Technology Stack</td>
+                  {compareList.map((product) => (
+                    <td key={product.id} className="p-4 text-center">
+                      {product.technologyStack && product.technologyStack.length > 0 ? (
+                        <div className="flex justify-center gap-1 flex-wrap">
+                          {product.technologyStack.slice(0, 3).map((tech, i) => (
+                            <span
+                              key={i}
+                              className="px-2 py-1 bg-purple-500/20 backdrop-blur-sm rounded text-xs text-purple-300 border border-purple-500/30"
+                            >
+                              {tech}
+                            </span>
+                          ))}
+                          {product.technologyStack.length > 3 && (
+                            <span className="px-2 py-1 bg-slate-700/50 rounded text-xs text-gray-400">
+                              +{product.technologyStack.length - 3}
+                            </span>
+                          )}
+                        </div>
+                      ) : (
+                        <span className="text-gray-500">-</span>
+                      )}
+                    </td>
+                  ))}
+                </tr>
+
+                {/* Platforms */}
+                <tr className="border-b border-purple-500/20 bg-slate-900/30">
+                  <td className="p-4 font-medium text-purple-300">Platforms</td>
+                  {compareList.map((product) => (
+                    <td key={product.id} className="p-4 text-center">
+                      {product.platforms && product.platforms.length > 0 ? (
+                        <div className="flex justify-center gap-1 flex-wrap">
+                          {product.platforms.map((platform, i) => (
+                            <span
+                              key={i}
+                              className="px-2 py-1 bg-blue-500/20 backdrop-blur-sm rounded text-xs text-blue-300 border border-blue-500/30"
+                            >
+                              {platform}
+                            </span>
+                          ))}
+                        </div>
+                      ) : (
+                        <span className="text-gray-500">-</span>
+                      )}
+                    </td>
+                  ))}
+                </tr>
+
+                {/* Downloads */}
+                <tr className="border-b border-purple-500/20">
+                  <td className="p-4 font-medium text-purple-300">Downloads</td>
+                  {compareList.map((product) => (
+                    <td key={product.id} className="p-4 text-center text-gray-300">
+                      {product.downloadCount ? (
+                        <span className="inline-flex items-center gap-1">
+                          <Zap className="w-3 h-3 text-yellow-400" />
+                          {product.downloadCount.toLocaleString()}
+                        </span>
+                      ) : (
+                        "-"
                       )}
                     </td>
                   ))}
