@@ -33,12 +33,14 @@ import {
   Crown,
   Flame,
   Verified,
-  BadgeCheck
+  BadgeCheck,
+  GitCompare
 } from "lucide-react"
 import { useStore } from "@/store"
 import useUser from "@/hooks/useUser"
 import useDeviceTracking from "@/hooks/useDeviceTracking"
 import useLocationTracking from "@/hooks/useLocationTracking"
+import { useProductComparison } from "@/hooks/useProductComparison"
 import ProductCard from "@/shared/components/cards/Product-card"
 import ProductAIChat from "@/shared/components/product/ProductAIChat"
 import AuthRequiredModal from "@/shared/components/modals/AuthRequiredModal"
@@ -187,6 +189,10 @@ const ProductDetails = ({
   const removeFromWishlist = useStore((state) => state.removeFromWishlist);
   const syncWithServer = useStore((state) => state.syncWithServer);
 
+  // Compare functionality
+  const { addToCompare, isInCompare, compareList, maxItems } = useProductComparison();
+  const isInCompareList = productDetails ? isInCompare(productDetails.id) : false;
+
   const isWishListed = productDetails ? (
     wishlist.some((item) => item.id === productDetails.id) || wishlistIds.includes(productDetails.id)
   ) : false;
@@ -283,6 +289,43 @@ const ProductDetails = ({
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
       toast.success("Link copied to clipboard");
+    }
+  };
+
+  const handleCompare = () => {
+    if (isInCompareList) {
+      toast.info("Already in compare list");
+      return;
+    }
+    
+    if (compareList.length >= maxItems) {
+      toast.error(`You can only compare up to ${maxItems} applications`);
+      return;
+    }
+
+    const success = addToCompare({
+      id,
+      slug,
+      title: appName,
+      appName,
+      image: screenshots?.[0]?.url || "",
+      price,
+      salePrice: price,
+      isFree,
+      category: appCategory,
+      appCategory,
+      brand: seller?.name || "",
+      ratings: 5.0,
+      stock: 999,
+      shopName: seller?.name || "",
+      verificationStatus,
+      downloadCount: 0,
+      technologyStack,
+      platforms,
+    });
+
+    if (success) {
+      toast.success(`Added to compare (${compareList.length + 1}/${maxItems})`);
     }
   };
 
@@ -631,6 +674,18 @@ const ProductDetails = ({
                   >
                     <Heart className={`w-5 h-5 ${isWishListed ? 'fill-red-500' : ''}`} />
                     {isWishListed ? 'Saved' : 'Save'}
+                  </button>
+
+                  <button
+                    onClick={handleCompare}
+                    className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-xl font-semibold transition border-2 ${
+                      isInCompareList
+                        ? 'bg-blue-500/20 border-blue-500/40 text-blue-400'
+                        : 'border-purple-500/40 text-gray-300 hover:bg-purple-500/10'
+                    }`}
+                  >
+                    <GitCompare className="w-5 h-5" />
+                    {isInCompareList ? 'Added' : 'Compare'}
                   </button>
 
                   <button
