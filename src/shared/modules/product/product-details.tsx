@@ -186,7 +186,6 @@ const ProductDetails = ({
   const [authActionType, setAuthActionType] = useState<'download' | 'purchase' | 'access'>('access');
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
   const [isShortDescExpanded, setIsShortDescExpanded] = useState(false);
-  const [isShortDescExpanded, setIsShortDescExpanded] = useState(false);
 
   // Store
   const wishlist = useStore((state) => state.wishlist);
@@ -268,13 +267,6 @@ const ProductDetails = ({
   const displayedShortDesc = shouldTruncateShortDesc && !isShortDescExpanded
     ? description.slice(0, SHORT_DESC_CHAR_LIMIT) + '...'
     : description;
-
-  // Short description truncation logic (for top section)
-  const SHORT_DESC_CHAR_LIMIT = 200; // Show first 200 characters in top section
-  const shouldTruncateShortDesc = description.length > SHORT_DESC_CHAR_LIMIT;
-  const displayedShortDesc = shouldTruncateShortDesc && !isShortDescExpanded
-    ? description.slice(0, SHORT_DESC_CHAR_LIMIT) + '...'
-    : description;
   const requirements = productDetails.requirements || [];
   const lastUpdated = productDetails.lastUpdated;
   const version = productDetails.version || "1.0.0";
@@ -299,7 +291,7 @@ const ProductDetails = ({
   };
 
   const handleShare = async () => {
-    const url = `${window.location.origin}/product/${slug}`;
+    const url = `${window.location.origin}/product/${id}`;
     const shareData = {
       title: `${appName} — ${isFree ? 'FREE' : formatPrice(price, currency)}`,
       text: `Check out ${appName} on VETTCODE!`,
