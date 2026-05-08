@@ -260,7 +260,7 @@ const OrdersTab = ({ orders, loading }: { orders: Order[]; loading: boolean }) =
               <div className="min-w-0 flex-1">
                 <p className="text-xs sm:text-sm font-medium text-white truncate">Purchase #{order.id.slice(-8)}</p>
                 <p className="text-[10px] sm:text-xs text-gray-400">{new Date(order.createdAt).toLocaleDateString()}</p>
-                <p className="text-xs sm:text-sm font-semibold text-purple-300 mt-0.5">UGX {order.total?.toLocaleString()}</p>
+                <p className="text-xs sm:text-sm font-semibold text-purple-300 mt-0.5">${order.total?.toLocaleString('en-US')}</p>
               </div>
             </div>
             <div className="flex items-center justify-between sm:justify-end gap-2">
@@ -339,7 +339,7 @@ const WishlistTab = () => {
                     <p className="text-[10px] text-gray-400 truncate">{item.appCategory}</p>
                   )}
                   <p className="text-xs sm:text-sm font-bold text-purple-300 mt-1">
-                    {isFree ? 'FREE' : `UGX ${item.price.toLocaleString('en-UG')}`}
+                    {isFree ? 'FREE' : `$${item.price.toLocaleString('en-US')}`}
                   </p>
                 </div>
               </Link>
