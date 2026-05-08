@@ -217,15 +217,20 @@ const ProfileTab = ({ user, profileForm, setProfileForm, isEditing, setIsEditing
 
 // ============ ORDERS TAB ============
 const OrdersTab = ({ orders, loading }: { orders: Order[]; loading: boolean }) => {
-  const getStatusColor = (status: string) => {
-    const colors: Record<string, string> = { 
-      pending: "bg-yellow-500/20 text-yellow-300 border border-yellow-500/30", 
-      processing: "bg-blue-500/20 text-blue-300 border border-blue-500/30", 
-      completed: "bg-green-500/20 text-green-300 border border-green-500/30",
-      delivered: "bg-green-500/20 text-green-300 border border-green-500/30", 
-      cancelled: "bg-red-500/20 text-red-300 border border-red-500/30" 
-    };
-    return colors[status] || "bg-gray-500/20 text-gray-300 border border-gray-500/30";
+  const getStatusColor = (status: string, paymentStatus?: string) => {
+    // For digital products, use payment-based status
+    if (paymentStatus === 'paid') return "bg-green-500/20 text-green-300 border border-green-500/30";
+    if (status === 'cancelled') return "bg-red-500/20 text-red-300 border border-red-500/30";
+    if (status === 'confirmed' || status === 'processing') return "bg-blue-500/20 text-blue-300 border border-blue-500/30";
+    return "bg-yellow-500/20 text-yellow-300 border border-yellow-500/30"; // pending
+  };
+
+  const getStatusLabel = (status: string, paymentStatus?: string) => {
+    // For digital products, show payment-based status
+    if (paymentStatus === 'paid') return 'Ready to Download';
+    if (status === 'cancelled') return 'Cancelled';
+    if (status === 'confirmed' || status === 'processing') return 'Payment Verified';
+    return 'Pending Payment';
   };
 
   if (loading) return <div className="flex justify-center py-12"><Loader2 className="w-6 h-6 animate-spin text-purple-400" /></div>;
@@ -261,10 +266,18 @@ const OrdersTab = ({ orders, loading }: { orders: Order[]; loading: boolean }) =
                 <p className="text-xs sm:text-sm font-medium text-white truncate">Purchase #{order.id.slice(-8)}</p>
                 <p className="text-[10px] sm:text-xs text-gray-400">{new Date(order.createdAt).toLocaleDateString()}</p>
                 <p className="text-xs sm:text-sm font-semibold text-purple-300 mt-0.5">${order.total?.toLocaleString('en-US')}</p>
+                {(order as any).paymentStatus === 'paid' && (
+                  <div className="flex items-center gap-1 mt-1">
+                    <Download className="w-3 h-3 text-green-400" />
+                    <span className="text-[10px] text-green-400 font-medium">Ready to download</span>
+                  </div>
+                )}
               </div>
             </div>
             <div className="flex items-center justify-between sm:justify-end gap-2">
-              <span className={`px-2 py-0.5 text-[10px] sm:text-xs font-medium rounded-full ${getStatusColor(order.status)}`}>{order.status}</span>
+              <span className={`px-2 py-0.5 text-[10px] sm:text-xs font-medium rounded-full ${getStatusColor(order.status, (order as any).paymentStatus)}`}>
+                {getStatusLabel(order.status, (order as any).paymentStatus)}
+              </span>
               <ChevronRight className="w-4 h-4 text-gray-600" />
             </div>
           </div>
