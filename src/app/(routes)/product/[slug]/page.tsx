@@ -28,7 +28,15 @@ async function fetchProductDetails(slug: string) {
       }
 
       const data = await response.json();
-      return data.application || null;
+      const application = data.application || null;
+      // Transform _id to id for consistency with cart
+      if (application) {
+        return {
+          ...application,
+          id: application._id || application.id,
+        };
+      }
+      return null;
     }
     
     // If not a valid MongoDB ID, return null
@@ -70,15 +78,21 @@ async function fetchSimilarApplications(category: string, currentApplicationId: 
     const data = await response.json();
     const applications = data.applications || [];
 
+    // Transform _id to id for consistency
+    const transformedApps = applications.map((app: any) => ({
+      ...app,
+      id: app._id || app.id,
+    }));
+
     // Filter by same category, excluding current application
-    let similar = applications.filter(
-      (app: any) => app.appCategory === category && app._id !== currentApplicationId
+    let similar = transformedApps.filter(
+      (app: any) => app.appCategory === category && app.id !== currentApplicationId
     );
 
     // If not enough applications in same category, add other applications
     if (similar.length < 5) {
-      const otherApplications = applications.filter(
-        (app: any) => app._id !== currentApplicationId && !similar.some((s: any) => s._id === app._id)
+      const otherApplications = transformedApps.filter(
+        (app: any) => app.id !== currentApplicationId && !similar.some((s: any) => s.id === app.id)
       );
       similar = [...similar, ...otherApplications].slice(0, 10);
     }

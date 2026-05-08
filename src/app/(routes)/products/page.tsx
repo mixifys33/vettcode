@@ -104,7 +104,12 @@ const ProductsPageContent = () => {
     queryKey: ["all-applications"],
     queryFn: async () => {
       const res = await axiosInstance.get("/api/applications?page=1&limit=1000");
-      return res.data.applications || [];
+      const apps = res.data.applications || [];
+      // Transform _id to id for consistency with cart
+      return apps.map((app: any) => ({
+        ...app,
+        id: app._id || app.id,
+      }));
     },
     staleTime: 1000 * 60 * 5, // Cache for 5 minutes
     gcTime: 1000 * 60 * 10, // Keep in cache for 10 minutes

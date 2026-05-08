@@ -73,7 +73,8 @@ export default function Page() {
     queryKey: ["applications"],
     queryFn: async () => {
       const res = await axiosInstance.get("/api/applications?page=1&limit=10");
-      return res.data.applications;
+      const apps = res.data.applications || [];
+      return apps.map((app: any) => ({ ...app, id: app._id || app.id }));
     },
     staleTime: 1000 * 60 * 3,
   });
@@ -82,7 +83,8 @@ export default function Page() {
     queryKey: ["latest-applications"],
     queryFn: async () => {
       const res = await axiosInstance.get("/api/applications?page=1&limit=10&sortBy=createdAt&sortOrder=desc");
-      return res.data.applications;
+      const apps = res.data.applications || [];
+      return apps.map((app: any) => ({ ...app, id: app._id || app.id }));
     },
     staleTime: 1000 * 60 * 2,
   });
@@ -91,7 +93,8 @@ export default function Page() {
     queryKey: ["trending-applications"],
     queryFn: async () => {
       const res = await axiosInstance.get("/api/applications?page=1&limit=10&sortBy=downloads&sortOrder=desc");
-      return res.data.applications;
+      const apps = res.data.applications || [];
+      return apps.map((app: any) => ({ ...app, id: app._id || app.id }));
     },
     staleTime: 1000 * 60 * 5,
   });

@@ -95,7 +95,8 @@ const HeaderBottom = () => {
       try {
         const res = await axiosInstance.get('/api/applications?page=1&limit=1000');
         console.log('📦 Fetched applications for search:', res.data?.applications?.length || 0);
-        return res.data?.applications ?? [];
+        const apps = res.data?.applications ?? [];
+        return apps.map((app: any) => ({ ...app, id: app._id || app.id }));
       } catch (error) {
         console.error('❌ Error fetching applications:', error);
         return [];
