@@ -47,6 +47,7 @@ const OrderDetailPage = () => {
   const [copied, setCopied] = useState(false);
   const [showHelp, setShowHelp] = useState(false);
   const [downloadingInvoice, setDownloadingInvoice] = useState(false);
+  const [distributionInfo, setDistributionInfo] = useState<Record<string, any>>({});
 
   // Get currency from order items, default to USD
   const orderCurrency = order?.items?.[0]?.currency || order?.currency || "USD";
@@ -110,10 +111,38 @@ const OrderDetailPage = () => {
       const res = await axiosInstance.get(`/api/orders/${orderId}`);
       const d = res.data?.order || res.data?.data || res.data;
       setOrder(d);
+      
+      // If payment is successful, fetch distribution info for each item
+      if (d.paymentStatus === 'paid' && d.items?.length > 0) {
+        fetchDistributionInfo(d.items);
+      }
     } catch (e) {
       console.error("Failed to fetch order:", e);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchDistributionInfo = async (items: any[]) => {
+    try {
+      const distributionData: Record<string, any> = {};
+      
+      for (const item of items) {
+        if (item.productId) {
+          try {
+            const res = await axiosInstance.get(`/api/applications/${item.productId}/distribution`);
+            if (res.data.success) {
+              distributionData[item.productId] = res.data.distribution;
+            }
+          } catch (err) {
+            console.error(`Failed to fetch distribution for ${item.productId}:`, err);
+          }
+        }
+      }
+      
+      setDistributionInfo(distributionData);
+    } catch (e) {
+      console.error("Failed to fetch distribution info:", e);
     }
   };
 
@@ -356,42 +385,202 @@ const OrderDetailPage = () => {
               <div className="bg-gradient-to-br from-teal-50 to-blue-50 rounded-2xl border-2 border-teal-200 p-6 shadow-lg">
                 <div className="flex items-center gap-3 mb-4">
                   <div className="w-12 h-12 bg-teal-600 rounded-xl flex items-center justify-center">
-                    <Download className="w-6 h-6 text-white" />
+                    <CheckCircle className="w-6 h-6 text-white" />
                   </div>
                   <div>
-                    <h2 className="font-bold text-gray-900 text-lg">Download Your Applications</h2>
-                    <p className="text-sm text-gray-600">Payment verified - Your applications are ready!</p>
+                    <h2 className="font-bold text-gray-900 text-lg">Payment Successful!</h2>
+                    <p className="text-sm text-gray-600">Access your applications below</p>
                   </div>
                 </div>
                 
-                <div className="space-y-3">
-                  {(order.items || []).map((item: any, i: number) => (
-                    <div key={i} className="bg-white rounded-xl p-4 flex items-center justify-between gap-4 shadow-sm hover:shadow-md transition">
-                      <div className="flex items-center gap-3 flex-1 min-w-0">
-                        <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-teal-500 to-blue-500 flex items-center justify-center flex-shrink-0">
-                          <Code className="w-6 h-6 text-white" />
+                <div className="space-y-4">
+                  {(order.items || []).map((item: any, i: number) => {
+                    const dist = distributionInfo[item.productId];
+                    const hasDistribution = dist && Object.keys(dist).length > 0;
+                    
+                    return (
+                      <div key={i} className="bg-white rounded-xl p-5 shadow-sm border border-gray-200">
+                        {/* Application Header */}
+                        <div className="flex items-center gap-3 mb-4 pb-4 border-b border-gray-100">
+                          <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-teal-500 to-blue-500 flex items-center justify-center flex-shrink-0">
+                            <Code className="w-6 h-6 text-white" />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="font-bold text-gray-900">{item.name || item.productName || "Application"}</p>
+                            <p className="text-xs text-gray-500">Full source code & documentation</p>
+                          </div>
                         </div>
-                        <div className="flex-1 min-w-0">
-                          <p className="font-semibold text-gray-900 truncate">{item.name || item.productName || "Application"}</p>
-                          <p className="text-xs text-gray-500">Full source code & documentation</p>
-                        </div>
+
+                        {/* Distribution Methods */}
+                        {hasDistribution ? (
+                          <div className="space-y-3">
+                            {/* Global Note */}
+                            {dist.globalNote && (
+                              <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                                <p className="text-sm text-blue-900 font-medium mb-1">📋 Seller Instructions:</p>
+                                <p className="text-sm text-blue-800">{dist.globalNote}</p>
+                              </div>
+                            )}
+
+                            {/* Processing Time */}
+                            {dist.processingTime && (
+                              <div className="flex items-center gap-2 text-sm text-gray-600">
+                                <Clock className="w-4 h-4" />
+                                <span>Processing Time: <strong>{dist.processingTime}</strong></span>
+                              </div>
+                            )}
+
+                            {/* Instant Download */}
+                            {dist.instant_download?.enabled && (
+                              <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
+                                <div className="flex items-center justify-between gap-3">
+                                  <div className="flex items-center gap-2 flex-1">
+                                    <Download className="w-5 h-5 text-green-600" />
+                                    <div>
+                                      <p className="font-semibold text-green-900">Instant Download</p>
+                                      {dist.instant_download.note && <p className="text-xs text-green-700 mt-0.5">{dist.instant_download.note}</p>}
+                                    </div>
+                                  </div>
+                                  {dist.instant_download.url && (
+                                    <a
+                                      href={dist.instant_download.url}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium transition text-sm whitespace-nowrap"
+                                    >
+                                      Download Now
+                                    </a>
+                                  )}
+                                </div>
+                              </div>
+                            )}
+
+                            {/* GitHub Access */}
+                            {dist.github_access?.enabled && (
+                              <div className="p-3 bg-gray-50 border border-gray-200 rounded-lg">
+                                <div className="flex items-center justify-between gap-3">
+                                  <div className="flex items-center gap-2 flex-1">
+                                    <Code className="w-5 h-5 text-gray-700" />
+                                    <div>
+                                      <p className="font-semibold text-gray-900">GitHub Repository</p>
+                                      {dist.github_access.note && <p className="text-xs text-gray-600 mt-0.5">{dist.github_access.note}</p>}
+                                    </div>
+                                  </div>
+                                  {dist.github_access.url && (
+                                    <a
+                                      href={dist.github_access.url}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="px-4 py-2 bg-gray-700 hover:bg-gray-800 text-white rounded-lg font-medium transition text-sm whitespace-nowrap"
+                                    >
+                                      View Repo
+                                    </a>
+                                  )}
+                                </div>
+                              </div>
+                            )}
+
+                            {/* Google Drive */}
+                            {dist.google_drive?.enabled && (
+                              <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                                <div className="flex items-center justify-between gap-3">
+                                  <div className="flex items-center gap-2 flex-1">
+                                    <Download className="w-5 h-5 text-blue-600" />
+                                    <div>
+                                      <p className="font-semibold text-blue-900">Google Drive</p>
+                                      {dist.google_drive.note && <p className="text-xs text-blue-700 mt-0.5">{dist.google_drive.note}</p>}
+                                    </div>
+                                  </div>
+                                  {dist.google_drive.url && (
+                                    <a
+                                      href={dist.google_drive.url}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition text-sm whitespace-nowrap"
+                                    >
+                                      Open Drive
+                                    </a>
+                                  )}
+                                </div>
+                              </div>
+                            )}
+
+                            {/* WhatsApp */}
+                            {dist.whatsapp?.enabled && (
+                              <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
+                                <div className="flex items-center justify-between gap-3">
+                                  <div className="flex items-center gap-2 flex-1">
+                                    <MessageCircle className="w-5 h-5 text-green-600" />
+                                    <div>
+                                      <p className="font-semibold text-green-900">WhatsApp Delivery</p>
+                                      {dist.whatsapp.note && <p className="text-xs text-green-700 mt-0.5">{dist.whatsapp.note}</p>}
+                                    </div>
+                                  </div>
+                                  {dist.whatsapp.url && (
+                                    <a
+                                      href={dist.whatsapp.url}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium transition text-sm whitespace-nowrap"
+                                    >
+                                      Contact Seller
+                                    </a>
+                                  )}
+                                </div>
+                              </div>
+                            )}
+
+                            {/* Email Delivery */}
+                            {dist.email_delivery?.enabled && (
+                              <div className="p-3 bg-purple-50 border border-purple-200 rounded-lg">
+                                <div className="flex items-center gap-2">
+                                  <Mail className="w-5 h-5 text-purple-600" />
+                                  <div>
+                                    <p className="font-semibold text-purple-900">Email Delivery</p>
+                                    <p className="text-xs text-purple-700 mt-0.5">
+                                      {dist.email_delivery.note || "Application files will be sent to your email"}
+                                    </p>
+                                  </div>
+                                </div>
+                              </div>
+                            )}
+
+                            {/* Custom Method */}
+                            {dist.custom?.enabled && (
+                              <div className="p-3 bg-orange-50 border border-orange-200 rounded-lg">
+                                <div className="flex items-center justify-between gap-3">
+                                  <div className="flex items-center gap-2 flex-1">
+                                    <Info className="w-5 h-5 text-orange-600" />
+                                    <div>
+                                      <p className="font-semibold text-orange-900">Custom Delivery</p>
+                                      {dist.custom.note && <p className="text-xs text-orange-700 mt-0.5">{dist.custom.note}</p>}
+                                    </div>
+                                  </div>
+                                  {dist.custom.url && (
+                                    <a
+                                      href={dist.custom.url}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white rounded-lg font-medium transition text-sm whitespace-nowrap"
+                                    >
+                                      Access
+                                    </a>
+                                  )}
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        ) : (
+                          <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+                            <p className="text-sm text-yellow-800 flex items-center gap-2">
+                              <AlertTriangle className="w-4 h-4" />
+                              The seller will provide access instructions shortly. Check your email or contact support if you don't receive access within 24 hours.
+                            </p>
+                          </div>
+                        )}
                       </div>
-                      <Link
-                        href={`/product/${item.productId}`}
-                        className="flex items-center gap-2 px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white rounded-lg font-medium transition whitespace-nowrap"
-                      >
-                        <Download className="w-4 h-4" />
-                        <span className="hidden sm:inline">Download</span>
-                      </Link>
-                    </div>
-                  ))}
-                </div>
-                
-                <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-                  <p className="text-xs text-blue-800 flex items-center gap-2">
-                    <Shield className="w-4 h-4" />
-                    <span>Click download to access your application files, documentation, and setup instructions.</span>
-                  </p>
+                    );
+                  })}
                 </div>
               </div>
             )}
