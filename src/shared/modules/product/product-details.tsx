@@ -34,7 +34,9 @@ import {
   Flame,
   Verified,
   BadgeCheck,
-  GitCompare
+  GitCompare,
+  ChevronDown,
+  ChevronUp
 } from "lucide-react"
 import { useStore } from "@/store"
 import useUser from "@/hooks/useUser"
@@ -103,6 +105,7 @@ interface ApplicationData {
   requirements?: string[];
   lastUpdated?: string;
   version?: string;
+  verificationStatus?: string;
 }
 
 interface SimilarProduct {
@@ -181,6 +184,7 @@ const ProductDetails = ({
   const [showAIChat, setShowAIChat] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [authActionType, setAuthActionType] = useState<'download' | 'purchase' | 'access'>('access');
+  const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
 
   // Store
   const wishlist = useStore((state) => state.wishlist);
@@ -248,6 +252,13 @@ const ProductDetails = ({
   const id = productDetails.id || productDetails._id || '';
   const slug = productDetails.slug || id;
   const features = productDetails.features || [];
+
+  // Description truncation logic
+  const DESCRIPTION_CHAR_LIMIT = 500; // Show first 500 characters
+  const shouldTruncateDescription = description.length > DESCRIPTION_CHAR_LIMIT;
+  const displayedDescription = shouldTruncateDescription && !isDescriptionExpanded
+    ? description.slice(0, DESCRIPTION_CHAR_LIMIT) + '...'
+    : description;
   const requirements = productDetails.requirements || [];
   const lastUpdated = productDetails.lastUpdated;
   const version = productDetails.version || "1.0.0";
@@ -849,9 +860,29 @@ const ProductDetails = ({
                     <FileText className="w-5 h-5 text-purple-400" />
                     About This Application
                   </h3>
-                  <p className="text-gray-300 leading-relaxed whitespace-pre-line">
-                    {description || "No detailed description available for this application."}
-                  </p>
+                  <div className="relative">
+                    <p className="text-gray-300 leading-relaxed whitespace-pre-line">
+                      {displayedDescription || "No detailed description available for this application."}
+                    </p>
+                    {shouldTruncateDescription && (
+                      <button
+                        onClick={() => setIsDescriptionExpanded(!isDescriptionExpanded)}
+                        className="mt-3 inline-flex items-center gap-2 text-purple-400 hover:text-purple-300 font-medium text-sm transition-colors"
+                      >
+                        {isDescriptionExpanded ? (
+                          <>
+                            <ChevronUp className="w-4 h-4" />
+                            Read Less
+                          </>
+                        ) : (
+                          <>
+                            <ChevronDown className="w-4 h-4" />
+                            Read More
+                          </>
+                        )}
+                      </button>
+                    )}
+                  </div>
                 </div>
 
                 {/* Key Metrics */}
