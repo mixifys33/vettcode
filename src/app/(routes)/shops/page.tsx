@@ -85,7 +85,7 @@ const ShopCard = ({ shop, viewMode }: { shop: Shop; viewMode: "grid" | "list" })
             </div>
             {shop.bio && <p className="text-sm text-slate-400 mt-2 line-clamp-2">{shop.bio}</p>}
             <div className="flex items-center gap-4 mt-3 text-xs text-slate-400">
-              <span className="flex items-center gap-1.5 bg-slate-700/50 px-2 py-1 rounded-full">
+              <div className="flex items-center gap-1.5 bg-slate-700/50 px-2 py-1 rounded-full">
                 <MapPin className="w-3.5 h-3.5" />{shop.address || "Global"}
               </span>
               <span className="flex items-center gap-1.5 bg-purple-500/20 px-2 py-1 rounded-full text-purple-300">
@@ -137,7 +137,7 @@ const ShopCard = ({ shop, viewMode }: { shop: Shop; viewMode: "grid" | "list" })
             <div className="flex items-center justify-center gap-3 mt-4 pt-4 border-t border-slate-700/50">
               <div className="flex items-center gap-1.5 text-xs text-slate-400">
                 <Package className="w-4 h-4 text-purple-400" />
-                <span className="font-medium text-white">{shop.productCount || 0}</span> apps
+                <span className="font-medium text-white">{shop.productCount || 0}</span> applications
               </div>
               <div className="w-1 h-1 bg-slate-600 rounded-full" />
               <div className="flex items-center gap-1.5 text-xs text-slate-400">
