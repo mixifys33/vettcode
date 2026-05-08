@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { X, GitCompare, Trash2, ArrowRight, Sparkles, ChevronDown, ChevronUp } from "lucide-react";
@@ -9,20 +9,70 @@ import { useProductComparison } from "@/hooks/useProductComparison";
 export default function ProductComparisonBar() {
   const { compareList, removeFromCompare, clearCompare, maxItems } = useProductComparison();
   const [isMinimized, setIsMinimized] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
+  const [prevCompareListLength, setPrevCompareListLength] = useState(0);
+  const barRef = useRef<HTMLDivElement>(null);
+
+  // Show bar when new items are added
+  useEffect(() => {
+    if (compareList.length > prevCompareListLength) {
+      setIsVisible(true);
+      setIsMinimized(false);
+    }
+    setPrevCompareListLength(compareList.length);
+  }, [compareList.length, prevCompareListLength]);
+
+  // Handle click outside to close
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (barRef.current && !barRef.current.contains(event.target as Node)) {
+        setIsVisible(false);
+      }
+    };
+
+    if (isVisible && compareList.length > 0) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isVisible, compareList.length]);
 
   if (compareList.length === 0) return null;
+  if (!isVisible) {
+    // Show a small indicator when hidden
+    return (
+      <button
+        onClick={() => setIsVisible(true)}
+        className="fixed bottom-6 right-6 z-50 w-14 h-14 bg-gradient-to-br from-purple-600 to-blue-600 rounded-full flex items-center justify-center shadow-2xl hover:scale-110 transition-all group animate-bounce-slow"
+        title="Show compare list"
+      >
+        <GitCompare className="w-6 h-6 text-white" />
+        <span className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center text-xs font-bold shadow-lg">
+          {compareList.length}
+        </span>
+      </button>
+    );
+  }
 
   const canCompare = compareList.length >= 2;
   const progress = (compareList.length / maxItems) * 100;
 
   return (
     <>
-      {/* Backdrop overlay for mobile */}
-      <div className="fixed bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-black/20 to-transparent pointer-events-none z-40 md:hidden" />
+      {/* Backdrop overlay */}
+      <div 
+        className="fixed inset-0 bg-black/20 backdrop-blur-sm z-40 animate-fade-in"
+        onClick={() => setIsVisible(false)}
+      />
       
-      <div className={`fixed ${isMinimized ? 'bottom-0' : 'bottom-0'} left-0 right-0 z-50 transition-all duration-300`}>
+      <div 
+        ref={barRef}
+        className={`fixed ${isMinimized ? 'bottom-0' : 'bottom-0'} left-0 right-0 z-50 transition-all duration-300 animate-slide-up`}
+      >
         <div className="max-w-7xl mx-auto px-4 pb-4">
-          <div className="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 backdrop-blur-xl rounded-2xl shadow-2xl border-2 border-purple-500/30 overflow-hidden">
+          <div className="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 backdrop-blur-xl rounded-2xl shadow-2xl border-2 border-purple-500/30 overflow-hidden relative">
             {/* Progress Bar */}
             <div className="h-1 bg-slate-700 relative overflow-hidden">
               <div
@@ -32,6 +82,15 @@ export default function ProductComparisonBar() {
                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-shimmer" />
               </div>
             </div>
+
+            {/* Close Button */}
+            <button
+              onClick={() => setIsVisible(false)}
+              className="absolute -top-3 -right-3 w-8 h-8 bg-red-500 hover:bg-red-600 rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition-all z-10 group"
+              title="Close (click outside to dismiss)"
+            >
+              <X className="w-4 h-4 text-white group-hover:rotate-90 transition-transform" />
+            </button>
 
             {/* Minimize/Maximize Button */}
             <button
@@ -200,9 +259,27 @@ export default function ProductComparisonBar() {
             transform: scale(1);
           }
         }
+        @keyframes slide-up {
+          from {
+            opacity: 0;
+            transform: translateY(100%);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        @keyframes fade-in {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
         @keyframes pulse-slow {
           0%, 100% { opacity: 1; }
           50% { opacity: 0.8; }
+        }
+        @keyframes bounce-slow {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-10px); }
         }
         .animate-shimmer {
           animation: shimmer 2s infinite;
@@ -213,8 +290,17 @@ export default function ProductComparisonBar() {
         .animate-slide-in {
           animation: slide-in 0.3s ease-out forwards;
         }
+        .animate-slide-up {
+          animation: slide-up 0.4s ease-out forwards;
+        }
+        .animate-fade-in {
+          animation: fade-in 0.3s ease-out forwards;
+        }
         .animate-pulse-slow {
           animation: pulse-slow 2s ease-in-out infinite;
+        }
+        .animate-bounce-slow {
+          animation: bounce-slow 2s ease-in-out infinite;
         }
         .scrollbar-hide {
           -ms-overflow-style: none;
