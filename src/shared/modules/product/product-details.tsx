@@ -315,13 +315,13 @@ const ProductDetails = ({
       category: appCategory,
       appCategory,
       brand: seller?.name || "",
-      ratings: 5.0,
+      ratings: rating,
       stock: 999,
       shopName: seller?.name || "",
-      verificationStatus,
-      downloadCount: 0,
-      technologyStack,
-      platforms,
+      verificationStatus: productDetails.verificationStatus || "unverified",
+      downloadCount: downloads,
+      technologyStack: techStack,
+      platforms: platforms,
     });
 
     if (success) {
