@@ -186,7 +186,7 @@ const CartPage = () => {
 
       // Create order in backend
       const orderResponse = await axiosInstance.post("/api/orders", {
-        userId: user.id,
+        userId: user._id || user.id,
         items: orderItems,
         subtotal: subtotal,
         total: finalTotal,
@@ -211,7 +211,7 @@ const CartPage = () => {
           city: "",
         },
         buyerInfo: {
-          userId: user.id,
+          userId: user._id || user.id,
           name: user.name || "",
           email: user.email || "",
           phone: user.phone || "",

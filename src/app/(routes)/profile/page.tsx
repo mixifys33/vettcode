@@ -1273,7 +1273,7 @@ const ProfilePageContent = () => {
     setOrdersLoading(true);
     try {
       // Backend expects GET /api/orders?userId=xxx
-      const userId = (user as any)?.id || (user as any)?._id;
+      const userId = (user as any)?._id || (user as any)?.id;
       const r = await axiosInstance.get(`/api/orders?userId=${userId}`);
       // Backend returns array directly or wrapped in { orders: [] }
       const raw = r.data;
