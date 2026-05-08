@@ -48,9 +48,53 @@ const OrderDetailPage = () => {
   const [showHelp, setShowHelp] = useState(false);
   const [downloadingInvoice, setDownloadingInvoice] = useState(false);
 
+  // Get currency from order items, default to USD
+  const orderCurrency = order?.items?.[0]?.currency || order?.currency || "USD";
+
   useEffect(() => {
-    if (user && orderId) fetchOrder();
+    if (user && orderId) {
+      fetchOrder();
+      
+      // Check if returning from payment
+      const urlParams = new URLSearchParams(window.location.search);
+      const paymentStatus = urlParams.get('status');
+      const txRef = urlParams.get('tx_ref');
+      
+      if (paymentStatus === 'cancelled' || paymentStatus === 'failed') {
+        // Payment was cancelled or failed - update order status
+        updateOrderStatusOnCancel();
+      } else if (txRef) {
+        // Verify payment with Flutterwave
+        verifyPaymentStatus(txRef);
+      }
+    }
   }, [user, orderId]);
+
+  const updateOrderStatusOnCancel = async () => {
+    try {
+      await axiosInstance.patch(`/api/orders/${orderId}/status`, {
+        status: 'cancelled',
+        paymentStatus: 'failed',
+      });
+      fetchOrder(); // Refresh order data
+    } catch (e) {
+      console.error('Failed to update cancelled order:', e);
+    }
+  };
+
+  const verifyPaymentStatus = async (txRef: string) => {
+    try {
+      const backendUrl = process.env.NEXT_PUBLIC_SERVER_URL || "https://easyshop-d00e.onrender.com";
+      const res = await fetch(`${backendUrl}/api/flutterwave/verify-ref/${txRef}`);
+      const data = await res.json();
+      
+      if (data.success && data.verified) {
+        fetchOrder(); // Refresh to show updated payment status
+      }
+    } catch (e) {
+      console.error('Failed to verify payment:', e);
+    }
+  };
 
   const fetchOrder = async () => {
     setLoading(true);
@@ -84,8 +128,8 @@ const OrderDetailPage = () => {
         `<tr>
           <td style="padding:10px 8px;border-bottom:1px solid #e5e7eb">${item.name || item.productName || "Product"}</td>
           <td style="padding:10px 8px;border-bottom:1px solid #e5e7eb;text-align:center">${item.quantity}</td>
-          <td style="padding:10px 8px;border-bottom:1px solid #e5e7eb;text-align:right">UGX ${fmt(item.price)}</td>
-          <td style="padding:10px 8px;border-bottom:1px solid #e5e7eb;text-align:right;font-weight:600">UGX ${fmt((item.price || 0) * (item.quantity || 1))}</td>
+          <td style="padding:10px 8px;border-bottom:1px solid #e5e7eb;text-align:right">${orderCurrency} ${fmt(item.price)}</td>
+          <td style="padding:10px 8px;border-bottom:1px solid #e5e7eb;text-align:right;font-weight:600">${orderCurrency} ${fmt((item.price || 0) * (item.quantity || 1))}</td>
         </tr>`
       ).join("");
 
@@ -157,9 +201,9 @@ const OrderDetailPage = () => {
       <tbody>${itemRows}</tbody>
     </table>
     <div class="totals">
-      <div class="totals-row"><span>Subtotal</span><span>UGX ${fmt(order.subtotal)}</span></div>
-      <div class="totals-row"><span>Delivery</span><span>${(order.deliveryFee || 0) > 0 ? "UGX " + fmt(order.deliveryFee) : "Free"}</span></div>
-      <div class="totals-row grand"><span>Total</span><span>UGX ${fmt(total)}</span></div>
+      <div class="totals-row"><span>Subtotal</span><span>${orderCurrency} ${fmt(order.subtotal)}</span></div>
+      <div class="totals-row"><span>Delivery</span><span>${(order.deliveryFee || 0) > 0 ? orderCurrency + " " + fmt(order.deliveryFee) : "Free"}</span></div>
+      <div class="totals-row grand"><span>Total</span><span>${orderCurrency} ${fmt(total)}</span></div>
     </div>
   </div>
 
@@ -290,8 +334,8 @@ const OrderDetailPage = () => {
                       <p className="font-medium text-gray-900 text-sm line-clamp-2">{item.name || item.productName || item.title || "Product"}</p>
                       {item.productId && <p className="text-[10px] text-gray-400 font-mono mt-0.5">ID: {item.productId}</p>}
                       <div className="flex items-center justify-between mt-1.5">
-                        <span className="text-xs text-gray-500">Qty: <strong>{item.quantity}</strong> × UGX {fmt(item.price)}</span>
-                        <span className="text-sm font-bold text-teal-700">UGX {fmt((item.price || 0) * (item.quantity || 1))}</span>
+                        <span className="text-xs text-gray-500">Qty: <strong>{item.quantity}</strong> × {orderCurrency} {fmt(item.price)}</span>
+                        <span className="text-sm font-bold text-teal-700">{orderCurrency} {fmt((item.price || 0) * (item.quantity || 1))}</span>
                       </div>
                     </div>
                   </div>
@@ -310,7 +354,7 @@ const OrderDetailPage = () => {
               <Row label="Method" value={delivery.name} />
               <Row label="Type" value={delivery.type} />
               <Row label="Est. Days" value={delivery.estimatedDays ? `${delivery.estimatedDays} days` : undefined} />
-              <Row label="Delivery Fee" value={delivery.fee ? `UGX ${fmt(delivery.fee)}` : undefined} />
+              <Row label="Delivery Fee" value={delivery.fee ? `${orderCurrency} ${fmt(delivery.fee)}` : undefined} />
             </div>
 
             {/* Buyer Info */}
@@ -364,14 +408,14 @@ const OrderDetailPage = () => {
                 <StatusBadge status={order.paymentStatus || "pending"} />
               </div>
               <div className="space-y-1.5 text-sm">
-                <div className="flex justify-between text-gray-600"><span>Subtotal</span><span>UGX {fmt(order.subtotal)}</span></div>
+                <div className="flex justify-between text-gray-600"><span>Subtotal</span><span>{orderCurrency} {fmt(order.subtotal)}</span></div>
                 <div className="flex justify-between text-gray-600">
                   <span>Delivery</span>
-                  <span>{(order.deliveryFee || 0) > 0 ? `UGX ${fmt(order.deliveryFee)}` : "Free"}</span>
+                  <span>{(order.deliveryFee || 0) > 0 ? `${orderCurrency} ${fmt(order.deliveryFee)}` : "Free"}</span>
                 </div>
                 <div className="flex justify-between font-bold text-base pt-2 border-t mt-2">
                   <span>Total</span>
-                  <span className="text-teal-700">UGX {fmt(total)}</span>
+                  <span className="text-teal-700">{orderCurrency} {fmt(total)}</span>
                 </div>
               </div>
             </div>
