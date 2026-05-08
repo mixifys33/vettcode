@@ -313,12 +313,36 @@ const ProductDetails = ({
 
   const handleCompare = () => {
     if (isInCompareList) {
-      toast.info("Already in compare list");
+      // If already in compare, offer to view comparison
+      toast.info(
+        <div className="flex items-center justify-between gap-3">
+          <span>Already in compare list</span>
+          <Link
+            href="/compare"
+            className="px-3 py-1 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-sm font-medium transition-colors"
+          >
+            View
+          </Link>
+        </div>,
+        { duration: 4000 }
+      );
       return;
     }
     
     if (compareList.length >= maxItems) {
-      toast.error(`You can only compare up to ${maxItems} applications`);
+      toast.error(
+        <div className="flex flex-col gap-2">
+          <span className="font-semibold">Compare list is full</span>
+          <span className="text-sm text-gray-300">Remove an item to add this application</span>
+          <Link
+            href="/compare"
+            className="mt-1 px-3 py-1 bg-red-600 hover:bg-red-700 text-white rounded-lg text-sm font-medium transition-colors text-center"
+          >
+            Manage Compare List
+          </Link>
+        </div>,
+        { duration: 5000 }
+      );
       return;
     }
 
@@ -344,7 +368,26 @@ const ProductDetails = ({
     });
 
     if (success) {
-      toast.success(`Added to compare (${compareList.length + 1}/${maxItems})`);
+      const remaining = maxItems - (compareList.length + 1);
+      toast.success(
+        <div className="flex items-center justify-between gap-3">
+          <div className="flex flex-col">
+            <span className="font-semibold">Added to compare!</span>
+            <span className="text-sm text-gray-300">
+              {remaining > 0 
+                ? `${remaining} more slot${remaining !== 1 ? 's' : ''} available` 
+                : 'Compare list is full'}
+            </span>
+          </div>
+          <Link
+            href="/compare"
+            className="px-3 py-1 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm font-medium transition-colors whitespace-nowrap"
+          >
+            Compare Now
+          </Link>
+        </div>,
+        { duration: 5000 }
+      );
     }
   };
 
