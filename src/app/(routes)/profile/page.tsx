@@ -1283,6 +1283,8 @@ const ProfilePageContent = () => {
         ...o,
         id: o._id || o.id,
         total: o.subtotal || o.total || 0,
+        status: o.status || 'pending',
+        paymentStatus: o.paymentStatus || 'pending',
         items: (o.items || []).map((item: any) => ({
           ...item,
           image: item.image || item.productImage || "",
