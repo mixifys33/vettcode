@@ -185,6 +185,8 @@ const ProductDetails = ({
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [authActionType, setAuthActionType] = useState<'download' | 'purchase' | 'access'>('access');
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
+  const [isShortDescExpanded, setIsShortDescExpanded] = useState(false);
+  const [isShortDescExpanded, setIsShortDescExpanded] = useState(false);
 
   // Store
   const wishlist = useStore((state) => state.wishlist);
@@ -258,6 +260,20 @@ const ProductDetails = ({
   const shouldTruncateDescription = description.length > DESCRIPTION_CHAR_LIMIT;
   const displayedDescription = shouldTruncateDescription && !isDescriptionExpanded
     ? description.slice(0, DESCRIPTION_CHAR_LIMIT) + '...'
+    : description;
+
+  // Short description truncation logic (for top section)
+  const SHORT_DESC_CHAR_LIMIT = 200; // Show first 200 characters in top section
+  const shouldTruncateShortDesc = description.length > SHORT_DESC_CHAR_LIMIT;
+  const displayedShortDesc = shouldTruncateShortDesc && !isShortDescExpanded
+    ? description.slice(0, SHORT_DESC_CHAR_LIMIT) + '...'
+    : description;
+
+  // Short description truncation logic (for top section)
+  const SHORT_DESC_CHAR_LIMIT = 200; // Show first 200 characters in top section
+  const shouldTruncateShortDesc = description.length > SHORT_DESC_CHAR_LIMIT;
+  const displayedShortDesc = shouldTruncateShortDesc && !isShortDescExpanded
+    ? description.slice(0, SHORT_DESC_CHAR_LIMIT) + '...'
     : description;
   const requirements = productDetails.requirements || [];
   const lastUpdated = productDetails.lastUpdated;
@@ -572,9 +588,27 @@ const ProductDetails = ({
 
               {/* Description */}
               <div className="mt-4">
-                <p className="text-sm leading-relaxed text-gray-300 line-clamp-3">
-                  {description || "No description available"}
+                <p className={`text-sm leading-relaxed text-gray-300 ${!isShortDescExpanded && shouldTruncateShortDesc ? 'line-clamp-3' : ''}`}>
+                  {displayedShortDesc || "No description available"}
                 </p>
+                {shouldTruncateShortDesc && (
+                  <button
+                    onClick={() => setIsShortDescExpanded(!isShortDescExpanded)}
+                    className="mt-2 inline-flex items-center gap-1 text-purple-400 hover:text-purple-300 font-medium text-xs transition-colors"
+                  >
+                    {isShortDescExpanded ? (
+                      <>
+                        <ChevronUp className="w-3 h-3" />
+                        Show Less
+                      </>
+                    ) : (
+                      <>
+                        <ChevronDown className="w-3 h-3" />
+                        Show More
+                      </>
+                    )}
+                  </button>
+                )}
               </div>
 
               {/* Version & Last Updated */}
