@@ -172,6 +172,29 @@ const formatDate = (dateString?: string): string => {
   }
 };
 
+// Strip HTML tags and format text for clean display
+const stripHtmlAndFormat = (text: string): string => {
+  if (!text) return '';
+  
+  // Remove HTML tags
+  let cleaned = text.replace(/<[^>]*>/g, '');
+  
+  // Decode common HTML entities
+  cleaned = cleaned
+    .replace(/&nbsp;/g, ' ')
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .replace(/&apos;/g, "'");
+  
+  // Remove excessive whitespace
+  cleaned = cleaned.replace(/\s+/g, ' ').trim();
+  
+  return cleaned;
+};
+
 // Main Component
 const ProductDetails = ({
   productDetails,
@@ -188,7 +211,7 @@ const ProductDetails = ({
   const [activeImage, setActiveImage] = useState(0);
   const [showVideoModal, setShowVideoModal] = useState(false);
   const [copied, setCopied] = useState(false);
-  const [activeTab, setActiveTab] = useState<'overview' | 'badges' | 'features' | 'requirements'>('overview');
+  const [activeTab, setActiveTab] = useState<'badges' | 'features' | 'requirements'>('badges');
   const [showAIChat, setShowAIChat] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [authActionType, setAuthActionType] = useState<'download' | 'purchase' | 'access'>('access');
@@ -216,6 +239,23 @@ const ProductDetails = ({
     }
   }, [user?.id, syncWithServer]);
 
+  // Set default tab based on available content
+  useEffect(() => {
+    if (productDetails) {
+      const badges = productDetails.badges || [];
+      const features = productDetails.features || [];
+      const requirements = productDetails.requirements || [];
+      
+      if (badges.length > 0) {
+        setActiveTab('badges');
+      } else if (features.length > 0) {
+        setActiveTab('features');
+      } else if (requirements.length > 0) {
+        setActiveTab('requirements');
+      }
+    }
+  }, [productDetails]);
+
   // Early return for missing product
   if (!productDetails) {
     return (
@@ -238,7 +278,8 @@ const ProductDetails = ({
   // Extract and normalize application data
   const appName = productDetails.appName || productDetails.title || "Untitled Application";
   const appCategory = productDetails.appCategory || productDetails.category || "";
-  const description = productDetails.detailedDescription || productDetails.shortDescription || productDetails.description || "";
+  const rawDescription = productDetails.detailedDescription || productDetails.shortDescription || productDetails.description || "";
+  const description = stripHtmlAndFormat(rawDescription);
   const price = productDetails.price || productDetails.sale_price || 0;
   const currency = productDetails.currency || "USD";
   const isFree = productDetails.isFree || price === 0;
@@ -646,18 +687,39 @@ const ProductDetails = ({
               </div>
             </div>
 
-            {/* Description - Clean & Readable */}
+            {/* Description - Clean & Readable with Better Formatting */}
             <div className="bg-[#0F1419] border border-slate-800/50 rounded-lg p-5">
               <h2 className="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-3">Description</h2>
-              <div className="text-sm text-slate-300 leading-relaxed whitespace-pre-line">
-                {displayedDescription || "No description available"}
+              <div className="prose prose-invert prose-sm max-w-none">
+                <div className="text-sm text-slate-300 leading-relaxed space-y-3">
+                  {displayedDescription.split('\n\n').map((paragraph, index) => (
+                    paragraph.trim() && (
+                      <p key={index} className="mb-3 last:mb-0">
+                        {paragraph}
+                      </p>
+                    )
+                  ))}
+                  {!displayedDescription && (
+                    <p className="text-slate-500 italic">No description available</p>
+                  )}
+                </div>
               </div>
               {shouldTruncateDescription && (
                 <button
                   onClick={() => setIsDescriptionExpanded(!isDescriptionExpanded)}
-                  className="mt-3 text-indigo-400 hover:text-indigo-300 text-xs font-medium transition"
+                  className="mt-4 text-indigo-400 hover:text-indigo-300 text-xs font-medium transition flex items-center gap-1"
                 >
-                  {isDescriptionExpanded ? '− Show Less' : '+ Read More'}
+                  {isDescriptionExpanded ? (
+                    <>
+                      <ChevronUp className="w-3 h-3" />
+                      Show Less
+                    </>
+                  ) : (
+                    <>
+                      <ChevronDown className="w-3 h-3" />
+                      Read More
+                    </>
+                  )}
                 </button>
               )}
             </div>
@@ -839,19 +901,6 @@ const ProductDetails = ({
         <div className="mt-6 bg-[#0F1419] border border-slate-800/50 rounded-lg overflow-hidden">
           {/* Tab Navigation - Minimal, Underline Style */}
           <div className="flex border-b border-slate-800/50 bg-[#0A0E1A]">
-            <button
-              onClick={() => setActiveTab('overview')}
-              className={`flex-1 px-6 py-3 text-xs font-semibold transition ${
-                activeTab === 'overview'
-                  ? 'text-white border-b-2 border-indigo-500'
-                  : 'text-slate-500 hover:text-slate-300'
-              }`}
-            >
-              <div className="flex items-center justify-center gap-2">
-                <FileText className="w-3.5 h-3.5" />
-                Overview
-              </div>
-            </button>
             {badges.length > 0 && (
               <button
                 onClick={() => setActiveTab('badges')}
@@ -901,64 +950,6 @@ const ProductDetails = ({
 
           {/* Tab Content - Clean Typography */}
           <div className="p-6">
-            {activeTab === 'overview' && (
-              <div className="space-y-6">
-                <div>
-                  <h3 className="text-sm font-semibold text-white mb-3">About This Application</h3>
-                  <div className="text-sm text-slate-300 leading-relaxed whitespace-pre-line">
-                    {displayedDescription || "No detailed description available for this application."}
-                  </div>
-                  {shouldTruncateDescription && (
-                    <button
-                      onClick={() => setIsDescriptionExpanded(!isDescriptionExpanded)}
-                      className="mt-3 text-indigo-400 hover:text-indigo-300 text-xs font-medium transition"
-                    >
-                      {isDescriptionExpanded ? '− Show Less' : '+ Read More'}
-                    </button>
-                  )}
-                </div>
-
-                {/* Key Metrics - Compact Grid */}
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                  <div className="p-3 bg-slate-800/30 rounded border border-slate-700/50">
-                    <div className="flex items-center gap-1.5 text-slate-500 text-xs mb-1">
-                      <TrendingUp className="w-3 h-3" />
-                      <span>Rating</span>
-                    </div>
-                    <p className="text-lg font-bold text-white">{rating.toFixed(1)}</p>
-                    <p className="text-xs text-slate-500 mt-0.5">out of 5.0</p>
-                  </div>
-
-                  <div className="p-3 bg-slate-800/30 rounded border border-slate-700/50">
-                    <div className="flex items-center gap-1.5 text-slate-500 text-xs mb-1">
-                      <Download className="w-3 h-3" />
-                      <span>Downloads</span>
-                    </div>
-                    <p className="text-lg font-bold text-white">{downloads.toLocaleString()}</p>
-                    <p className="text-xs text-slate-500 mt-0.5">total installs</p>
-                  </div>
-
-                  <div className="p-3 bg-slate-800/30 rounded border border-slate-700/50">
-                    <div className="flex items-center gap-1.5 text-slate-500 text-xs mb-1">
-                      <Eye className="w-3 h-3" />
-                      <span>Views</span>
-                    </div>
-                    <p className="text-lg font-bold text-white">{views.toLocaleString()}</p>
-                    <p className="text-xs text-slate-500 mt-0.5">page views</p>
-                  </div>
-
-                  <div className="p-3 bg-slate-800/30 rounded border border-slate-700/50">
-                    <div className="flex items-center gap-1.5 text-slate-500 text-xs mb-1">
-                      <Users className="w-3 h-3" />
-                      <span>Support</span>
-                    </div>
-                    <p className="text-sm font-bold text-white">{supportLevel}</p>
-                    <p className="text-xs text-slate-500 mt-0.5">{updateFrequency}</p>
-                  </div>
-                </div>
-              </div>
-            )}
-
             {activeTab === 'badges' && badges.length > 0 && (
               <div>
                 <h3 className="text-sm font-semibold text-white mb-4">Application Badges & Achievements</h3>
