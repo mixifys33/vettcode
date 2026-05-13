@@ -83,6 +83,14 @@ interface ApplicationData {
   liveDemo?: string;
   githubRepo?: string;
   documentationUrl?: string;
+  sourceCodeFile?: {
+    url?: string;
+    fileId?: string;
+    fileName?: string;
+    fileSize?: number;
+    uploaded?: boolean;
+    originalFileCount?: number;
+  };
   technologyStack?: string[];
   supportedPlatforms?: string[];
   licenseType?: string;
@@ -400,11 +408,14 @@ const ProductDetails = ({
     }
 
     if (isFree) {
-      toast.success("Redirecting to download...");
-      if (liveDemo) {
-        window.open(liveDemo, '_blank');
-      } else if (githubRepo) {
-        window.open(githubRepo, '_blank');
+      // Priority: sourceCodeFile.url > githubRepo > liveDemo
+      const downloadUrl = productDetails.sourceCodeFile?.url || githubRepo || liveDemo;
+      
+      if (downloadUrl) {
+        toast.success("Starting download...");
+        window.open(downloadUrl, '_blank');
+      } else {
+        toast.error("Download link not available. Please contact the seller.");
       }
     } else {
       toast.info("Redirecting to checkout...");

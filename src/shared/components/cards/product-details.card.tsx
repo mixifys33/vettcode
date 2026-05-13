@@ -78,11 +78,13 @@ const ProductDetailsCard = ({
     if (data?.isFree) {
       // Track download
       console.log('Free application download:', data?.appName);
-      // Redirect to download or access page
-      if (data?.liveDemo) {
-        window.open(data.liveDemo, '_blank');
-      } else if (data?.githubRepo) {
-        window.open(data.githubRepo, '_blank');
+      // Priority: sourceCodeFile.url > githubRepo > liveDemo
+      const downloadUrl = data?.sourceCodeFile?.url || data?.githubRepo || data?.liveDemo;
+      
+      if (downloadUrl) {
+        window.open(downloadUrl, '_blank');
+      } else {
+        alert('Download link not available. Please contact the seller.');
       }
     } else {
       // Navigate to purchase/checkout page
