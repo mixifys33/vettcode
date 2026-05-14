@@ -273,14 +273,35 @@ const CartPage = () => {
 
       for (const item of cart) {
         console.log('📦 Processing:', item.appName || item.title);
-        console.log('Item data:', {
-          id: item.id,
-          sourceCodeFile: item.sourceCodeFile,
-          githubRepo: item.githubRepo,
-          liveDemo: item.liveDemo
-        });
-
+        
         try {
+          // If item doesn't have download URLs, fetch full details
+          let downloadUrl = item.sourceCodeFile?.url || item.githubRepo || item.liveDemo;
+          
+          if (!downloadUrl) {
+            console.log('⚠️ No download URL in cart item, fetching full details...');
+            try {
+              const response = await fetch(`${apiUrl}/api/applications/${item.id}`);
+              const data = await response.json();
+              
+              if (data.success && data.application) {
+                const app = data.application;
+                downloadUrl = app.sourceCodeFile?.url || app.githubRepo || app.liveDemo;
+                console.log('✅ Fetched download URL:', downloadUrl);
+              }
+            } catch (fetchError) {
+              console.error('❌ Failed to fetch application details:', fetchError);
+            }
+          }
+
+          console.log('Item data:', {
+            id: item.id,
+            sourceCodeFile: item.sourceCodeFile,
+            githubRepo: item.githubRepo,
+            liveDemo: item.liveDemo,
+            finalDownloadUrl: downloadUrl
+          });
+
           // Track download
           const trackingUrl = `${apiUrl}/api/applications/${item.id}/download`;
           console.log('📊 Tracking download at:', trackingUrl);
@@ -293,9 +314,6 @@ const CartPage = () => {
           const trackData = await trackResponse.json();
           console.log('✅ Tracking response:', trackData);
 
-          // Get download URL (priority: sourceCodeFile > githubRepo > liveDemo)
-          const downloadUrl = item.sourceCodeFile?.url || item.githubRepo || item.liveDemo;
-          
           console.log('🔗 Download URL:', downloadUrl);
           
           if (downloadUrl) {
