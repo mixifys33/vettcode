@@ -111,9 +111,15 @@ const OrderDetailPage = () => {
     try {
       const res = await axiosInstance.get(`/api/orders/${orderId}`);
       const d = res.data?.order || res.data?.data || res.data;
+      
+      // If payment is successful, enrich items with full application data
+      if (d.paymentStatus === 'paid' && d.items?.length > 0) {
+        await enrichOrderItems(d);
+      }
+      
       setOrder(d);
       
-      // If payment is successful, fetch distribution info for each item
+      // Fetch distribution info for each item
       if (d.paymentStatus === 'paid' && d.items?.length > 0) {
         fetchDistributionInfo(d.items);
       }
@@ -121,6 +127,52 @@ const OrderDetailPage = () => {
       console.error("Failed to fetch order:", e);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const enrichOrderItems = async (orderData: any) => {
+    try {
+      console.log('[Enrich] Starting to enrich order items');
+      
+      for (let i = 0; i < orderData.items.length; i++) {
+        const item = orderData.items[i];
+        
+        // Check if item already has download links
+        const hasDownloadLinks = item.sourceCodeFile?.url || item.githubRepo || item.liveDemo;
+        
+        if (!hasDownloadLinks && item.productId) {
+          console.log('[Enrich] Fetching full data for:', item.productId);
+          
+          try {
+            const appRes = await axiosInstance.get(`/api/applications/${item.productId}`);
+            const appData = appRes.data?.application || appRes.data?.data || appRes.data;
+            
+            console.log('[Enrich] Fetched application data:', appData);
+            
+            // Merge application data into order item
+            orderData.items[i] = {
+              ...item,
+              sourceCodeFile: appData.sourceCodeFile,
+              githubRepo: appData.githubRepo,
+              liveDemo: appData.liveDemo,
+              appCategory: appData.appCategory || appData.category,
+              technologyStack: appData.technologyStack,
+              supportedPlatforms: appData.supportedPlatforms,
+              licenseType: appData.licenseType,
+            };
+            
+            console.log('[Enrich] Enriched item:', orderData.items[i]);
+          } catch (err) {
+            console.error(`[Enrich] Failed to fetch application ${item.productId}:`, err);
+          }
+        } else {
+          console.log('[Enrich] Item already has download links or no productId:', item);
+        }
+      }
+      
+      console.log('[Enrich] Final enriched items:', orderData.items);
+    } catch (e) {
+      console.error("[Enrich] Failed to enrich order items:", e);
     }
   };
 
