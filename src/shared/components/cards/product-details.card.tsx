@@ -74,14 +74,28 @@ const ProductDetailsCard = ({
   };
 
   // Handle download/access for free apps
-  const handleDownloadAccess = () => {
+  const handleDownloadAccess = async () => {
     if (data?.isFree) {
-      // Track download
-      console.log('Free application download:', data?.appName);
       // Priority: sourceCodeFile.url > githubRepo > liveDemo
       const downloadUrl = data?.sourceCodeFile?.url || data?.githubRepo || data?.liveDemo;
       
       if (downloadUrl) {
+        // Track download in backend
+        try {
+          const appId = data?.id || data?._id;
+          if (appId) {
+            await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/applications/${appId}/download`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+            });
+          }
+        } catch (error) {
+          console.error('Failed to track download:', error);
+          // Don't block download if tracking fails
+        }
+        
         window.open(downloadUrl, '_blank');
       } else {
         alert('Download link not available. Please contact the seller.');

@@ -440,7 +440,7 @@ const ProductDetails = ({
     }
   };
 
-  const handleDownloadAccess = () => {
+  const handleDownloadAccess = async () => {
     // Check if user is logged in
     if (!user) {
       setAuthActionType(isFree ? 'download' : 'purchase');
@@ -453,6 +453,19 @@ const ProductDetails = ({
       const downloadUrl = productDetails.sourceCodeFile?.url || githubRepo || liveDemo;
       
       if (downloadUrl) {
+        // Track download in backend
+        try {
+          await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/applications/${id}/download`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          });
+        } catch (error) {
+          console.error('Failed to track download:', error);
+          // Don't block download if tracking fails
+        }
+        
         toast.success("Starting download...");
         window.open(downloadUrl, '_blank');
       } else {
