@@ -170,6 +170,16 @@ const CartPage = () => {
       return;
     }
 
+    // Check if all items are free
+    const allFree = cart.every((item: any) => item.isFree || (Number(item.price) || 0) === 0);
+    
+    if (allFree) {
+      // Handle free downloads
+      handleFreeDownloads();
+      return;
+    }
+
+    // Proceed with paid checkout
     setLoading(true);
     setCouponError("");
     
@@ -247,6 +257,74 @@ const CartPage = () => {
       setLoading(false);
     }
   };
+
+  // Handle downloading free applications
+  const handleFreeDownloads = async () => {
+    setLoading(true);
+    
+    try {
+      const apiUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:5000';
+      let successCount = 0;
+      let failCount = 0;
+
+      for (const item of cart) {
+        try {
+          // Track download
+          await fetch(`${apiUrl}/api/applications/${item.id}/download`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+          });
+
+          // Get download URL (priority: sourceCodeFile > githubRepo > liveDemo)
+          const downloadUrl = item.sourceCodeFile?.url || item.githubRepo || item.liveDemo;
+          
+          if (downloadUrl) {
+            // Open download in new tab with slight delay to avoid popup blocker
+            setTimeout(() => {
+              window.open(downloadUrl, '_blank');
+            }, successCount * 500); // Stagger downloads by 500ms
+            
+            successCount++;
+          } else {
+            failCount++;
+            console.error(`No download URL for ${item.appName || item.title}`);
+          }
+        } catch (error) {
+          console.error(`Failed to download ${item.appName || item.title}:`, error);
+          failCount++;
+        }
+      }
+
+      // Show result message
+      if (successCount > 0) {
+        alert(`✅ Starting download for ${successCount} application${successCount !== 1 ? 's' : ''}!${failCount > 0 ? `\n⚠️ ${failCount} application${failCount !== 1 ? 's' : ''} failed to download.` : ''}`);
+        
+        // Clear cart after successful downloads
+        clearCart();
+      } else {
+        alert('❌ Failed to download applications. Please try again or contact support.');
+      }
+    } catch (error) {
+      console.error('Download error:', error);
+      alert('Failed to process downloads. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Check cart composition
+  const cartComposition = useMemo(() => {
+    const freeItems = cart.filter((item: any) => item.isFree || (Number(item.price) || 0) === 0);
+    const paidItems = cart.filter((item: any) => !item.isFree && (Number(item.price) || 0) > 0);
+    
+    return {
+      allFree: freeItems.length === cart.length && cart.length > 0,
+      allPaid: paidItems.length === cart.length && cart.length > 0,
+      mixed: freeItems.length > 0 && paidItems.length > 0,
+      freeCount: freeItems.length,
+      paidCount: paidItems.length,
+    };
+  }, [cart]);
 
   const formatPrice = (amount: number | undefined | null, currency: string = "USD") => {
     if (amount === undefined || amount === null || amount === 0) return "FREE";
@@ -604,24 +682,68 @@ const CartPage = () => {
                   </span>
                 </div>
 
-                {/* Checkout Button */}
-                <button
-                  onClick={handleCheckout}
-                  disabled={loading || cart.length === 0}
-                  className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white py-4 rounded-xl hover:from-purple-700 hover:to-indigo-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed font-bold text-lg shadow-lg hover:shadow-xl hover:scale-[1.02] flex items-center justify-center gap-2"
-                >
-                  {loading ? (
-                    <>
-                      <Loader2 className="w-5 h-5 animate-spin" />
-                      Processing...
-                    </>
-                  ) : (
-                    <>
-                      <CheckCircle className="w-5 h-5" />
-                      Proceed to Checkout
-                    </>
-                  )}
-                </button>
+                {/* Mixed Cart Warning */}
+                {cartComposition.mixed && (
+                  <div className="mb-4 p-4 bg-amber-50 border border-amber-200 rounded-xl">
+                    <div className="flex items-start gap-2">
+                      <Info className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
+                      <div>
+                        <p className="text-sm font-semibold text-amber-900 mb-1">Mixed Cart Detected</p>
+                        <p className="text-xs text-amber-700">
+                          Your cart contains both FREE ({cartComposition.freeCount}) and PAID ({cartComposition.paidCount}) applications. 
+                          Please checkout separately or remove items to proceed.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Checkout/Download Button */}
+                {cartComposition.allFree ? (
+                  <button
+                    onClick={handleCheckout}
+                    disabled={loading || cart.length === 0}
+                    className="w-full bg-gradient-to-r from-green-600 to-emerald-600 text-white py-4 rounded-xl hover:from-green-700 hover:to-emerald-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed font-bold text-lg shadow-lg hover:shadow-xl hover:scale-[1.02] flex items-center justify-center gap-2"
+                  >
+                    {loading ? (
+                      <>
+                        <Loader2 className="w-5 h-5 animate-spin" />
+                        Processing...
+                      </>
+                    ) : (
+                      <>
+                        <Download className="w-5 h-5" />
+                        {cart.length === 1 ? 'Download Application' : 'Download Applications'}
+                      </>
+                    )}
+                  </button>
+                ) : cartComposition.allPaid ? (
+                  <button
+                    onClick={handleCheckout}
+                    disabled={loading || cart.length === 0}
+                    className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white py-4 rounded-xl hover:from-purple-700 hover:to-indigo-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed font-bold text-lg shadow-lg hover:shadow-xl hover:scale-[1.02] flex items-center justify-center gap-2"
+                  >
+                    {loading ? (
+                      <>
+                        <Loader2 className="w-5 h-5 animate-spin" />
+                        Processing...
+                      </>
+                    ) : (
+                      <>
+                        <CheckCircle className="w-5 h-5" />
+                        Proceed to Checkout
+                      </>
+                    )}
+                  </button>
+                ) : (
+                  <button
+                    disabled={true}
+                    className="w-full bg-gray-400 text-white py-4 rounded-xl cursor-not-allowed font-bold text-lg shadow-lg flex items-center justify-center gap-2 opacity-60"
+                  >
+                    <Info className="w-5 h-5" />
+                    Cannot Process Mixed Cart
+                  </button>
+                )}
 
                 {/* Security Badge */}
                 <div className="mt-6 pt-6 border-t border-slate-200">
