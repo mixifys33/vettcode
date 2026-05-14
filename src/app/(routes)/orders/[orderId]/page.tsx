@@ -469,6 +469,18 @@ const OrderDetailPage = () => {
                     // Check for direct download links from item data
                     const hasDirectDownload = item.sourceCodeFile?.url || item.githubRepo || item.liveDemo;
                     
+                    // Debug logging
+                    console.log('[Order Item Debug]', {
+                      itemName: item.name,
+                      productId: item.productId,
+                      hasDistribution,
+                      hasDirectDownload,
+                      sourceCodeFile: item.sourceCodeFile,
+                      githubRepo: item.githubRepo,
+                      liveDemo: item.liveDemo,
+                      fullItem: item
+                    });
+                    
                     return (
                       <div key={i} className="bg-white rounded-xl p-5 shadow-sm border border-gray-200">
                         {/* Application Header */}
