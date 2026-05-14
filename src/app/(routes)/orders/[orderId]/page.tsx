@@ -10,6 +10,7 @@ import {
   MapPin, Phone, CreditCard, Calendar, Download, HelpCircle,
   Copy, Check, Shield, AlertTriangle, ShieldCheck, RefreshCw,
   User, Store, Tag, MessageCircle, Mail, FileText, Info, Code,
+  ExternalLink, Play,
 } from "lucide-react";
 
 const fmt = (n: number) => n?.toLocaleString("en-UG") ?? "0";
