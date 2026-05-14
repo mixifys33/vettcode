@@ -192,6 +192,15 @@ const CartPage = () => {
         quantity: 1,
         image: item?.image || item?.screenshots?.[0]?.url || "",
         currency: item.currency || "USD", // Preserve currency from cart item
+        // Include download/access links
+        sourceCodeFile: item.sourceCodeFile,
+        githubRepo: item.githubRepo,
+        liveDemo: item.liveDemo,
+        // Include additional metadata
+        appCategory: item.appCategory,
+        technologyStack: item.technologyStack,
+        supportedPlatforms: item.supportedPlatforms,
+        licenseType: item.licenseType,
       }));
 
       // Create order in backend

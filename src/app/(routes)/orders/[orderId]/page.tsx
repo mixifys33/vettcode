@@ -413,6 +413,9 @@ const OrderDetailPage = () => {
                     const dist = distributionInfo[item.productId];
                     const hasDistribution = dist && Object.keys(dist).length > 0;
                     
+                    // Check for direct download links from item data
+                    const hasDirectDownload = item.sourceCodeFile?.url || item.githubRepo || item.liveDemo;
+                    
                     return (
                       <div key={i} className="bg-white rounded-xl p-5 shadow-sm border border-gray-200">
                         {/* Application Header */}
@@ -423,6 +426,7 @@ const OrderDetailPage = () => {
                           <div className="flex-1 min-w-0">
                             <p className="font-bold text-gray-900">{item.name || item.productName || "Application"}</p>
                             <p className="text-xs text-gray-500">Full source code & documentation</p>
+                            {item.productId && <p className="text-[10px] text-gray-400 font-mono mt-1">ID: {item.productId}</p>}
                           </div>
                         </div>
 
@@ -584,6 +588,101 @@ const OrderDetailPage = () => {
                                 </div>
                               </div>
                             )}
+                          </div>
+                        ) : hasDirectDownload ? (
+                          <div className="space-y-3">
+                            <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg mb-3">
+                              <p className="text-sm text-blue-900 font-medium">✅ Your purchase is complete! Download your application below:</p>
+                            </div>
+
+                            {/* Source Code File Download */}
+                            {item.sourceCodeFile?.url && (
+                              <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
+                                <div className="flex items-center justify-between gap-3">
+                                  <div className="flex items-center gap-2 flex-1">
+                                    <Download className="w-5 h-5 text-green-600" />
+                                    <div>
+                                      <p className="font-semibold text-green-900">Download Source Code</p>
+                                      <p className="text-xs text-green-700 mt-0.5">
+                                        {item.sourceCodeFile.fileName || 'Complete application files'}
+                                        {item.sourceCodeFile.originalFileCount && ` (${item.sourceCodeFile.originalFileCount} files)`}
+                                      </p>
+                                    </div>
+                                  </div>
+                                  <a
+                                    href={item.sourceCodeFile.url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium transition text-sm whitespace-nowrap flex items-center gap-2"
+                                    onClick={() => {
+                                      // Track download
+                                      const apiUrl = process.env.NEXT_PUBLIC_SERVER_URL || "https://easyshop-d00e.onrender.com";
+                                      fetch(`${apiUrl}/api/applications/${item.productId}/download`, { method: 'POST' })
+                                        .catch(err => console.error('Failed to track download:', err));
+                                    }}
+                                  >
+                                    <Download className="w-4 h-4" />
+                                    Download
+                                  </a>
+                                </div>
+                              </div>
+                            )}
+
+                            {/* GitHub Repository */}
+                            {item.githubRepo && (
+                              <div className="p-3 bg-gray-50 border border-gray-200 rounded-lg">
+                                <div className="flex items-center justify-between gap-3">
+                                  <div className="flex items-center gap-2 flex-1">
+                                    <Code className="w-5 h-5 text-gray-700" />
+                                    <div>
+                                      <p className="font-semibold text-gray-900">GitHub Repository</p>
+                                      <p className="text-xs text-gray-600 mt-0.5">Access the source code on GitHub</p>
+                                    </div>
+                                  </div>
+                                  <a
+                                    href={item.githubRepo}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="px-4 py-2 bg-gray-700 hover:bg-gray-800 text-white rounded-lg font-medium transition text-sm whitespace-nowrap flex items-center gap-2"
+                                  >
+                                    <ExternalLink className="w-4 h-4" />
+                                    View Repo
+                                  </a>
+                                </div>
+                              </div>
+                            )}
+
+                            {/* Live Demo */}
+                            {item.liveDemo && (
+                              <div className="p-3 bg-purple-50 border border-purple-200 rounded-lg">
+                                <div className="flex items-center justify-between gap-3">
+                                  <div className="flex items-center gap-2 flex-1">
+                                    <Play className="w-5 h-5 text-purple-600" />
+                                    <div>
+                                      <p className="font-semibold text-purple-900">Live Demo</p>
+                                      <p className="text-xs text-purple-700 mt-0.5">View the working application</p>
+                                    </div>
+                                  </div>
+                                  <a
+                                    href={item.liveDemo}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-medium transition text-sm whitespace-nowrap flex items-center gap-2"
+                                  >
+                                    <ExternalLink className="w-4 h-4" />
+                                    View Demo
+                                  </a>
+                                </div>
+                              </div>
+                            )}
+
+                            {/* Additional Info */}
+                            <div className="p-3 bg-gray-50 border border-gray-200 rounded-lg">
+                              <p className="text-xs text-gray-600 flex items-center gap-2">
+                                <Shield className="w-4 h-4 text-gray-500" />
+                                <span>Need help? Contact support at <a href="mailto:dwightkim12@gmail.com" className="text-teal-600 hover:underline">dwightkim12@gmail.com</a></span>
+                              </p>
+                            </div>
                           </div>
                         ) : (
                           <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
