@@ -224,6 +224,7 @@ const ProductDetails = ({
   const addToWishlist = useStore((state) => state.addToWishlist);
   const removeFromWishlist = useStore((state) => state.removeFromWishlist);
   const syncWithServer = useStore((state) => state.syncWithServer);
+  const addToCart = useStore((state) => state.addToCart);
 
   // Compare functionality
   const { addToCompare, isInCompare, compareList, maxItems } = useProductComparison();
@@ -512,8 +513,7 @@ const ProductDetails = ({
         liveDemo: liveDemo,
       };
       
-      // Add to cart using the store
-      const addToCart = useStore.getState().addToCart;
+      // Add to cart using the store hook
       addToCart(cartItem, user, location, deviceInfo);
       
       // Redirect to cart page
