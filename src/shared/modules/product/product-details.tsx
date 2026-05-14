@@ -488,8 +488,39 @@ const ProductDetails = ({
         toast.error("Download link not available. Please contact the seller.");
       }
     } else {
-      toast.info("Redirecting to checkout...");
-      // Navigate to checkout
+      // For paid applications, add to cart and redirect to cart/checkout
+      toast.info("Adding to cart...");
+      
+      // Add to cart
+      const cartItem = {
+        id: id,
+        appName: appName,
+        title: appName,
+        price: price,
+        currency: currency,
+        image: screenshots?.[0]?.url || "",
+        shopId: seller?.id || "",
+        isFree: false,
+        appCategory: appCategory,
+        technologyStack: techStack,
+        supportedPlatforms: platforms,
+        licenseType: licenseType,
+        verificationStatus: productDetails.verificationStatus,
+        screenshots: screenshots,
+        sourceCodeFile: productDetails.sourceCodeFile,
+        githubRepo: githubRepo,
+        liveDemo: liveDemo,
+      };
+      
+      // Add to cart using the store
+      const addToCart = useStore.getState().addToCart;
+      addToCart(cartItem, user, location, deviceInfo);
+      
+      // Redirect to cart page
+      toast.success("Added to cart! Redirecting...");
+      setTimeout(() => {
+        window.location.href = '/cart';
+      }, 500);
     }
   };
 
