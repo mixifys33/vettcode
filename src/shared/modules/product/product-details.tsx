@@ -455,14 +455,30 @@ const ProductDetails = ({
       if (downloadUrl) {
         // Track download in backend
         try {
-          await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/applications/${id}/download`, {
+          const apiUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:5000';
+          const trackingUrl = `${apiUrl}/api/applications/${id}/download`;
+          
+          console.log('🔍 Tracking download:', {
+            apiUrl,
+            trackingUrl,
+            applicationId: id
+          });
+          
+          const response = await fetch(trackingUrl, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
             },
           });
+          
+          const data = await response.json();
+          console.log('✅ Download tracked:', data);
+          
+          if (data.success) {
+            console.log(`📊 New download count: ${data.downloads}`);
+          }
         } catch (error) {
-          console.error('Failed to track download:', error);
+          console.error('❌ Failed to track download:', error);
           // Don't block download if tracking fails
         }
         
@@ -892,6 +908,64 @@ const ProductDetails = ({
                       <FileText className="w-3 h-3" />
                       Documentation
                     </a>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* Application Badges - Compact Display */}
+            {badges.length > 0 && (
+              <div className="bg-[#0F1419] border border-slate-800/50 rounded-lg p-4">
+                <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-3">Badges</h3>
+                <div className="space-y-2">
+                  {badges.slice(0, 5).map((badge: string, index: number) => {
+                    let BadgeIcon = Award;
+                    let colorClass = "bg-amber-500/10 border-amber-500/30";
+                    let iconColor = "text-amber-400";
+                    let textColor = "text-amber-300";
+
+                    const badgeLower = badge.toLowerCase();
+                    if (badgeLower.includes('verified') || badgeLower.includes('certified')) {
+                      BadgeIcon = BadgeCheck;
+                      colorClass = "bg-blue-500/10 border-blue-500/30";
+                      iconColor = "text-blue-400";
+                      textColor = "text-blue-300";
+                    } else if (badgeLower.includes('premium') || badgeLower.includes('pro')) {
+                      BadgeIcon = Crown;
+                      colorClass = "bg-purple-500/10 border-purple-500/30";
+                      iconColor = "text-purple-400";
+                      textColor = "text-purple-300";
+                    } else if (badgeLower.includes('trending') || badgeLower.includes('popular') || badgeLower.includes('hot')) {
+                      BadgeIcon = Flame;
+                      colorClass = "bg-orange-500/10 border-orange-500/30";
+                      iconColor = "text-orange-400";
+                      textColor = "text-orange-300";
+                    } else if (badgeLower.includes('featured') || badgeLower.includes('editor')) {
+                      BadgeIcon = Sparkles;
+                      colorClass = "bg-pink-500/10 border-pink-500/30";
+                      iconColor = "text-pink-400";
+                      textColor = "text-pink-300";
+                    } else if (badgeLower.includes('best') || badgeLower.includes('top')) {
+                      BadgeIcon = Star;
+                      colorClass = "bg-amber-500/10 border-amber-500/30";
+                      iconColor = "text-amber-400";
+                      textColor = "text-amber-300";
+                    }
+
+                    return (
+                      <div
+                        key={index}
+                        className={`flex items-center gap-2 px-3 py-2 ${colorClass} rounded border`}
+                      >
+                        <BadgeIcon className={`w-4 h-4 ${iconColor} flex-shrink-0`} />
+                        <span className={`text-xs font-medium ${textColor} truncate`}>{badge}</span>
+                      </div>
+                    );
+                  })}
+                  {badges.length > 5 && (
+                    <p className="text-xs text-slate-500 text-center pt-1">
+                      +{badges.length - 5} more badge{badges.length - 5 !== 1 ? 's' : ''}
+                    </p>
                   )}
                 </div>
               </div>

@@ -84,15 +84,27 @@ const ProductDetailsCard = ({
         try {
           const appId = data?.id || data?._id;
           if (appId) {
-            await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/applications/${appId}/download`, {
+            const apiUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:5000';
+            const trackingUrl = `${apiUrl}/api/applications/${appId}/download`;
+            
+            console.log('🔍 Modal tracking download:', {
+              apiUrl,
+              trackingUrl,
+              applicationId: appId
+            });
+            
+            const response = await fetch(trackingUrl, {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
               },
             });
+            
+            const result = await response.json();
+            console.log('✅ Modal download tracked:', result);
           }
         } catch (error) {
-          console.error('Failed to track download:', error);
+          console.error('❌ Modal failed to track download:', error);
           // Don't block download if tracking fails
         }
         
