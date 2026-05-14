@@ -266,47 +266,74 @@ const CartPage = () => {
       const apiUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:5000';
       let successCount = 0;
       let failCount = 0;
+      const failedApps: string[] = [];
+
+      console.log('🔍 Starting free downloads for', cart.length, 'applications');
+      console.log('API URL:', apiUrl);
 
       for (const item of cart) {
+        console.log('📦 Processing:', item.appName || item.title);
+        console.log('Item data:', {
+          id: item.id,
+          sourceCodeFile: item.sourceCodeFile,
+          githubRepo: item.githubRepo,
+          liveDemo: item.liveDemo
+        });
+
         try {
           // Track download
-          await fetch(`${apiUrl}/api/applications/${item.id}/download`, {
+          const trackingUrl = `${apiUrl}/api/applications/${item.id}/download`;
+          console.log('📊 Tracking download at:', trackingUrl);
+          
+          const trackResponse = await fetch(trackingUrl, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
           });
+          
+          const trackData = await trackResponse.json();
+          console.log('✅ Tracking response:', trackData);
 
           // Get download URL (priority: sourceCodeFile > githubRepo > liveDemo)
           const downloadUrl = item.sourceCodeFile?.url || item.githubRepo || item.liveDemo;
           
+          console.log('🔗 Download URL:', downloadUrl);
+          
           if (downloadUrl) {
             // Open download in new tab with slight delay to avoid popup blocker
             setTimeout(() => {
+              console.log('🚀 Opening download:', downloadUrl);
               window.open(downloadUrl, '_blank');
             }, successCount * 500); // Stagger downloads by 500ms
             
             successCount++;
           } else {
             failCount++;
-            console.error(`No download URL for ${item.appName || item.title}`);
+            failedApps.push(item.appName || item.title || 'Unknown');
+            console.error(`❌ No download URL for ${item.appName || item.title}`);
           }
         } catch (error) {
-          console.error(`Failed to download ${item.appName || item.title}:`, error);
+          console.error(`❌ Failed to download ${item.appName || item.title}:`, error);
           failCount++;
+          failedApps.push(item.appName || item.title || 'Unknown');
         }
       }
 
+      console.log('📊 Download summary:', { successCount, failCount, failedApps });
+
       // Show result message
       if (successCount > 0) {
-        alert(`✅ Starting download for ${successCount} application${successCount !== 1 ? 's' : ''}!${failCount > 0 ? `\n⚠️ ${failCount} application${failCount !== 1 ? 's' : ''} failed to download.` : ''}`);
+        const message = `✅ Starting download for ${successCount} application${successCount !== 1 ? 's' : ''}!${failCount > 0 ? `\n⚠️ ${failCount} application${failCount !== 1 ? 's' : ''} failed: ${failedApps.join(', ')}` : ''}`;
+        alert(message);
         
         // Clear cart after successful downloads
         clearCart();
       } else {
-        alert('❌ Failed to download applications. Please try again or contact support.');
+        const message = `❌ Failed to download applications.\n\nFailed apps: ${failedApps.join(', ')}\n\nPlease check:\n1. Applications have download URLs\n2. You're logged in\n3. Backend is running\n\nCheck console for details.`;
+        alert(message);
       }
     } catch (error) {
-      console.error('Download error:', error);
-      alert('Failed to process downloads. Please try again.');
+      console.error('❌ Download error:', error);
+      alert(`Failed to process downloads: ${error instanceof Error ? error.message : 'Unknown error'}\n\nCheck console for details.`);
     } finally {
       setLoading(false);
     }
