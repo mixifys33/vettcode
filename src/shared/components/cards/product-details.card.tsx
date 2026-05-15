@@ -87,25 +87,15 @@ const ProductDetailsCard = ({
             const apiUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:5000';
             const trackingUrl = `${apiUrl}/api/applications/${appId}/download`;
             
-            console.log('🔍 Modal tracking download:', {
-              apiUrl,
-              trackingUrl,
-              applicationId: appId
-            });
-            
-            const response = await fetch(trackingUrl, {
+            await fetch(trackingUrl, {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
               },
             });
-            
-            const result = await response.json();
-            console.log('✅ Modal download tracked:', result);
           }
         } catch (error) {
-          console.error('❌ Modal failed to track download:', error);
-          // Don't block download if tracking fails
+          // Silently fail - don't block download if tracking fails
         }
         
         window.open(downloadUrl, '_blank');

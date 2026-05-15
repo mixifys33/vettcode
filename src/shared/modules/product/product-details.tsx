@@ -459,28 +459,14 @@ const ProductDetails = ({
           const apiUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:5000';
           const trackingUrl = `${apiUrl}/api/applications/${id}/download`;
           
-          console.log('🔍 Tracking download:', {
-            apiUrl,
-            trackingUrl,
-            applicationId: id
-          });
-          
-          const response = await fetch(trackingUrl, {
+          await fetch(trackingUrl, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
             },
           });
-          
-          const data = await response.json();
-          console.log('✅ Download tracked:', data);
-          
-          if (data.success) {
-            console.log(`📊 New download count: ${data.downloads}`);
-          }
         } catch (error) {
-          console.error('❌ Failed to track download:', error);
-          // Don't block download if tracking fails
+          // Silently fail - don't block download if tracking fails
         }
         
         toast.success("Starting download...");

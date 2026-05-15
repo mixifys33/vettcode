@@ -277,18 +277,12 @@ const CartPage = () => {
       let failCount = 0;
       const failedApps: string[] = [];
 
-      console.log('🔍 Starting free downloads for', cart.length, 'applications');
-      console.log('API URL:', apiUrl);
-
       for (const item of cart) {
-        console.log('📦 Processing:', item.appName || item.title);
-        
         try {
           // If item doesn't have download URLs, fetch full details
           let downloadUrl = item.sourceCodeFile?.url || item.githubRepo || item.liveDemo;
           
           if (!downloadUrl) {
-            console.log('⚠️ No download URL in cart item, fetching full details...');
             try {
               const response = await fetch(`${apiUrl}/api/applications/${item.id}`);
               const data = await response.json();
@@ -296,39 +290,27 @@ const CartPage = () => {
               if (data.success && data.application) {
                 const app = data.application;
                 downloadUrl = app.sourceCodeFile?.url || app.githubRepo || app.liveDemo;
-                console.log('✅ Fetched download URL:', downloadUrl);
               }
             } catch (fetchError) {
-              console.error('❌ Failed to fetch application details:', fetchError);
+              // Silently fail
             }
           }
 
-          console.log('Item data:', {
-            id: item.id,
-            sourceCodeFile: item.sourceCodeFile,
-            githubRepo: item.githubRepo,
-            liveDemo: item.liveDemo,
-            finalDownloadUrl: downloadUrl
-          });
-
           // Track download
           const trackingUrl = `${apiUrl}/api/applications/${item.id}/download`;
-          console.log('📊 Tracking download at:', trackingUrl);
           
-          const trackResponse = await fetch(trackingUrl, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-          });
-          
-          const trackData = await trackResponse.json();
-          console.log('✅ Tracking response:', trackData);
-
-          console.log('🔗 Download URL:', downloadUrl);
+          try {
+            await fetch(trackingUrl, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+            });
+          } catch (trackError) {
+            // Silently fail - don't block download
+          }
           
           if (downloadUrl) {
             // Open download in new tab with slight delay to avoid popup blocker
             setTimeout(() => {
-              console.log('🚀 Opening download:', downloadUrl);
               window.open(downloadUrl, '_blank');
             }, successCount * 500); // Stagger downloads by 500ms
             
@@ -336,16 +318,12 @@ const CartPage = () => {
           } else {
             failCount++;
             failedApps.push(item.appName || item.title || 'Unknown');
-            console.error(`❌ No download URL for ${item.appName || item.title}`);
           }
         } catch (error) {
-          console.error(`❌ Failed to download ${item.appName || item.title}:`, error);
           failCount++;
           failedApps.push(item.appName || item.title || 'Unknown');
         }
       }
-
-      console.log('📊 Download summary:', { successCount, failCount, failedApps });
 
       // Show result message
       if (successCount > 0) {
@@ -355,7 +333,7 @@ const CartPage = () => {
         // Clear cart after successful downloads
         clearCart();
       } else {
-        const message = `❌ Failed to download applications.\n\nFailed apps: ${failedApps.join(', ')}\n\nPlease check:\n1. Applications have download URLs\n2. You're logged in\n3. Backend is running\n\nCheck console for details.`;
+        const message = `❌ Failed to download applications. Please contact support.`;
         alert(message);
       }
     } catch (error) {

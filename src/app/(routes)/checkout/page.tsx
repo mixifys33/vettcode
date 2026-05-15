@@ -42,8 +42,6 @@ function CheckoutContent() {
       const res = await axiosInstance.get(`/api/orders/${orderId}`);
       const data = res.data;
       
-      console.log("Fetched order data:", data);
-      
       // Handle different response formats
       const order = data.order || data.data || data;
       

@@ -81,9 +81,9 @@ const OrderDetailPage = () => {
         status: 'cancelled',
         paymentStatus: 'failed',
       });
-      fetchOrder(); // Refresh order data
+      fetchOrder();
     } catch (e) {
-      console.error('Failed to update cancelled order:', e);
+      console.error('Failed to update cancelled order');
     }
   };
 
@@ -93,8 +93,6 @@ const OrderDetailPage = () => {
       const res = await fetch(`${backendUrl}/api/flutterwave/verify-ref/${txRef}`);
       const data = await res.json();
       
-      console.log('Payment verification result:', data);
-      
       if (data.success) {
         // Wait a moment for backend to update, then refresh
         setTimeout(() => {
@@ -102,7 +100,7 @@ const OrderDetailPage = () => {
         }, 1000);
       }
     } catch (e) {
-      console.error('Failed to verify payment:', e);
+      console.error('Failed to verify payment');
     }
   };
 
@@ -132,8 +130,6 @@ const OrderDetailPage = () => {
 
   const enrichOrderItems = async (orderData: any) => {
     try {
-      console.log('[Enrich] Starting to enrich order items');
-      
       for (let i = 0; i < orderData.items.length; i++) {
         const item = orderData.items[i];
         
@@ -141,13 +137,9 @@ const OrderDetailPage = () => {
         const hasDownloadLinks = item.sourceCodeFile?.url || item.githubRepo || item.liveDemo;
         
         if (!hasDownloadLinks && item.productId) {
-          console.log('[Enrich] Fetching full data for:', item.productId);
-          
           try {
             const appRes = await axiosInstance.get(`/api/applications/${item.productId}`);
             const appData = appRes.data?.application || appRes.data?.data || appRes.data;
-            
-            console.log('[Enrich] Fetched application data:', appData);
             
             // Merge application data into order item
             orderData.items[i] = {
@@ -160,19 +152,13 @@ const OrderDetailPage = () => {
               supportedPlatforms: appData.supportedPlatforms,
               licenseType: appData.licenseType,
             };
-            
-            console.log('[Enrich] Enriched item:', orderData.items[i]);
           } catch (err) {
-            console.error(`[Enrich] Failed to fetch application ${item.productId}:`, err);
+            console.error(`Failed to fetch application ${item.productId}`);
           }
-        } else {
-          console.log('[Enrich] Item already has download links or no productId:', item);
         }
       }
-      
-      console.log('[Enrich] Final enriched items:', orderData.items);
     } catch (e) {
-      console.error("[Enrich] Failed to enrich order items:", e);
+      console.error("Failed to enrich order items");
     }
   };
 
@@ -180,37 +166,23 @@ const OrderDetailPage = () => {
     try {
       const distributionData: Record<string, any> = {};
       
-      console.log('[Distribution] Fetching for items:', items);
-      
       for (const item of items) {
-        console.log('[Distribution] Processing item:', item);
-        console.log('[Distribution] Item productId:', item.productId);
-        
         if (item.productId) {
           try {
-            const url = `/api/applications/${item.productId}/distribution`;
-            console.log('[Distribution] Fetching from:', url);
-            
-            const res = await axiosInstance.get(url);
-            console.log('[Distribution] Response:', res.data);
+            const res = await axiosInstance.get(`/api/applications/${item.productId}/distribution`);
             
             if (res.data.success) {
               distributionData[item.productId] = res.data.distribution;
-              console.log('[Distribution] Saved distribution for', item.productId, ':', res.data.distribution);
             }
           } catch (err) {
-            console.error(`[Distribution] Failed to fetch for ${item.productId}:`, err);
-            console.error('[Distribution] Error details:', err.response?.data);
+            // Silently fail - distribution is optional
           }
-        } else {
-          console.warn('[Distribution] Item has no productId:', item);
         }
       }
       
-      console.log('[Distribution] Final distributionData:', distributionData);
       setDistributionInfo(distributionData);
     } catch (e) {
-      console.error("[Distribution] Failed to fetch distribution info:", e);
+      console.error("Failed to fetch distribution info");
     }
   };
 
@@ -468,18 +440,6 @@ const OrderDetailPage = () => {
                     
                     // Check for direct download links from item data
                     const hasDirectDownload = item.sourceCodeFile?.url || item.githubRepo || item.liveDemo;
-                    
-                    // Debug logging
-                    console.log('[Order Item Debug]', {
-                      itemName: item.name,
-                      productId: item.productId,
-                      hasDistribution,
-                      hasDirectDownload,
-                      sourceCodeFile: item.sourceCodeFile,
-                      githubRepo: item.githubRepo,
-                      liveDemo: item.liveDemo,
-                      fullItem: item
-                    });
                     
                     return (
                       <div key={i} className="bg-white rounded-xl p-5 shadow-sm border border-gray-200">
