@@ -160,10 +160,15 @@ function ProductCard({ product, campaign, user, cart, addToCart, wishlist, toggl
     ? Math.round((1 - product.discounted_price / product.sale_price) * 100)
     : campaign.discountValue;
 
+  const accentColor = campaign.bannerColor || "#0d9488";
   const sellerId = resolveSellerId(product) || resolveSellerId(campaign);
 
   const handleCart = () => {
     if (!user) { toast.error("Please sign in to add to cart"); return; }
+    if (inCart) {
+      toast.info("Already in cart — head to cart to checkout");
+      return;
+    }
     addToCart({
       id: product.id,
       title: product.title,
@@ -176,75 +181,103 @@ function ProductCard({ product, campaign, user, cart, addToCart, wishlist, toggl
       currency: "USD",
       isFree: product.isFree || product.discounted_price === 0,
     }, user, null, null);
-    toast.success(inCart ? "Removed from cart" : "Added to cart at offer price!");
+    toast.success("Added to cart at offer price!");
   };
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden hover:shadow-lg transition group flex flex-col">
-      <Link href={`/product/${product.slug}`} className="relative block aspect-square bg-gray-50 overflow-hidden">
+    <div className="relative rounded-2xl overflow-hidden flex flex-col group transition-all duration-300 hover:shadow-xl hover:-translate-y-0.5"
+      style={{ border: `1.5px solid ${accentColor}22`, background: "#fff" }}>
+
+      {/* Colored top accent strip */}
+      <div className="h-1 w-full" style={{ background: `linear-gradient(90deg, ${accentColor}, ${accentColor}88)` }} />
+
+      {/* Image */}
+      <Link href={`/product/${product.slug}`} className="relative block bg-gray-50 overflow-hidden" style={{ aspectRatio: "4/3" }}>
         {product.image ? (
-          <Image src={product.image} alt={product.title} fill className="object-cover group-hover:scale-105 transition duration-300" unoptimized
+          <Image src={product.image} alt={product.title} fill
+            className="object-cover group-hover:scale-105 transition duration-300" unoptimized
             onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }} />
         ) : (
-          <div className="w-full h-full flex items-center justify-center"><ShoppingBag className="w-10 h-10 text-gray-200" /></div>
+          <div className="w-full h-full flex items-center justify-center">
+            <ShoppingBag className="w-10 h-10 text-gray-200" />
+          </div>
         )}
+
         {/* Discount badge */}
         {discountPct > 0 && (
-          <div className="absolute top-2 left-2 bg-red-500 text-white text-[10px] font-black px-2 py-0.5 rounded-full">
+          <div className="absolute top-2 left-2 text-white text-[10px] font-black px-2 py-0.5 rounded-full shadow-lg"
+            style={{ background: accentColor }}>
             -{discountPct}%
           </div>
         )}
-        {/* Out of stock overlay */}
-        {product.stock === 0 && (
-          <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
-            <span className="text-white text-xs font-bold bg-black/60 px-2 py-1 rounded">Out of Stock</span>
-          </div>
-        )}
+
         {/* Wishlist */}
         <button onClick={(e) => { e.preventDefault(); toggleWishlist(product.id); }}
           className="absolute top-2 right-2 w-7 h-7 rounded-full bg-white/90 flex items-center justify-center shadow hover:scale-110 transition">
           <Heart className={`w-3.5 h-3.5 ${inWishlist ? "fill-red-500 text-red-500" : "text-gray-400"}`} />
         </button>
+
+        {/* "OFFER" ribbon */}
+        <div className="absolute bottom-0 left-0 right-0 py-1 text-center text-[9px] font-black tracking-widest text-white uppercase"
+          style={{ background: `${accentColor}cc` }}>
+          {TYPE_META[campaign.type]?.label || "Special Offer"}
+        </div>
       </Link>
 
-      <div className="p-3 flex-1 flex flex-col">
-        <p className="text-xs text-gray-400 mb-0.5">{product.brand || product.category}</p>
+      {/* Body */}
+      <div className="p-3 flex-1 flex flex-col gap-1">
+        <p className="text-[10px] font-semibold uppercase tracking-wide" style={{ color: accentColor }}>
+          {product.category}
+        </p>
         <Link href={`/product/${product.slug}`}>
-          <p className="text-sm font-semibold text-gray-900 line-clamp-2 hover:text-teal-700 transition leading-tight">{product.title}</p>
+          <p className="text-sm font-bold text-gray-900 line-clamp-2 leading-tight hover:underline">
+            {product.title}
+          </p>
         </Link>
 
         {product.ratings > 0 && (
-          <div className="flex items-center gap-1 mt-1">
+          <div className="flex items-center gap-1">
             <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
-            <span className="text-[10px] text-gray-500">{product.ratings.toFixed(1)}</span>
+            <span className="text-[10px] text-gray-500 font-medium">{product.ratings.toFixed(1)}</span>
           </div>
         )}
 
+        {/* Price block */}
         <div className="mt-auto pt-2">
-          <div className="flex items-baseline gap-1.5 flex-wrap">
-            <span className="text-base font-black text-teal-700">
-              {formatMoney(product.discounted_price)}
-            </span>
-            {product.sale_price > product.discounted_price && (
-              <span className="text-xs text-gray-400 line-through">
-                {formatMoney(product.sale_price)}
-              </span>
-            )}
-          </div>
-          {product.savings > 0 && (
-            <p className="text-[10px] text-green-600 font-medium">
-              Save {formatMoney(product.savings)}
-            </p>
+          {product.isFree || product.discounted_price === 0 ? (
+            <span className="text-base font-black" style={{ color: accentColor }}>FREE</span>
+          ) : (
+            <>
+              <div className="flex items-baseline gap-1.5 flex-wrap">
+                <span className="text-base font-black" style={{ color: accentColor }}>
+                  {formatMoney(product.discounted_price)}
+                </span>
+                {product.sale_price > product.discounted_price && (
+                  <span className="text-xs text-gray-400 line-through">
+                    {formatMoney(product.sale_price)}
+                  </span>
+                )}
+              </div>
+              {product.savings > 0 && (
+                <p className="text-[10px] font-semibold text-green-600 flex items-center gap-0.5 mt-0.5">
+                  <Sparkles className="w-2.5 h-2.5" />
+                  Save {formatMoney(product.savings)}
+                </p>
+              )}
+            </>
           )}
         </div>
       </div>
 
-      <button onClick={handleCart} disabled={product.stock === 0}
-        className={`w-full py-2 text-xs font-bold flex items-center justify-center gap-1.5 transition active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed ${
-          inCart ? "bg-teal-600 text-white hover:bg-red-500" : "bg-gray-50 text-gray-700 hover:bg-teal-600 hover:text-white"
-        }`}>
+      {/* CTA button */}
+      <button
+        onClick={handleCart}
+        disabled={product.stock === 0}
+        className="mx-3 mb-3 py-2 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed text-white shadow-sm hover:opacity-90"
+        style={{ background: inCart ? "#6b7280" : `linear-gradient(90deg, ${accentColor}, ${accentColor}cc)` }}
+      >
         <ShoppingCart className="w-3.5 h-3.5" />
-        {product.stock === 0 ? "Out of Stock" : inCart ? "Remove" : "Add to Cart"}
+        {product.stock === 0 ? "Out of Stock" : inCart ? "In Cart" : "Add to Cart"}
       </button>
     </div>
   );
