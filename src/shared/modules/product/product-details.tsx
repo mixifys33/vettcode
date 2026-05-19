@@ -106,6 +106,7 @@ interface ApplicationData {
   Seller?: Seller;
   Shop?: Seller;
   shops?: Seller;
+  sellerId?: string | Record<string, unknown>;
   supportLevel?: string;
   updateFrequency?: string;
   slug?: string;
@@ -313,7 +314,7 @@ const ProductDetails = ({
           address: sellerPopulated.businessAddress || sellerPopulated.city,
         }
       : null);
-  const resolvedSellerId = resolveSellerId(productDetails as Record<string, unknown>);
+  const resolvedSellerId = resolveSellerId(productDetails);
   const supportLevel = productDetails.supportLevel || "Email";
   const updateFrequency = productDetails.updateFrequency || "Active";
   const id = productDetails.id || productDetails._id || '';
