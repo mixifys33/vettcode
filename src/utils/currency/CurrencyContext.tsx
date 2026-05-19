@@ -61,28 +61,28 @@ interface CurrencyProviderProps {
 }
 
 export function CurrencyProvider({ children }: CurrencyProviderProps) {
-  const currency: CurrencyCode = DEFAULT_CURRENCY; // Always UGX
+  const currency: CurrencyCode = DEFAULT_CURRENCY;
   const currencyConfig = getCurrencyConfig(currency);
 
   const setCurrency = useCallback(async (_currency: CurrencyCode) => {
-    // No-op: only UGX is used
+    // Marketplace display is USD-only for now
   }, []);
 
   const refreshRates = useCallback(async () => {
-    // No-op: no external rates needed for UGX
+    // No-op: USD base, no live conversion required on browse/checkout
   }, []);
 
   const detectAndSetCurrency = useCallback(async (_countryCode: string, _city?: string) => {
-    // No-op: always UGX
+    // No-op: always USD for VettCode
   }, []);
 
   const formatPriceHelper = useCallback(
-    (amountUGX: number) => formatPrice(convertFromUGX(amountUGX, currency), currency),
+    (amount: number) => formatPrice(amount, currency),
     [currency]
   );
 
   const formatPriceCompactHelper = useCallback(
-    (amountUGX: number) => formatPriceCompact(convertFromUGX(amountUGX, currency), currency),
+    (amount: number) => formatPriceCompact(amount, currency),
     [currency]
   );
 

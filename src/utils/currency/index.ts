@@ -8,8 +8,7 @@
  * - GeoIP-based currency auto-detection
  * - React context and hooks for currency state
  *
- * Base Currency: UGX (Worldwiden Shilling)
- * All prices are stored in UGX and converted at display time.
+ * Base Currency: USD — VettCode application prices are stored and shown in USD.
  */
 
 // ============================================
@@ -45,6 +44,7 @@ export type {
 
 export {
   // Formatting
+  formatMoney,
   formatPrice,
   formatPriceCompact,
   formatNumber,
@@ -104,14 +104,13 @@ import { formatPrice as formatPriceFn, convertFromUGX as convertFromUGXFn } from
 import { CurrencyCode, DEFAULT_CURRENCY } from "./currency.config";
 
 /**
- * Quick helper to format a price from UGX to any currency
- * @param amountUGX - Amount in UGX (base currency)
- * @param currency - Target currency code (defaults to UGX)
+ * Quick helper to format a price from base currency (USD) to display currency
+ * @param amount - Amount in base currency (USD)
+ * @param currency - Target currency code (defaults to USD)
  * @returns Formatted price string
  *
  * @example
- * formatUGXPrice(500000, "USD") // "$135.00"
- * formatUGXPrice(500000) // "UGX 500,000"
+ * formatUGXPrice(99, "USD") // "$99.00"
  */
 export function formatUGXPrice(
   amountUGX: number,

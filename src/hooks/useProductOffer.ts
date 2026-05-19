@@ -147,7 +147,7 @@ export function calculateOfferPrice(originalPrice: number, offer: ProductOffer |
     discountDisplay = `-${offer.discountValue}%`;
   } else if (offer.discountType === "FixedAmount") {
     discount = offer.discountValue;
-    discountDisplay = `UGX ${offer.discountValue.toLocaleString()} OFF`;
+    discountDisplay = `$${offer.discountValue.toLocaleString()} OFF`;
   } else if (offer.discountType === "BuyOneGetOne") {
     discount = originalPrice; // Second item free
     discountDisplay = "BOGO";

@@ -47,6 +47,7 @@ import ProductCard from "@/shared/components/cards/Product-card"
 import ProductAIChat from "@/shared/components/product/ProductAIChat"
 import AuthRequiredModal from "@/shared/components/modals/AuthRequiredModal"
 import { toast } from "sonner"
+import { resolveSellerId } from "@/utils/sellerId"
 
 // Type Definitions
 interface Screenshot {
@@ -297,7 +298,22 @@ const ProductDetails = ({
   const views = productDetails.views || 0;
   const completionScore = productDetails.completionScore || productDetails.adminCompletionScore || null;
   const badges = productDetails.badges || [];
-  const seller = productDetails.Seller || productDetails.Shop || productDetails.shops || null;
+  const sellerPopulated =
+    typeof productDetails.sellerId === "object" && productDetails.sellerId
+      ? productDetails.sellerId
+      : null;
+  const seller =
+    productDetails.Seller ||
+    productDetails.Shop ||
+    productDetails.shops ||
+    (sellerPopulated
+      ? {
+          id: sellerPopulated._id || sellerPopulated.id,
+          name: sellerPopulated.name || sellerPopulated.shopName,
+          address: sellerPopulated.businessAddress || sellerPopulated.city,
+        }
+      : null);
+  const resolvedSellerId = resolveSellerId(productDetails as Record<string, unknown>);
   const supportLevel = productDetails.supportLevel || "Email";
   const updateFrequency = productDetails.updateFrequency || "Active";
   const id = productDetails.id || productDetails._id || '';
@@ -334,7 +350,8 @@ const ProductDetails = ({
         title: appName, 
         price, 
         image: screenshots?.[0]?.url || "", 
-        shopId: seller?.id || "" 
+        shopId: resolvedSellerId,
+        sellerId: resolvedSellerId,
       }, user, location, deviceInfo);
       toast.success("Added to wishlist");
     }
@@ -486,7 +503,8 @@ const ProductDetails = ({
         price: price,
         currency: currency,
         image: screenshots?.[0]?.url || "",
-        shopId: seller?.id || "",
+        shopId: resolvedSellerId,
+        sellerId: resolvedSellerId,
         isFree: false,
         appCategory: appCategory,
         technologyStack: techStack,
@@ -817,7 +835,7 @@ const ProductDetails = ({
                     {seller.name?.charAt(0) || 'D'}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <Link href={`/shop/${seller.id}`} className="text-sm font-semibold text-white hover:text-indigo-400 truncate block transition">
+                    <Link href={`/shop/${seller.id || resolvedSellerId}`} className="text-sm font-semibold text-white hover:text-indigo-400 truncate block transition">
                       {seller.name}
                     </Link>
                     {seller.address && (
@@ -829,7 +847,7 @@ const ProductDetails = ({
                   </div>
                 </div>
                 <Link
-                  href={`/inbox?shopId=${seller.id}&shopName=${encodeURIComponent(seller.name || '')}&productId=${id}&productTitle=${encodeURIComponent(appName)}&productImage=${encodeURIComponent(screenshots?.[0]?.url || '')}`}
+                  href={`/inbox?shopId=${seller.id || resolvedSellerId}&shopName=${encodeURIComponent(seller.name || '')}&productId=${id}&productTitle=${encodeURIComponent(appName)}&productImage=${encodeURIComponent(screenshots?.[0]?.url || '')}`}
                   className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white text-sm font-medium rounded transition"
                 >
                   <MessageCircle className="w-4 h-4" />

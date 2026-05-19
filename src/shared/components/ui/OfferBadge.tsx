@@ -145,15 +145,15 @@ const OfferBadge: React.FC<OfferBadgeProps> = ({ offer, variant = "card", origin
           {originalPrice && (
             <div className="flex items-center gap-3">
               <span className="text-gray-400 line-through text-sm">
-                UGX {originalPrice.toLocaleString()}
+                {new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(originalPrice)}
               </span>
               <span className="text-2xl font-bold text-green-400">
-                UGX {offer.discountedPrice.toLocaleString()}
+                {new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(offer.discountedPrice)}
               </span>
             </div>
           )}
           <p className="text-sm text-yellow-400 mt-1">
-            You save UGX {offer.discountAmount.toLocaleString()}
+            You save {new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(offer.discountAmount)}
           </p>
         </div>
 

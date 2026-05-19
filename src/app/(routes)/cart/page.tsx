@@ -9,6 +9,7 @@ import Link from "next/link";
 import { useStore } from "@/store";
 import Image from "next/image";
 import axiosInstance from "@/utils/axiosInstance";
+import { resolveSellerId } from "@/utils/sellerId";
 import { 
   Loader2, Trash2, ShoppingBag, Tag, X,
   Heart, Share2, ExternalLink, Save, ShoppingCart, Info,
@@ -25,6 +26,7 @@ interface AppliedCoupon {
   scope: "cart" | "application";
   applicationId?: string;
   createdBy: "admin" | "seller";
+  campaignId?: string;
 }
 
 const CartPage = () => {
@@ -35,6 +37,7 @@ const CartPage = () => {
   const cart = useStore((state: any) => state.cart);
   const removeFromCart = useStore((state: any) => state.removeFromCart);
   const clearCart = useStore((state: any) => state.clearCart);
+  const normalizeCartSellerIds = useStore((state: any) => state.normalizeCartSellerIds);
   
   // States
   const [loading, setLoading] = useState(false);
@@ -44,6 +47,10 @@ const CartPage = () => {
   const [appliedCoupons, setAppliedCoupons] = useState<AppliedCoupon[]>([]);
   const [applyingCoupon, setApplyingCoupon] = useState(false);
   const [applicationCouponInputs, setApplicationCouponInputs] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    normalizeCartSellerIds();
+  }, [normalizeCartSellerIds]);
 
   // Calculate subtotal (before discounts)
   const subtotal = useMemo(() => {
@@ -92,6 +99,17 @@ const CartPage = () => {
     setCouponSuccess("");
 
     try {
+      const cartItemsForCoupon = cart.map((item: any) => {
+        const seller = resolveSellerId(item);
+        return {
+          id: item.id,
+          shopId: seller,
+          sellerId: seller,
+          price: Number(item.price) || 0,
+          appCategory: item.appCategory,
+        };
+      });
+
       const response = await fetch("/api/coupons/validate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -99,17 +117,14 @@ const CartPage = () => {
           code: code.trim(),
           total: subtotal,
           applicationId,
-          cartItems: cart.map((item: any) => ({
-            id: item.id,
-            shopId: item.shopId || item.sellerId,
-            price: Number(item.price) || 0,
-          }))
+          cartItems: cartItemsForCoupon,
         }),
       });
       const data = await response.json();
 
       if (!data.valid) {
-        if (!applicationId) setCouponError(data.message || "Invalid coupon code");
+        const msg = data.message || "Invalid coupon code";
+        if (!applicationId) setCouponError(msg);
         return;
       }
 
@@ -121,7 +136,8 @@ const CartPage = () => {
         message: data.message || "Coupon applied",
         scope: applicationId ? "application" : "cart",
         applicationId,
-        createdBy: data.createdBy || "seller"
+        createdBy: data.createdBy || "seller",
+        campaignId: data.campaignId,
       };
 
       setAppliedCoupons(prev => [...prev, newCoupon]);
@@ -162,6 +178,28 @@ const CartPage = () => {
     return Math.max(0, basePrice - applicationCoupon.value);
   };
 
+  const buildOrderItemPrices = () => {
+    const cartCoupon = appliedCoupons.find((c) => c.scope === "cart");
+    const basePrices = cart.map((item: any) => ({
+      id: item.id,
+      price: getItemDiscountedPrice(item),
+    }));
+    if (!cartCoupon?.discountAmount) return basePrices;
+
+    const paidTotal = basePrices.reduce((s, row) => s + row.price, 0);
+    if (paidTotal <= 0) return basePrices;
+
+    let remaining = cartCoupon.discountAmount;
+    return basePrices.map((row, index) => {
+      const share =
+        index === basePrices.length - 1
+          ? remaining
+          : Math.round((row.price / paidTotal) * cartCoupon.discountAmount * 100) / 100;
+      remaining -= share;
+      return { ...row, price: Math.max(0, row.price - share) };
+    });
+  };
+
   const handleCheckout = async () => {
     if (cart.length === 0) return;
 
@@ -184,11 +222,15 @@ const CartPage = () => {
     setCouponError("");
     
     try {
+      const pricedItems = buildOrderItemPrices();
+      const priceById = Object.fromEntries(pricedItems.map((r) => [r.id, r.price]));
+      const primarySellerId = cart[0]?.shopId || cart[0]?.sellerId;
+
       // Transform cart items for order
       const orderItems = cart.map((item: any) => ({
         productId: item.id,
         name: item.appName || item.title || "Application",
-        price: getItemDiscountedPrice(item),
+        price: priceById[item.id] ?? getItemDiscountedPrice(item),
         quantity: 1,
         image: item?.image || item?.screenshots?.[0]?.url || "",
         currency: item.currency || "USD", // Preserve currency from cart item
@@ -206,10 +248,18 @@ const CartPage = () => {
       // Create order in backend
       const orderResponse = await axiosInstance.post("/api/orders", {
         userId: user._id || user.id,
+        sellerId: primarySellerId,
         items: orderItems,
         subtotal: subtotal,
         total: finalTotal,
         totalDiscount: totalDiscount,
+        appliedCoupons: appliedCoupons.map((c) => ({
+          code: c.code,
+          discountAmount: c.discountAmount,
+          campaignId: c.campaignId,
+          scope: c.scope,
+          applicationId: c.applicationId,
+        })),
         deliveryFee: 0,
         paymentMethod: "",
         paymentStatus: "pending",

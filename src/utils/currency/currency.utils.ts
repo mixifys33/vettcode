@@ -7,7 +7,7 @@
  * - Rounding amounts according to currency rules
  * - Parsing formatted prices back to numbers
  *
- * Base Currency: UGX (Worldwiden Shilling)
+ * Base Currency: USD (VettCode application prices)
  */
 
 import {
@@ -27,8 +27,8 @@ import {
 
 // Fallback rates (UGX as base) - used when API rates aren't available
 const FALLBACK_RATES: Record<string, { rateToUGX: number; rateFromUGX: number }> = {
-  UGX: { rateToUGX: 1, rateFromUGX: 1 },
-  USD: { rateToUGX: 3750, rateFromUGX: 1 / 3750 },
+  USD: { rateToUGX: 1, rateFromUGX: 1 },
+  UGX: { rateToUGX: 3750, rateFromUGX: 1 / 3750 },
   EUR: { rateToUGX: 4050, rateFromUGX: 1 / 4050 },
   GBP: { rateToUGX: 4700, rateFromUGX: 1 / 4700 },
   KES: { rateToUGX: 29, rateFromUGX: 1 / 29 },
@@ -48,6 +48,19 @@ const FALLBACK_RATES: Record<string, { rateToUGX: number; rateFromUGX: number }>
 // ============================================
 // PRICE FORMATTING
 // ============================================
+
+/**
+ * Format a VettCode marketplace price in USD (e.g. $39.60). Never outputs UGX.
+ */
+export function formatMoney(amount: number): string {
+  if (!amount) return "FREE";
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+    minimumFractionDigits: amount % 1 === 0 ? 0 : 2,
+    maximumFractionDigits: 2,
+  }).format(amount);
+}
 
 /**
  * Format a price for display using Intl.NumberFormat
@@ -166,23 +179,27 @@ export function getExchangeRate(currency: CurrencyCode): ExchangeRate | null {
 }
 
 /**
- * Convert amount from UGX to target currency
+ * Convert amount from base currency (USD) to target currency
  */
-export function convertFromUGX(amountUGX: number, targetCurrency: CurrencyCode): number {
-  if (targetCurrency === BASE_CURRENCY) return amountUGX;
+export function convertFromUGX(amount: number, targetCurrency: CurrencyCode): number {
+  if (targetCurrency === BASE_CURRENCY) return amount;
 
   const rate = getExchangeRate(targetCurrency);
   if (!rate) {
-    console.warn(`No exchange rate found for ${targetCurrency}, returning UGX amount`);
-    return amountUGX;
+    console.warn(`No exchange rate found for ${targetCurrency}, returning base amount`);
+    return amount;
   }
 
-  const converted = amountUGX * rate.rateFromUGX;
+  if (BASE_CURRENCY === "USD" && targetCurrency === "UGX") {
+    return roundAmount(amount * rate.rateToUGX, getCurrencyConfig("UGX").decimals);
+  }
+
+  const converted = amount * rate.rateFromUGX;
   return roundAmount(converted, getCurrencyConfig(targetCurrency).decimals);
 }
 
 /**
- * Convert amount to UGX from source currency
+ * Convert amount to base currency (USD) from source currency
  */
 export function convertToUGX(amount: number, sourceCurrency: CurrencyCode): number {
   if (sourceCurrency === BASE_CURRENCY) return amount;
@@ -191,6 +208,10 @@ export function convertToUGX(amount: number, sourceCurrency: CurrencyCode): numb
   if (!rate) {
     console.warn(`No exchange rate found for ${sourceCurrency}, returning original amount`);
     return amount;
+  }
+
+  if (BASE_CURRENCY === "USD" && sourceCurrency === "UGX") {
+    return roundAmount(amount / rate.rateToUGX, getCurrencyConfig("USD").decimals);
   }
 
   return Math.round(amount * rate.rateToUGX);
@@ -241,6 +262,11 @@ export function getUserCurrency(): CurrencyCode {
   if (typeof window === "undefined") return DEFAULT_CURRENCY;
   try {
     const stored = localStorage.getItem(CURRENCY_STORAGE_KEYS.userCurrency);
+    // Legacy sessions may have UGX; marketplace prices are USD
+    if (stored === "UGX") {
+      localStorage.setItem(CURRENCY_STORAGE_KEYS.userCurrency, DEFAULT_CURRENCY);
+      return DEFAULT_CURRENCY;
+    }
     if (stored && isCurrencySupported(stored)) return stored as CurrencyCode;
   } catch (error) {
     console.error("Failed to get user currency:", error);
@@ -335,6 +361,7 @@ export function calculateSavings(originalPrice: number, salePrice: number, curre
 }
 
 export default {
+  formatMoney,
   formatPrice,
   formatPriceCompact,
   formatNumber,

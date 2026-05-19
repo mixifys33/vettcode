@@ -26,6 +26,7 @@ import {
   RefreshCw,
 } from "lucide-react";
 import toast from "react-hot-toast";
+import { formatMoney } from "@/utils/currency";
 
 interface OfferProduct {
   id: string;
@@ -138,14 +139,21 @@ export default function OfferDetailPage() {
   };
 
   const handleAddToCart = (product: OfferProduct) => {
+    const sellerId = offer?.shopId || "";
     addToCart(
       {
         id: product.id,
+        title: product.title,
         name: product.title,
+        price: product.discountedPrice,
         sale_price: product.discountedPrice,
         original_price: product.sale_price,
+        image: product.image || "",
         images: product.image ? [product.image] : [],
         quantity: 1,
+        shopId: sellerId,
+        sellerId,
+        appCategory: product.category,
         discount: offer?.discountValue,
         offerId: offer?.id,
         offerEndDate: offer?.endDate,
@@ -194,13 +202,11 @@ export default function OfferDetailPage() {
     if (!offer) return "";
     if (offer.discountType === "Percentage") return `${offer.discountValue}% OFF`;
     if (offer.discountType === "FixedAmount")
-      return `UGX ${offer.discountValue.toLocaleString()} OFF`;
+      return `${formatMoney(offer.discountValue)} OFF`;
     if (offer.discountType === "BuyOneGetOne") return "Buy 1 Get 1 Free";
     if (offer.discountType === "BuyXGetY") return "Buy More Save More";
     return offer.discountType;
   };
-
-  const formatPrice = (price: number) => `UGX ${price.toLocaleString()}`;
 
   if (loading) {
     return (
@@ -421,10 +427,10 @@ export default function OfferDetailPage() {
                   {/* Price */}
                   <div className="flex flex-col gap-1 mb-3">
                     <span className="text-lg font-bold text-red-600">
-                      {formatPrice(product.discountedPrice)}
+                      {formatMoney(product.discountedPrice)}
                     </span>
                     <span className="text-sm text-gray-500 line-through">
-                      {formatPrice(product.sale_price)}
+                      {formatMoney(product.sale_price)}
                     </span>
                   </div>
 

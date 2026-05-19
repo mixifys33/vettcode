@@ -3,6 +3,7 @@ import { persist } from "zustand/middleware";
 import { useState, useEffect } from "react";
 import { sendKafkaEvent } from "../actions/track-user"
 import axiosInstance from "../utils/axiosInstance";
+import { resolveSellerId } from "../utils/sellerId";
 
 interface Product {
     id: string;
@@ -44,6 +45,7 @@ interface Store {
         deviceInfo?: any,
     ) => void;
     clearCart: () => void;
+    normalizeCartSellerIds: () => void;
     removeExpiredEventItems: () => void;
     addToWishlist: (
         product: Product,
@@ -235,18 +237,32 @@ const useStoreBase = create<Store>()(
             
             // Add to Cart
             addToCart: (product, user, location, deviceInfo) => {
+                const sellerKey = resolveSellerId(product as Record<string, unknown>);
+
+                const cartLine = {
+                    ...product,
+                    quantity: 1,
+                    shopId: sellerKey,
+                    sellerId: sellerKey,
+                };
+
                 set((state) => {
                     const existingItem = state.cart.find((item) => item.id === product.id);
                     if (existingItem) {
                         return {
                             cart: state.cart.map((item) =>
                                 item.id === product.id
-                                    ? { ...item, quantity: (item.quantity || 1) + 1 }
+                                    ? {
+                                        ...item,
+                                        quantity: (item.quantity || 1) + 1,
+                                        shopId: item.shopId || sellerKey,
+                                        sellerId: item.sellerId || sellerKey,
+                                    }
                                     : item
                             )
                         };
                     }
-                    return { cart: [...state.cart, { ...product, quantity: 1 }] };
+                    return { cart: [...state.cart, cartLine] };
                 });
                 
                 // Sync to server if user is logged in
@@ -254,8 +270,8 @@ const useStoreBase = create<Store>()(
                     addToCartServer(product.id, 1);
                     
                     // Notify chat service about cart access (allows seller to message this user)
-                    if (product.shopId) {
-                        notifyChatServiceCartAccess(user.id, product.shopId, product.shopId, product.id);
+                    if (sellerKey) {
+                        notifyChatServiceCartAccess(user.id, sellerKey, sellerKey, product.id);
                     }
                 }
                 
@@ -264,7 +280,7 @@ const useStoreBase = create<Store>()(
                     sendKafkaEvent({
                         userId: user?.id,
                         productId: product?.id,
-                        shopId: product?.shopId,
+                        shopId: sellerKey,
                         action: "add_to_cart",
                         country: location?.country || "Unknown",
                         city: location?.city || "Unknown",
@@ -334,6 +350,17 @@ const useStoreBase = create<Store>()(
                 set({ cart: [] });
                 // Also clear on server
                 syncCartToServer([]);
+            },
+
+            // Fix legacy cart lines where sellerId was stored as a populated object
+            normalizeCartSellerIds: () => {
+                set((state) => ({
+                    cart: state.cart.map((item) => {
+                        const sid = resolveSellerId(item as Record<string, unknown>);
+                        if (!sid) return item;
+                        return { ...item, sellerId: sid, shopId: sid };
+                    }),
+                }));
             },
 
             // Remove items from expired events (called periodically or on page load)
@@ -460,6 +487,7 @@ export const useStore = <T,>(selector: (state: Store) => T): T => {
             removeFromCart: () => {},
             updateCartQuantity: () => {},
             clearCart: () => {},
+            normalizeCartSellerIds: () => {},
             removeExpiredEventItems: () => {},
             addToWishlist: () => {},
             removeFromWishlist: () => {},

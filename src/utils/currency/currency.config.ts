@@ -4,8 +4,7 @@
  * This file contains all supported currencies, their configurations,
  * and default settings for the currency system on the frontend.
  *
- * Base Currency: UGX (Worldwiden Shilling)
- * All prices are stored in UGX and converted at display time.
+ * Base Currency: USD (VettCode marketplace stores application prices in USD).
  */
 
 // Supported currency codes
@@ -220,11 +219,11 @@ export const SUPPORTED_CURRENCIES: Record<CurrencyCode, CurrencyConfig> = {
   },
 };
 
-// Base currency constant
-export const BASE_CURRENCY: CurrencyCode = "UGX";
+// Base currency constant — application prices in DB are USD amounts
+export const BASE_CURRENCY: CurrencyCode = "USD";
 
-// Default currency for fallback
-export const DEFAULT_CURRENCY: CurrencyCode = "UGX";
+// Default display currency for the marketplace
+export const DEFAULT_CURRENCY: CurrencyCode = "USD";
 
 // Local storage keys
 export const CURRENCY_STORAGE_KEYS = {

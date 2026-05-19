@@ -11,6 +11,8 @@ import {
   Percent, Truck, Layers, ShoppingBag, RefreshCw,
 } from "lucide-react";
 import { toast } from "sonner";
+import { formatMoney } from "@/utils/currency";
+import { resolveSellerId } from "@/utils/sellerId";
 
 /* ─── Types ─────────────────────────────────────────────── */
 interface CampaignProduct {
@@ -18,6 +20,7 @@ interface CampaignProduct {
   sale_price: number; regular_price: number; discounted_price: number;
   image: string | null; category: string; brand?: string;
   stock: number; ratings: number; savings: number;
+  currency?: string; sellerId?: string; isFree?: boolean; couponCode?: string | null;
 }
 interface Campaign {
   id: string; title: string; description: string;
@@ -26,6 +29,7 @@ interface Campaign {
   bannerColor: string; startDate: string; endDate: string;
   appliesTo: string; products: CampaignProduct[];
   shopName: string; shopAvatar: string | null; productCount: number;
+  sellerId?: string;
 }
 
 /* ─── Helpers ────────────────────────────────────────────── */
@@ -94,7 +98,7 @@ function CampaignBanner({ campaign }: { campaign: Campaign }) {
             <div className="bg-white/20 backdrop-blur rounded-xl px-3 py-1.5 text-sm font-bold">
               {campaign.discountType === 'percentage'
                 ? `${campaign.discountValue}% OFF`
-                : `UGX ${campaign.discountValue.toLocaleString('en-UG')} OFF`}
+                : `${formatMoney(campaign.discountValue)} OFF`}
             </div>
 
             {/* Countdown */}
@@ -106,7 +110,7 @@ function CampaignBanner({ campaign }: { campaign: Campaign }) {
             {/* Min order */}
             {campaign.minOrderAmount > 0 && (
               <div className="text-white/70 text-xs">
-                Min. UGX {campaign.minOrderAmount.toLocaleString('en-UG')}
+                Min. {formatMoney(campaign.minOrderAmount)}
               </div>
             )}
           </div>
@@ -137,7 +141,7 @@ function CampaignBanner({ campaign }: { campaign: Campaign }) {
             <span className="text-sm font-semibold">{campaign.shopName}</span>
           </div>
           <div className="text-white/70 text-xs text-right">
-            {campaign.productCount} product{campaign.productCount !== 1 ? "s" : ""}
+            {campaign.productCount} application{campaign.productCount !== 1 ? "s" : ""}
           </div>
         </div>
       </div>
@@ -156,10 +160,23 @@ function ProductCard({ product, campaign, user, cart, addToCart, wishlist, toggl
     ? Math.round((1 - product.discounted_price / product.sale_price) * 100)
     : campaign.discountValue;
 
+  const sellerId = resolveSellerId(product) || resolveSellerId(campaign);
+
   const handleCart = () => {
     if (!user) { toast.error("Please sign in to add to cart"); return; }
-    addToCart({ id: product.id, title: product.title, price: product.discounted_price, image: product.image || "", shopId: "" }, user, null, null);
-    toast.success(inCart ? "Removed from cart" : "Added to cart!");
+    addToCart({
+      id: product.id,
+      title: product.title,
+      appName: product.title,
+      price: product.discounted_price,
+      image: product.image || "",
+      shopId: sellerId,
+      sellerId,
+      appCategory: product.category,
+      currency: "USD",
+      isFree: product.isFree || product.discounted_price === 0,
+    }, user, null, null);
+    toast.success(inCart ? "Removed from cart" : "Added to cart at offer price!");
   };
 
   return (
@@ -206,17 +223,17 @@ function ProductCard({ product, campaign, user, cart, addToCart, wishlist, toggl
         <div className="mt-auto pt-2">
           <div className="flex items-baseline gap-1.5 flex-wrap">
             <span className="text-base font-black text-teal-700">
-              UGX {product.discounted_price.toLocaleString("en-UG")}
+              {formatMoney(product.discounted_price)}
             </span>
             {product.sale_price > product.discounted_price && (
               <span className="text-xs text-gray-400 line-through">
-                UGX {product.sale_price.toLocaleString("en-UG")}
+                {formatMoney(product.sale_price)}
               </span>
             )}
           </div>
           {product.savings > 0 && (
             <p className="text-[10px] text-green-600 font-medium">
-              Save UGX {product.savings.toLocaleString("en-UG")}
+              Save {formatMoney(product.savings)}
             </p>
           )}
         </div>
@@ -301,7 +318,9 @@ export default function OffersPage() {
             Active Campaigns & Deals
           </div>
           <h1 className="text-3xl sm:text-4xl font-black mb-2">Today's Best Offers</h1>
-          <p className="text-teal-200 text-sm sm:text-base">Exclusive deals from verified sellers — limited time only</p>
+          <p className="text-teal-200 text-sm sm:text-base">
+            Live seller campaigns — every discounted application appears here with sale pricing
+          </p>
         </div>
       </div>
 
@@ -333,10 +352,12 @@ export default function OffersPage() {
         {filtered.length === 0 && (
           <div className="text-center py-20">
             <Tag className="w-16 h-16 text-gray-200 mx-auto mb-4" />
-            <h2 className="text-xl font-bold text-gray-700 mb-2">No active offers right now</h2>
-            <p className="text-gray-500 text-sm mb-6">Check back soon — sellers are always adding new deals</p>
+            <h2 className="text-xl font-bold text-gray-700 mb-2">No live campaign offers right now</h2>
+            <p className="text-gray-500 text-sm mb-6">
+              When sellers create active campaigns with verified applications, they will show here automatically.
+            </p>
             <Link href="/products" className="inline-flex items-center gap-2 px-6 py-3 bg-teal-600 text-white rounded-xl font-semibold hover:bg-teal-700 transition">
-              <ShoppingBag className="w-4 h-4" />Browse All Products
+              <ShoppingBag className="w-4 h-4" />Browse All Applications
             </Link>
           </div>
         )}
@@ -377,7 +398,7 @@ export default function OffersPage() {
                         onClick={() => setExpandedId(isExpanded ? null : campaign.id)}
                         className="mt-4 w-full py-2.5 border-2 border-dashed border-gray-200 hover:border-teal-400 rounded-xl text-sm font-semibold text-gray-500 hover:text-teal-600 transition flex items-center justify-center gap-2"
                       >
-                        {isExpanded ? "Show less" : `Show all ${campaign.products.length} products`}
+                        {isExpanded ? "Show less" : `Show all ${campaign.products.length} applications`}
                         <ArrowRight className={`w-4 h-4 transition-transform ${isExpanded ? "rotate-90" : ""}`} />
                       </button>
                     )}
@@ -385,7 +406,7 @@ export default function OffersPage() {
                 ) : (
                   <div className="px-5 pb-5 text-center text-sm text-gray-400 py-6">
                     <Package className="w-8 h-8 text-gray-200 mx-auto mb-2" />
-                    No products in this campaign yet
+                    No applications in this campaign yet
                   </div>
                 )}
               </div>

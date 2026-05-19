@@ -11,6 +11,7 @@ import ProductDetailsCard from "./product-details.card";
 import useDeviceTracking from "@/hooks/useDeviceTracking";
 import useLocationTracking from "@/hooks/useLocationTracking";
 import { useCurrencyFormat } from "@/hooks/useCurrencyFormat";
+import { resolveSellerId } from "@/utils/sellerId";
 
 const ProductCard = ({ product, isEvent }: { product: any; isEvent?: boolean }) => {
   const [timeLeft, setTimeLeft] = useState("");
@@ -62,7 +63,7 @@ const ProductCard = ({ product, isEvent }: { product: any; isEvent?: boolean }) 
   const techStack = product?.technologyStack?.join(", ") || product?.techStack || "";
   const appIcon = product?.appIcon?.url || product?.screenshots?.[0]?.url || product?.images?.[0]?.url || null;
   const sellerName = product?.Seller?.name || product?.Shop?.name || product?.seller?.name || "";
-  const sellerId = product?.sellerId || product?.Seller?.id || product?.Shop?.id || "";
+  const sellerId = resolveSellerId(product);
   const appRating = product?.rating ?? product?.ratings ?? 0;
   const appDownloads = product?.downloads ?? product?.totalSales ?? 0;
   const appPrice = product?.price ?? product?.sale_price ?? 0;
@@ -289,7 +290,13 @@ const ProductCard = ({ product, isEvent }: { product: any; isEvent?: boolean }) 
                 // For paid apps, add to cart
                 isInCart
                   ? removeFromCart(product.id, user, location, deviceInfo)
-                  : addToCart({ ...product, quantity: 1 }, user, location, deviceInfo);
+                  : addToCart({
+                      ...product,
+                      id: appId,
+                      quantity: 1,
+                      shopId: sellerId,
+                      sellerId,
+                    }, user, location, deviceInfo);
               }
             }}
             className={`w-full flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold transition-all duration-200 active:scale-95 shadow-lg ${

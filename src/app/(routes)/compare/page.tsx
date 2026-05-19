@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useProductComparison } from "@/hooks/useProductComparison";
 import { useStore } from "@/store";
 import useUser from "@/hooks/useUser";
+import { resolveSellerId } from "@/utils/sellerId";
 import { 
   X, Star, ShoppingCart, Heart, ArrowLeft, Check, Minus, GitCompare, 
   Code2, Award, Zap, Terminal, Sparkles, Package 
@@ -25,12 +26,15 @@ export default function ComparePage() {
     if (inCart) { toast.info("Already in cart"); return; }
     const displayTitle = product.appName || product.title;
     const displayPrice = product.isFree ? 0 : (product.salePrice || product.price);
+    const sellerId = resolveSellerId(product);
     addToCart({ 
       id: product.id, 
       title: displayTitle, 
       price: displayPrice, 
       image: product.image, 
-      shopId: "" 
+      shopId: sellerId,
+      sellerId,
+      appCategory: product.appCategory || product.category,
     }, user, null, null);
     toast.success(`Added "${displayTitle}" to cart`);
   };
